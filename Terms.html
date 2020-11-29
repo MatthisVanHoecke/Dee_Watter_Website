@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Material Design Bootstrap</title>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+  <!-- Bootstrap core CSS -->
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <!-- Material Design Bootstrap -->
+  <link href="css/mdb.min.css" rel="stylesheet">
+  <!-- Your custom styles (optional) -->
+  <link href="css/style.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/deestyle.css">
+</head>
+
+<body>
+
+  <!-- Start your project here-->
+    <div class="row justify-content-between header">
+        <div class="col-auto top">
+            <p>[POTENTIAL DISCOUNT CODE]</p>
+        </div>
+        <div class="col-auto">
+            <div class="row justify-content-between">
+                <div class="col-auto">
+                    <ul class="notype">
+                        <a href="#"><li class="lis"><b><img src="img/signin.png" alt="signin" class="img-fluid sign"/>SIGN IN</b></li></a>
+                        <a href="#"><li class="lis"><b><img src="img/signup.png" alt="signup" class="img-fluid sign"/>SIGN UP</b></li></a>
+                    </ul>
+                </div>
+                <div class="col-auto">
+                    <ul>
+                        <a href="#"><li class="margin lis">
+                            <img src="img/buy.png" alt="signin" class="img-fluid buy"/>
+                        </li></a>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center title">
+        <h1>Dee Watter</h1>
+    </div>
+    <div class="row justify-content-center menurow">
+        <div class="col-auto" id="menu">
+            <ul class="notype">
+                <a href="Home.html"><li class="menu">HOME</li></a>
+                <a href="Pricing.html"><li class="menu">PRICING</li></a>
+                <a href="About.html"><li class="menu">ABOUT ME</li></a>
+                <a href="Terms.html"><li class="menu">TERMS OF SERVICE</li></a>
+                <a href="Contact.html"><li class="menu">CONTACT</li></a>
+            </ul>
+        </div>
+            <!--Navbar-->
+            <nav class="navbar lighten-4" id="navigationbar">
+
+                <!-- Collapse button -->
+                <button class="navbar-toggler navbar-toggler-icon" type="button" data-toggle="collapse" data-target="#navbarSupportedContent1"
+                aria-controls="navbarSupportedContent1" aria-expanded="false" aria-label="Toggle navigation"><span class="dark-blue-text"><i
+                class="fas fa-bars fa-1x"></i></span></button>
+
+                  <!-- Collapsible content -->
+                <div class="collapse navbar-collapse" id="navbarSupportedContent1">
+
+                    <!-- Links -->
+                    <ul class="navbar-nav notype">
+                        <a class="nav-link" href="Home.html"><li class="nav-item menu">
+                            HOME
+                        </li></a>
+                        <a class="nav-link" href="Pricing.html"><li class="nav-item menu">
+                            PRICING
+                        </li></a>
+                        <a class="nav-link" href="About.html"><li class="nav-item menu">
+                            ABOUT ME
+                        </li></a>
+                        <a class="nav-link" href="Terms.html"><li class="nav-item menu">
+                            TERMS OF SERVICE
+                        </li></a>
+                        <a class="nav-link" href="Contact.html"><li class="nav-item menu">
+                            CONTACT
+                        </li></a>
+                    </ul>
+                    <!-- Links -->
+
+                </div>
+                <!-- Collapsible content -->
+
+            </nav>
+            <!--/.Navbar-->
+    </div>
+    <div class="row justify-content-center banner">
+        <h1>Terms of Service</h1>
+    </div>
+    <div class="row justify-content-center examp">
+        <div class="col-md-6 container">
+            <div class="terms">
+                <h5><b>Read these Terms and Conditions before requesting any services:</b></h5>
+                <ul>
+                    <li>I have the right to refuse service if it includes anything I'm uncomfortable with</li>
+                    <li>I won't do business with anyone younger than 13</li>
+                    <li>Payment will be done before I start working, and only through PayPal</li>
+                    <li>The artwork the client receives will not be switching ownership, so if they want to post it or use it anywhere they need to:
+                        <ul class="numbers">
+                            <li>State that the artwork is mine, and done by me</li>
+                            <li>Provide my contact information (even if it's just my tag) </li>
+                            <li>Make sure that my signature/ watermark is visible on the drawing</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+  <!-- /Start your project here-->
+
+  <!-- SCRIPTS -->
+  <script type="text/javascript">
+    toggle();
+    window.onresize = function() {
+        toggle();
+    }
+    function toggle() {
+        if (window.innerWidth > 1020) {
+            document.getElementById('navigationbar').style.display = 'none';  
+            document.getElementById('menu').style.display = 'block'; 
+        }
+        else {
+            document.getElementById('navigationbar').style.display = 'block';
+            document.getElementById('menu').style.display = 'none'; 
+        }    
+    }
+</script>
+  <!-- JQuery -->
+  <script type="text/javascript" src="js/jquery-3.4.0.min.js">
+  </script>
+  <!-- Bootstrap tooltips -->
+  <script type="text/javascript" src="js/popper.min.js"></script>
+  <!-- Bootstrap core JavaScript -->
+  <script type="text/javascript" src="js/bootstrap.min.js"></script>
+  <!-- MDB core JavaScript -->
+  <script type="text/javascript" src="js/mdb.min.js"></script>
+</body>
+
+</html>

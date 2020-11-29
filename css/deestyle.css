@@ -1,0 +1,83 @@
+.header {
+    background-color: aqua;
+    height: 42px;
+}
+.top{
+    margin-left: 8vw;
+    padding: 10px;
+    font-size: 12px;
+}
+.notype {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+.lis {
+    float: left;
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 8px;
+    text-decoration: none;
+    background-color: #333333;
+    margin: 5px;
+    font-size: 10px;
+}
+.lis:hover{
+    background-color: #141414;
+}
+.margin{
+    margin-left: 1vw;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+.sign{
+    width: 15px;
+    margin-right: 10px;
+}
+.buy {
+    width: 15px;
+}
+.title{
+    background-color: grey;
+    color: white;
+    height: 105px;
+}
+h1{
+    margin: auto;
+}
+.menurow{
+    background-color: chartreuse;
+}
+.banner{
+    background-color: lightgray;
+    height: 250px;
+}
+.examp{
+    background-color: azure;
+    height: 600px;
+}
+.menu:hover{
+    background-color: #77ed00;
+}
+.navbar-toggler-icon{
+    width: 200px;
+}
+.menu {
+    float: left;
+    display: block;
+    padding: 8px;
+    width: 200px;
+    text-align: center;
+    color: black;
+}
+.container {
+    background-color: white;
+}
+.numbers {
+    list-style-type: decimal;
+}
+.terms {
+    margin: 10px;
+}
