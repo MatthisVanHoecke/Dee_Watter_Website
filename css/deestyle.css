@@ -1,0 +1,98 @@
+.header {
+    background-color: aqua;
+    height: 42px;
+}
+.p{
+    margin-left: 8vw;
+    padding: 10px;
+    font-size: 12px;
+}
+.notype {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+.lis {
+    float: left;
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 8px;
+    text-decoration: none;
+    background-color: #333333;
+    margin: 5px;
+    font-size: 10px;
+}
+.lis:hover{
+    background-color: #000000;
+}
+.margin{
+    margin-left: 2.5vw;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+.sign{
+    width: 15px;
+    margin-right: 10px;
+}
+.buy {
+    width: 15px;
+}
+.title{
+    background-color: grey;
+    color: white;
+    height: 105px;
+}
+h1{
+    margin: auto;
+}
+.menurow{
+    background-color: chartreuse;
+}
+.banner{
+    background-color: lightgray;
+    height: 423px;
+}
+.examp{
+    background-color: black;
+    height: 600px;
+}
+.menu:hover{
+    background-color: #61c200;
+}
+.navbar-toggler-icon{
+    width: 200px;
+}
+.menu {
+    float: left;
+    display: block;
+    padding: 8px;
+    width: 200px;
+    text-align: center;
+    color: black;
+}
+.items {
+    margin-left: 1vw;
+    margin-bottom: 1vw;
+    margin-top: 1vw;
+    background-color: #454343;
+    color: white;
+    height: 50vh;
+}
+.zoom {
+  padding: 2vw;
+  transition: transform .2s; /* Animation */
+}
+.zoom:hover {
+  transform: scale(1.05); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+}
+.container {
+    background-color: white;
+}
+.numbers {
+    list-style-type: decimal;
+}
+.terms {
+    margin: 10px;
+}
