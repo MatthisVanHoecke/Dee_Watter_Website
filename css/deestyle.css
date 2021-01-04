@@ -3,7 +3,7 @@
     height: 42px;
 }
 .p{
-    margin-left: 8vw;
+    margin-left: 2vw;
     padding: 10px;
     font-size: 12px;
 }
@@ -95,4 +95,8 @@ h1{
 }
 .terms {
     margin: 10px;
+}
+.profile {
+    background-color: blanchedalmond;
+    height: 423px;
 }
