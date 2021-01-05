@@ -1,7 +1,8 @@
 <?php
     session_start();
+
     $mysqli = new MySQLi("localhost", "root", "", "webshopphp");
-    if(isset($_POST["signup_button"]) && isset($_POST["username"]) && $_POST["username"] != "" && isset($_POST["pass"]) && $_POST["pass"] != "" && isset($_POST["email"]) && $_POST["email"] != "") {
+    if(isset($_POST["username"]) && $_POST["username"] != "" && isset($_POST["pass"]) && $_POST["pass"] != "" && isset($_POST["email"]) && $_POST["email"] != "") {
         
         $sql = "SELECT * FROM tblCustomers WHERE Email = '".$_POST["email"]."' OR Username = '".$_POST["username"]."'";
         
@@ -51,7 +52,7 @@
             }
         }
     }
-    if(isset($_POST["signin_button"]) && isset($_POST["user"]) && $_POST["user"] != "" && isset($_POST["password"]) && $_POST["password"] != "") {
+    if(isset($_POST["user"]) && $_POST["user"] != "" && isset($_POST["password"]) && $_POST["password"] != "") {
         
         $sql = "SELECT Username, Password FROM tblCustomers WHERE Email = '".$_POST["user"]."' OR Username = '".$_POST["user"]."'";
         

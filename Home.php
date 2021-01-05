@@ -1,101 +1,7 @@
 <?php
 
-  //include 'code.php';
-
-print_r($_POST);
-?>
-<?php
-    session_start();
-     echo "hier";
-    $mysqli = new MySQLi("localhost", "root", "", "webshopphp");
-    if( isset($_POST["username"]) && $_POST["username"] != "" && isset($_POST["pass"]) && $_POST["pass"] != "" && isset($_POST["email"]) && $_POST["email"] != "") {
-        
-        $sql = "SELECT * FROM tblCustomers WHERE Email = '".$_POST["email"]."' OR Username = '".$_POST["username"]."'";
-        
-        $count = 0;
-        if($stmt = $mysqli->prepare($sql)) {
-                
-            if(!$stmt->execute()) {
-                echo "het uitvoeren van de query is mislukt: ".$stmt->error." in query ".$sql;
-            }
-            else {
-
-                while($stmt->fetch()) {
-                    $count++;
-                }
-                $stmt->close();
-            }
-        }
-        else {
-            echo "failed";
-        }
-        if($count == 0) {
-            if(mysqli_connect_errno()) {
-                trigger_error("fout be verbinding: ".$mysqli->error);
-            }
-            else {
-                $sql = "
-                INSERT INTO tblCustomers(Username, Email, Password)
-                VALUES(?,?,?)
-                ";
-
-                if($stmt = $mysqli->prepare($sql)) {
-
-                    $stmt->bind_param('sss', $username, $email, $pass);
-
-                    $username = $mysqli->real_escape_string($_POST["username"]);
-                    $email = $mysqli->real_escape_string($_POST["email"]);
-                    $pass = $mysqli->real_escape_string($_POST["pass"]);
-
-                    if(!$stmt->execute()) {
-                        echo "Failed";
-                    }
-                    else {
-                        $_SESSION["username"] = $_POST["username"];
-                    }
-                    $stmt->close();
-                }
-            }
-        }
-    }
-    if( isset($_POST["user"]) && $_POST["user"] != "" && isset($_POST["password"]) && $_POST["password"] != "") {
-        
-        $sql = "SELECT Username, Password FROM tblCustomers WHERE Email = '".$_POST["user"]."' OR Username = '".$_POST["user"]."'";
-        
-        $count = 0;
-        $name = "";
-        $password = "";
-        if($stmt = $mysqli->prepare($sql)) {
-                
-            if(!$stmt->execute()) {
-                echo "het uitvoeren van de query is mislukt: ".$stmt->error." in query ".$sql;
-            }
-            else {
-                
-                $stmt->bind_result($name, $password);
-                while($stmt->fetch()) {
-                    $count++;
-                }
-                $stmt->close();
-            }
-        }
-        else {
-            echo "failed";
-        }
-        
-        if($count == 1 && $password == $_POST["password"]) {
-            if(mysqli_connect_errno()) {
-                trigger_error("fout be verbinding: ".$mysqli->error);
-            }
-            else {
-                $_SESSION["username"] = $name;
-            }
-        }
-    }
-    if(isset($_GET["actie"]) && $_GET["actie"] == "signout") {
-        $_SESSION["username"] = "";
-        header("Location: Home.php");
-    }
+  include 'code.php';
+    
 ?>
 
 <html lang="en">
@@ -153,8 +59,9 @@ print_r($_POST);
             </div>
         </div>
     </div>
-    
-<div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+   
+
+<div class="modal fade" id="modalLoginForm" name="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
   aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -165,29 +72,29 @@ print_r($_POST);
         </button>
       </div>
       <div class="modal-body mx-3">
-       <form id="modal-form1" class="form-vertical" method="post" action="Home.php">
+       <form id="modalLogForm" name="modalLogForm" class="form-vertical" method="post" action="Home.php">
         <div class="md-form mb-5">
           <i class="fas fa-user prefix grey-text"></i>
-          <input type="text" id="defaultForm-email" class="form-control validate" name="user">
+          <input type="text" id="user" class="form-control validate" name="user">
           <label data-error="wrong" data-success="right" for="defaultForm-email">Email or Username</label>
         </div>
 
         <div class="md-form mb-4">
           <i class="fas fa-lock prefix grey-text"></i>
-          <input type="password" id="defaultForm-pass" class="form-control validate" name="password">
+          <input type="password" id="password" class="form-control validate" name="password">
           <label data-error="wrong" data-success="right" for="defaultForm-pass">Password</label>
         </div>
 
 
       <div class="modal-footer d-flex justify-content-center">
-        <button type="submit" class="btn btn-default" name="signin_button" id="signin_button">Sign in</button>
+        <button type="button" class="btn btn-default" name="signin_button" id="signin_button" onclick="submitModalLoginForm()">Sign in</button>
       </div>
         </form>
       </div>
     </div>
   </div>
 </div>
-<form id="modalform2" name="modalform2" class="form-vertical" method="post" action="Home.php">
+<form id="modalSignupForm" name="modalSignupForm" class="form-vertical" method="post" action="Home.php">
 <div class="modal fade" id="modalRegisterForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
   aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -216,13 +123,19 @@ print_r($_POST);
           <input type="password" name="pass" id="pass" class="form-control validate">
           <label data-error="wrong" data-success="right" for="orangeForm-pass">Password</label>
         </div>
+          
+        <div class="md-form mb-4">
+          <i class="fas fa-lock prefix grey-text"></i>
+          <input type="password" name="passconfirm" id="passconfirm" class="form-control validate">
+          <label data-error="wrong" data-success="right" for="orangeForm-pass">Confirm Password</label>
+        </div>
         
         <span id="userError" style="color: red; font-weight: bold"></span>
         <span id="emailError" style="color: red; font-weight: bold"></span>
         <span id="passError" style="color: red; font-weight: bold"></span>
             
         <div class="modal-footer d-flex justify-content-center" style="margin-top: 20px;">
-        <button type="button" class="btn btn-deep-orange" name="signup_button" id="signup_button" onclick="modal()">Sign up</button>
+        <button type="button" class="btn btn-deep-orange" name="signup_button" id="signup_button" onclick="submitModalSignupForm()">Sign up</button>
         </div>
         
       </div>
@@ -306,9 +219,23 @@ print_r($_POST);
             document.getElementById('menu').style.display = 'none'; 
         }    
     }
-    function modal() {
+    
+    function submitModalLoginForm() {
+        var ok = true;
+        
+
+        
+        if(ok == true) {
+            document.modalLogForm.submit();
+        }
+    }
+    
+    function submitModalSignupForm() {
         
         var ok = true;
+        
+        var n = ".*[0-9].*";
+        var l = ".*[A-Z].*";
         
         if(document.getElementById('username').value == "") {
             document.getElementById('userError').innerHTML = "*Please fill in your username<br>";
@@ -331,13 +258,32 @@ print_r($_POST);
             ok = false;
         }
         else {
-            document.getElementById('passError').innerHTML = "";
+            if(document.getElementById('pass').value.length < 8) {
+                document.getElementById('passError').innerHTML = "*Your password has to be at least 8 characters long";
+                ok = false;
+            }
+            else {
+                if(!document.getElementById('pass').value.match(n) && !document.getElementById('pass').value.match(l)) {
+                    document.getElementById('passError').innerHTML = "*Password needs to contain letters and numbers";
+                    ok = false;
+                }
+                else {
+                    if(document.getElementById('passconfirm').value != document.getElementById('pass').value) {
+                        document.getElementById('passError').innerHTML = "*Passwords don't match";
+                        ok = false;
+                    }
+                    else {
+                        document.getElementById('passError').innerHTML = "";
+                    }      
+                }
+            }
         }
+        
        
         if(ok == true) {
         
             
-            document.modalform2.submit();
+            document.modalSignupForm.submit();
         }
        
     }
