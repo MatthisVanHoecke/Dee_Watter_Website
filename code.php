@@ -4,11 +4,16 @@
     $mysqli = new MySQLi("localhost", "root", "", "webshopphp");
     if(isset($_POST["username"]) && $_POST["username"] != "" && isset($_POST["pass"]) && $_POST["pass"] != "" && isset($_POST["email"]) && $_POST["email"] != "") {
         
-        $sql = "SELECT * FROM tblCustomers WHERE Email = '".$_POST["email"]."' OR Username = '".$_POST["username"]."'";
+        $sql = "SELECT * FROM tblCustomers WHERE Email = ? OR Username = ?";
         
         $count = 0;
         if($stmt = $mysqli->prepare($sql)) {
                 
+            $stmt->bind_param('ss', $email, $username);
+            
+            $email = $_POST["email"];
+            $username = $_POST["username"];
+            
             if(!$stmt->execute()) {
                 echo "het uitvoeren van de query is mislukt: ".$stmt->error." in query ".$sql;
             }
@@ -39,7 +44,7 @@
 
                     $username = $mysqli->real_escape_string($_POST["username"]);
                     $email = $mysqli->real_escape_string($_POST["email"]);
-                    $pass = $mysqli->real_escape_string($_POST["pass"]);
+                    $pass = password_hash($mysqli->real_escape_string($_POST["pass"]), PASSWORD_DEFAULT);
 
                     if(!$stmt->execute()) {
                         echo "Failed";
@@ -54,13 +59,18 @@
     }
     if(isset($_POST["user"]) && $_POST["user"] != "" && isset($_POST["password"]) && $_POST["password"] != "") {
         
-        $sql = "SELECT Username, Password FROM tblCustomers WHERE Email = '".$_POST["user"]."' OR Username = '".$_POST["user"]."'";
+        $sql = "SELECT Username, Password FROM tblCustomers WHERE Email = ? OR Username = ?";
         
         $count = 0;
         $name = "";
         $password = "";
         if($stmt = $mysqli->prepare($sql)) {
                 
+            $stmt->bind_param('ss', $email, $username);
+        
+            $email = $_POST["user"];
+            $username = $_POST["user"];
+            
             if(!$stmt->execute()) {
                 echo "het uitvoeren van de query is mislukt: ".$stmt->error." in query ".$sql;
             }
@@ -77,7 +87,7 @@
             echo "failed";
         }
         
-        if($count == 1 && $password == $_POST["password"]) {
+        if($count == 1 && password_verify($_POST["password"], $password)) {
             if(mysqli_connect_errno()) {
                 trigger_error("fout be verbinding: ".$mysqli->error);
             }

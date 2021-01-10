@@ -44,9 +44,6 @@
     color: white;
     height: 105px;
 }
-h1{
-    margin: auto;
-}
 .menurow{
     background-color: chartreuse;
 }
@@ -99,4 +96,27 @@ h1{
 .profile {
     background-color: blanchedalmond;
     height: 423px;
+}
+
+.tab td{
+    border: 1px solid black;
+    width: 25%;
+    text-align: center;
+}
+.tab {
+    width: 100%;
+}
+.edittab {
+    width: 80%; 
+}
+.edittab td {
+    width: 25%;
+    text-align: center;
+}
+#scrollbar {
+    height: 200px;
+    overflow-y: auto;
+}
+::-webkit-scrollbar { 
+    display: none; 
 }
