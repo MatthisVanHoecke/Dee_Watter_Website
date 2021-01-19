@@ -70,21 +70,26 @@
         </button>
       </div>
       <div class="modal-body mx-3">
+       <form id="modalLogForm" name="modalLogForm" class="form-vertical" method="post" action="<?php echo $_SERVER['PHP_SELF'];?>">
         <div class="md-form mb-5">
-          <i class="fas fa-envelope prefix grey-text"></i>
-          <input type="email" id="defaultForm-email" class="form-control validate">
-          <label data-error="wrong" data-success="right" for="defaultForm-email">Your email</label>
+          <i class="fas fa-user prefix grey-text"></i>
+          <input type="text" id="user" class="form-control validate" name="user">
+          <label data-error="wrong" data-success="right" for="defaultForm-email">Email or Username</label>
         </div>
 
         <div class="md-form mb-4">
           <i class="fas fa-lock prefix grey-text"></i>
-          <input type="password" id="defaultForm-pass" class="form-control validate">
-          <label data-error="wrong" data-success="right" for="defaultForm-pass">Your password</label>
+          <input type="password" id="password" class="form-control validate" name="password">
+          <label data-error="wrong" data-success="right" for="defaultForm-pass">Password</label>
         </div>
 
-      </div>
+        <span id="userError" style="color: red; font-weight: bold"></span>
+        <span id="passwordError" style="color: red; font-weight: bold"></span>
+
       <div class="modal-footer d-flex justify-content-center">
-        <button class="btn btn-default">Login</button>
+        <button type="button" class="btn btn-default" name="signin_button" id="signin_button" onclick="submitModalLoginForm()">Sign in</button>
+      </div>
+        </form>
       </div>
     </div>
   </div>
@@ -99,27 +104,39 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body mx-3">
+      <div class="modal-body">
+
         <div class="md-form mb-5">
           <i class="fas fa-user prefix grey-text"></i>
-          <input type="text" id="orangeForm-name" class="form-control validate">
-          <label data-error="wrong" data-success="right" for="orangeForm-name">Your name</label>
+          <input type="text" name="username" id="username" class="form-control validate">
+          <label data-error="wrong" data-success="right" for="orangeForm-pass">Username</label>
         </div>
         <div class="md-form mb-5">
           <i class="fas fa-envelope prefix grey-text"></i>
-          <input type="email" id="orangeForm-email" class="form-control validate">
-          <label data-error="wrong" data-success="right" for="orangeForm-email">Your email</label>
+          <input type="email" name="email" id="email" class="form-control validate">
+          <label data-error="wrong" data-success="right" for="orangeForm-email">Email</label>
         </div>
 
         <div class="md-form mb-4">
           <i class="fas fa-lock prefix grey-text"></i>
-          <input type="password" id="orangeForm-pass" class="form-control validate">
-          <label data-error="wrong" data-success="right" for="orangeForm-pass">Your password</label>
+          <input type="password" name="pass" id="pass" class="form-control validate">
+          <label data-error="wrong" data-success="right" for="orangeForm-pass">Password</label>
         </div>
-
-      </div>
-      <div class="modal-footer d-flex justify-content-center">
-        <button class="btn btn-deep-orange">Sign up</button>
+          
+        <div class="md-form mb-4">
+          <i class="fas fa-lock prefix grey-text"></i>
+          <input type="password" name="passconfirm" id="passconfirm" class="form-control validate">
+          <label data-error="wrong" data-success="right" for="orangeForm-pass">Confirm Password</label>
+        </div>
+        
+        <span id="usernameError" style="color: red; font-weight: bold"></span>
+        <span id="emailError" style="color: red; font-weight: bold"></span>
+        <span id="passError" style="color: red; font-weight: bold"></span>
+            
+        <div class="modal-footer d-flex justify-content-center" style="margin-top: 20px;">
+        <button type="button" class="btn btn-deep-orange" name="signup_button" id="signup_button" onclick="submitModalSignupForm()">Sign up</button>
+        </div>
+        
       </div>
     </div>
   </div>
@@ -129,7 +146,7 @@
     </div>
     <div class="row justify-content-center menurow">
         <div class="col-auto" id="menu">
-            <ul>
+            <ul class="notype">
                 <a href="Home.php"><li class="menu">HOME</li></a>
                 <a href="Pricing.php"><li class="menu">PRICING</li></a>
                 <a href="About.php"><li class="menu">ABOUT ME</li></a>
@@ -149,7 +166,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent1">
 
                     <!-- Links -->
-                    <ul class="navbar-nav">
+                    <ul class="navbar-nav notype">
                         <a class="nav-link" href="Home.html"><li class="nav-item menu">
                             HOME
                         </li></a>
@@ -176,30 +193,36 @@
     </div>
     
     <div class="row justify-content-center banner">
-        <div class="card items zoom">
-            <div class="card-body">
-                <img src="" alt="[image1]" class="card-img-top">
-                <h1 class="card-title">[Item1]</h1>
-                <p class="card-text">[info]</p>
-                <a href="#" class="stretched-link"></a>
+        <div class="col-md-auto d-flex justify-content-center">
+            <div class="card items zoom">
+                <img src="img/head-shot.jpg" alt="head-shot" class="card-img-top rounded">
+                <div class="card-body">
+                    <h1 class="card-title">Head</h1>
+                    <p class="card-text">$14</p>
+                    <a href="Article.php?article=Head" class="stretched-link"></a>
+                </div>
             </div>
         </div>
-        <div class="card items zoom">
-            <div class="card-body">
-                <img src="" alt="[image2]" class="card-img-top">
-                <h1 class="card-title">[Item2]</h1>
-                <p class="card-text">[info]</p>
-                <a href="#" class="stretched-link"></a>
+        <div class="col-md-auto d-flex justify-content-center">
+            <div class="card items zoom">
+                <img src="img/half-body.jpg" alt="body-shot" class="card-img-top rounded">
+                <div class="card-body">
+                    <h1 class="card-title">Body</h1>
+                    <p class="card-text">$16</p>
+                    <a href="#" class="stretched-link"></a>
+                </div>
             </div>
-        </div>
-        <div class="card items zoom">
-            <div class="card-body">
-                <img src="" alt="[image3]" class="card-img-top">
-                <h1 class="card-title">[Item3]</h1>
-                <p class="card-text">[info]</p>
-                <a href="#" class="stretched-link"></a>
+        </div> 
+        <div class="col-md-auto d-flex justify-content-center">
+            <div class="card items zoom">
+                <img src="img/head-shot.jpg" alt="fullbody-shot" class="card-img-top rounded">
+                <div class="card-body">
+                    <h1 class="card-title">Full</h1>
+                    <p class="card-text">$22</p>
+                    <a href="#" class="stretched-link"></a>
+                </div>
             </div>
-        </div>
+        </div> 
     </div>
     <div class="row examp">
         <h1>[Examples or products]</h1>
@@ -208,22 +231,8 @@
   <!-- /Start your project here-->
 
   <!-- SCRIPTS -->
-  <script type="text/javascript">
-    toggle();
-    window.onresize = function() {
-        toggle();
-    }
-    function toggle() {
-        if (window.innerWidth > 1020) {
-            document.getElementById('navigationbar').style.display = 'none';  
-            document.getElementById('menu').style.display = 'block'; 
-        }
-        else {
-            document.getElementById('navigationbar').style.display = 'block';
-            document.getElementById('menu').style.display = 'none'; 
-        }    
-    }
-</script>
+
+    <script type="text/javascript" src="js/deescript.js"></script>
   <!-- JQuery -->
   <script type="text/javascript" src="js/jquery-3.4.0.min.js">
   </script>

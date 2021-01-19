@@ -51,7 +51,7 @@
                 </div>
                 <div class="col-auto">
                     <ul class="notype">
-                        <a href="#"><li class="margin lis rounded">
+                        <a href="Cart.php"><li class="margin lis rounded">
                             <img src="img/buy.png" alt="signin" class="img-fluid buy"/>
                         </li></a>
                     </ul>
@@ -85,6 +85,8 @@
           <label data-error="wrong" data-success="right" for="defaultForm-pass">Password</label>
         </div>
 
+        <span id="userError" style="color: red; font-weight: bold"></span>
+        <span id="passwordError" style="color: red; font-weight: bold"></span>
 
       <div class="modal-footer d-flex justify-content-center">
         <button type="button" class="btn btn-default" name="signin_button" id="signin_button" onclick="submitModalLoginForm()">Sign in</button>
@@ -130,7 +132,7 @@
           <label data-error="wrong" data-success="right" for="orangeForm-pass">Confirm Password</label>
         </div>
         
-        <span id="userError" style="color: red; font-weight: bold"></span>
+        <span id="usernameError" style="color: red; font-weight: bold"></span>
         <span id="emailError" style="color: red; font-weight: bold"></span>
         <span id="passError" style="color: red; font-weight: bold"></span>
             
@@ -169,19 +171,19 @@
 
                     <!-- Links -->
                     <ul class="navbar-nav notype">
-                        <a class="nav-link" href="Home.html"><li class="nav-item menu">
+                        <a class="nav-link" href="Home.php"><li class="nav-item menu">
                             HOME
                         </li></a>
-                        <a class="nav-link" href="Pricing.html"><li class="nav-item menu">
+                        <a class="nav-link" href="Pricing.php"><li class="nav-item menu">
                             PRICING
                         </li></a>
-                        <a class="nav-link" href="About.html"><li class="nav-item menu">
+                        <a class="nav-link" href="About.php"><li class="nav-item menu">
                             ABOUT ME
                         </li></a>
-                        <a class="nav-link" href="Terms.html"><li class="nav-item menu">
+                        <a class="nav-link" href="Terms.php"><li class="nav-item menu">
                             TERMS OF SERVICE
                         </li></a>
-                        <a class="nav-link" href="Contact.html"><li class="nav-item menu">
+                        <a class="nav-link" href="Contact.php"><li class="nav-item menu">
                             CONTACT
                         </li></a>
                     </ul>
@@ -203,92 +205,9 @@
   <!-- /Start your project here-->
 
   <!-- SCRIPTS -->
-  <script type="text/javascript">
-    toggle();
+  
     
-    window.onresize = function() {
-        toggle();
-    }
-    function toggle() {
-        if (window.innerWidth > 1020) {
-            document.getElementById('navigationbar').style.display = 'none';  
-            document.getElementById('menu').style.display = 'block'; 
-        }
-        else {
-            document.getElementById('navigationbar').style.display = 'block';
-            document.getElementById('menu').style.display = 'none'; 
-        }    
-    }
-    
-    function submitModalLoginForm() {
-        var ok = true;
-        
-
-        
-        if(ok == true) {
-            document.modalLogForm.submit();
-        }
-    }
-    
-    function submitModalSignupForm() {
-        
-        var ok = true;
-        
-        var n = ".*[0-9].*";
-        var l = ".*[A-Z].*";
-        
-        if(document.getElementById('username').value == "") {
-            document.getElementById('userError').innerHTML = "*Please fill in your username<br>";
-            ok = false;
-        }
-        else {
-            document.getElementById('userError').innerHTML = "";
-        }
-        
-        if(document.getElementById('email').value == "") {
-            document.getElementById('emailError').innerHTML = "*Please fill in your email<br>";
-            ok = false;
-        }
-        else {
-            document.getElementById('emailError').innerHTML = "";
-        }
-        
-        if(document.getElementById('pass').value == "") {
-            document.getElementById('passError').innerHTML = "*Please fill in your password";
-            ok = false;
-        }
-        else {
-            if(document.getElementById('pass').value.length < 8) {
-                document.getElementById('passError').innerHTML = "*Your password has to be at least 8 characters long";
-                ok = false;
-            }
-            else {
-                if(!document.getElementById('pass').value.match(n) && !document.getElementById('pass').value.match(l)) {
-                    document.getElementById('passError').innerHTML = "*Password needs to contain letters and numbers";
-                    ok = false;
-                }
-                else {
-                    if(document.getElementById('passconfirm').value != document.getElementById('pass').value) {
-                        document.getElementById('passError').innerHTML = "*Passwords don't match";
-                        ok = false;
-                    }
-                    else {
-                        document.getElementById('passError').innerHTML = "";
-                    }      
-                }
-            }
-        }
-        
-       
-        if(ok == true) {
-        
-            
-            document.modalSignupForm.submit();
-        }
-       
-    }
-    
-</script>
+<script type="text/javascript" src="js/deescript.js"></script>
   <!-- JQuery -->
   <script type="text/javascript" src="js/jquery-3.4.0.min.js">
   </script>
