@@ -1,121 +1,163 @@
-<!DOCTYPE html>
-
 <?php
-
     include 'code.php';
+    
+    if($_SESSION["username"] == "") {
+        header("location: accountError.php");
+    }
+
+    $articleid = "";
+    $articleprice = 0;
+    $detail = 0;
+    $extrac = 0;
+    $customerid = 0;
+    $order = 0;
+    
+    $mysqli = new MySQLi("localhost", "root", "", "webshopphp");
 
     if(mysqli_connect_errno()) {
         trigger_error("fout bij verbinding: ".$mysqli->error);
     }
     else {
+        $sql = "
+        SELECT ArticleID, ArticlePrice, Detailed, ExtraCharacter
+        FROM tblarticles
+        WHERE ArticleName LIKE ?
+        ";
         
-        $sql = "SELECT Isadmin FROM tblCustomers WHERE Username = ?";
-
         if($stmt = $mysqli->prepare($sql)) {
+            $stmt->bind_param('s', $name);
             
-            $stmt->bind_param('s', $username);
-            
-            $username = $_SESSION["username"];
-            
+            $name = $_GET["article"];
             if(!$stmt->execute()) {
-                echo "het uitvoeren van de query is mislukt: ".$stmt->error." in query ".$sql;
+                echo "the execution has failed: ".$stmt->error." in query ".$sql;
             }
             else {
-            
-                $stmt->bind_result($admin);
+                $stmt->bind_result($articleid, $articleprice, $detail, $extrac);
+
                 $stmt->fetch();
-
-                if($admin == 0) {
-                    echo '<style>#adminpage {display:none;}</style>';
-                }
-                
-                $stmt->close();
             }
+            $stmt->close();
         }
-        else {
-            echo "error";
-        }
-    }
-    
-
-    if(isset($_POST["change_name"]) && isset($_POST["changeUsername"]) && $_POST["changeUsername"] != "") {
         
-        if(mysqli_connect_errno()) {
-            trigger_error("fout bij verbinding: ".$mysqli->error);
+        $sql = "
+        SELECT CustomerID
+        FROM tblCustomers
+        WHERE Username LIKE ?
+        ";
+        
+        if($stmt = $mysqli->prepare($sql)) {
+            $stmt->bind_param('s', $name);
+            
+            $name = $mysqli->real_escape_string($_SESSION["username"]);
+            if(!$stmt->execute()) {
+                echo "the execution has failed: ".$stmt->error." in query ".$sql;
+            }
+            else {
+                $stmt->bind_result($customerid);
+
+                $stmt->fetch();
+            }
+            $stmt->close();
         }
         else {
-            
-            $sql = "SELECT Username FROM tblCustomers WHERE Username = ?";
-            
-            $count = 0;
-            if($stmt = $mysqli->prepare($sql)) {
-                
-                $stmt->bind_param('s', $username);
-                
-                $username = $_POST["changeUsername"];
-                
-                if(!$stmt->execute()) {
-                    echo "het uitvoeren van de query is mislukt: ".$stmt->error." in query ".$sql;
-                }
-                else {
-
-                    while($stmt->fetch()) {
-                        $count++;
-                    }
-                }
-            }
-            if($count == 0) {
-                $sql = "
-                UPDATE tblCustomers
-                SET Username = ?
-                WHERE Username = ?"
-                ;
-
-                if($stmt = $mysqli->prepare($sql)) {
-                    $stmt->bind_param('ss', $changename, $name);
-
-                    $changename = $mysqli->real_escape_string($_POST["changeUsername"]);
-                    
-                    $name = $_SESSION['username'];
-
-                    $_SESSION['username'] = $_POST["changeUsername"];
-                    $stmt->execute();
-                        
-                    $stmt->close();
-                }
-                else {
-                    echo "er zit een fout in de query";
-                }
-            }
+            echo "failed";
         }
+        
     }
-    if(isset($_POST["change_pass"]) && isset($_POST["changePassword"]) && $_POST["changePassword"] != "") {
+
+
+    if(isset($_POST["Description"]) && $_POST["Description"] != "") {
         
         if(mysqli_connect_errno()) {
             trigger_error("fout bij verbinding: ".$mysqli->error);
         }
         else {
             $sql = "
-            UPDATE tblCustomers
-            SET Password = ?
-            WHERE Username = ?"
-            ;
-
+            INSERT INTO tblorders(CustomerID, Date)
+            VALUES(?,curdate())
+            ";
             if($stmt = $mysqli->prepare($sql)) {
-                $stmt->bind_param('ss', $pass, $username);
 
-                $pass = $mysqli->real_escape_string($_POST["changePassword"]);
-                
-                $username = $_SESSION['username'];
-                
-                $stmt->execute();
+                $stmt->bind_param('i', $customer);
+
+                $customer = $customerid;
+
+                if(!$stmt->execute()) {
+                    echo "het uitvoeren is mislukt: ".$stmt->error." in query ".$sql;
+                }
 
                 $stmt->close();
             }
             else {
-                echo "er zit een fout in de query";
+                echo "failed";
+            }
+
+            $sql = "
+            SELECT OrderID
+            FROM tblorders
+            WHERE CustomerID LIKE ?
+            ";
+
+            if($stmt = $mysqli->prepare($sql)) {
+                $stmt->bind_param('i', $id);
+
+                $id = $customerid;
+                if(!$stmt->execute()) {
+                    echo "the execution has failed: ".$stmt->error." in query ".$sql;
+                }
+                else {
+                    $stmt->bind_result($order);
+
+                    $stmt->fetch();
+                }
+                $stmt->close();
+            }
+            else {
+                echo "failed";
             }
             
+            $sql = "
+            INSERT INTO tblorderlines(OrderID, ArticleID, Description, File, Detailed, ExtraCharacter, PriceByOrder, Status)
+            VALUES(?,?,?,?,?,?,?,?)
+            ";
+            
+            if($stmt = $mysqli->prepare($sql)) {
+                
+                $stmt->bind_param('iissiids', $orderid, $article, $desc, $file, $detailed, $extra, $price, $status);
+                
+                $article = $articleid;
+                
+                $desc = $mysqli->real_escape_string($_POST["Description"]);
+                $file = $mysqli->real_escape_string($_POST["upload"]);
+                
+                $price = $articleprice;
+                
+                $detailed = 0;
+                $extra = 0;
+                $status = "In Queue";
+                
+                $orderid = $order;
+                
+                if(isset($_POST["detail"])) {
+                    $detailed = $mysqli->real_escape_string($_POST["detail"]);
+                    $price += $detail;
+                }
+                
+                
+                if(isset($_POST["extra"])) {
+                    $extra = $mysqli->real_escape_string($_POST["extra"]);
+                    $price += $extrac;
+                }
+                
+                if(!$stmt->execute()) {
+                    echo "het uitvoeren is mislukt: ".$stmt->error." in query ".$sql;
+                }
+
+                $stmt->close();
+            }
+            else {
+                echo "failed";
+            }
         }
     }
 ?>
@@ -156,7 +198,7 @@
                                     <form method="post" name="signoutform" action="<?php echo $_SERVER[\'PHP_SELF\']; ?> ">
                                         <a href="?actie=signout" type="submit"><li class="lis rounded"><b><img src="img/signout.png" alt="logout" class="img-fluid sign"/>SIGN OUT</b></li></a>
                                     </form
-                            </ul>';
+                                </ul>';
                         }
                         else {
                             echo '<ul class="notype">
@@ -294,118 +336,126 @@
     
     <div class="row justify-content-center">
         <div class="col-md-5 profile">
-            <h1 style="text-align: center">Profile</h1>
-            <form name="form1" class="margin" method="post" action="<?php echo $_SERVER['PHP_SELF']?>">
-                
+            <?php echo "<h1 style='text-align: center;'>".$_GET["article"]."-shot</h1>";?>
+            <form name="form1" id="form1" class="margin" method="post" action="<?php echo $_SERVER['PHP_SELF']."?article=Head";?>">
+                <h3 style="font-weight:bold;">Create order</h3>
                 <table style="width: 100%">
                     <tr>
-                        <td style="font-size: 20px; font-weight: bold;">Username:</td>
-                        <td><input type=text name="changeUsername"></td>
-                        <td><button type="submit" class="btn btn-default" name="change_name">change username</button></td>
+                        <td>
+                            <label style="font-size: 20px; font-weight: bold;">Description: </label>
+                        </td>
                     </tr>
                     <tr>
-                        <td style="font-size: 20px; font-weight: bold;">Password:</td>
-                        <td><input type="password" name="changePassword"></td>
-                        <td><button type="submit" class="btn btn-default" name="change_pass">change password</button></td>
+                        <td>
+                            <textarea class="form-control" id="Description" name="Description" rows="5"></textarea>
+                        </td>
+                        <td style="width: 50%">
+                            <span id="descError" style="color: red; font-weight: bold;"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label style="font-size: 20px; font-weight: bold;">Reference:</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="file" class="form-control-file" id="upload" name="upload">
+                        </td>
+                        <td>
+                            <span id="uploadError" style="color: red; font-weight: bold;"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label style="font-size: 20px; font-weight: bold;">Attributes: </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <ul class="notype">
+                                <li>
+                                    <input type="checkbox" name="detail" id="detail" onchange="calculate()" value="1">
+                                    <label style="font-size: 15px;">Fully detailed</label>
+                                </li>
+                                <li>
+                                    <input type="checkbox" name="extra" id="extra" onclick="calculate()" value="1">
+                                    <label style="font-size: 15px;">Extra character</label>
+                                </li>
+                            </ul>
+                        </td>
                     </tr>
                 </table>
+                <h3 style="font-weight:bold;">Total:</h3>
+                <?php if($_GET['article'] == 'Head') { 
+                    echo "<label style='font-size: 20px; font-weight: bold;' id='total'>$14</label>";
+                }?>
+                <div class="row justify-content-center" style="width: 100%">
+                    <button type="button" name="save" id="save" class="btn btn-default" onclick="submitForm1()">Save</button>
+                </div>
             </form>
         </div>
     </div>
-    <div class="row justify-content-center" id="adminpage">
-        <div class="col-md-5 profile">
-            <h1 style="text-align: center">Admin</h1>
+    
+    <script type="text/javascript">
+        var total = 0;
+        
+        function calculate() {
             
-            <form name="frmcustomer" method="post" action="<?php echo $_SERVER['PHP_SELF']?>">
-                <label>Username or email:</label>
-                <input type="text" name="customer">
-                <button type="submit" class="btn btn-default" name="search">search</button>
-            </form>
-            <table class="tab" style="background-color: white;">
-                <tr>
-                    <td>
-                        <b>ID</b>
-                    </td>
-                    <td>
-                        <b>Name</b>
-                    </td>
-                    <td>
-                        <b>Email</b>
-                    </td>
-                    <td>
-                        <b>Edit</b>
-                    </td>
-                </tr>
-                </table>
-                <div id="scrollbar">
-                <table class="tab" style="background-color: white;">
-            <?php
-                if(mysqli_connect_errno()) {
-                    trigger_error("Error when connecting: ".$mysqli->error);
-                }
-                else {
-                    if(isset($_POST["search"]) && isset($_POST["customer"]) && $_POST["customer"] != "") {
-                        if(mysqli_connect_errno()) {
-                            trigger_error('fout bij verbinding'.$mysqli->error);
-                        }
-                        
-                        if(strpos($_POST["customer"], '@') !== false) {
-                            $sql = "
-                            SELECT CustomerID, Username, Email
-                            FROM tblCustomers
-                            WHERE Email LIKE ?
-                            ORDER BY CustomerID
-                            ";  
-                        }
-                        else {
-                            $sql = "
-                            SELECT CustomerID, Username, Email
-                            FROM tblCustomers
-                            WHERE Username LIKE ?
-                            ORDER BY CustomerID
-                            ";  
-                        }
+            var parts = window.location.search.substr(1).split("&");
+            var $_GET = {};
+            for (var i = 0; i < parts.length; i++) {
+                var temp = parts[i].split("=");
+                $_GET[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
+            }
+            
+            if($_GET["article"] == "Head") {
+                total = 14;
+            }
+            
+            if(document.getElementById("detail").checked == true) {
+                if($_GET["article"] == "Head") {
+                    total += 4;
+                }   
+            }
+            if(document.getElementById("extra").checked == true) {
+                if($_GET["article"] == "Head") {
+                    total += 5;
+                }   
+            }
+            
+            
+            document.getElementById("total").innerHTML = "$" + total;
 
-                        if($stmt = $mysqli->prepare($sql)) {
-                            $stmt->bind_param('s', $zoek);
-
-                            $zoek = $_POST["customer"]."%";
-                            if(!$stmt->execute()) {
-                                echo "het uitvoeren is mislukt: ".$stmt->error."in query ".$sql;
-                            }
-                            else {
-                                $stmt->bind_result($id,$naam,$email);
-
-                                while($stmt->fetch()) {
-                                    echo "<tr><td>".$id."</td><td>".$naam."</td><td>".$email."</td><td>";
-                    ?>
-                                <form name="form1" method="post" action="EditUser.php?action=edit&customerid=<?php echo $id;?>">
-                                    <input type="submit" name="btnedit" id="action" value="Edit">
-                                </form>
-                    <?php
-                                    echo "</td></tr>";
-                                }
-                            }
-                            $stmt->close();
-                        }
-                        else {
-                            echo "er is een fout in query: ".$mysqli->error;
-                        }
-                    }
-                }
-            ?>
-            </table>
-            </div>
-        </div>
-    </div>
-    
-
+        }
+        
+        function submitForm1() {
+            var ok = true;
+            
+            if(document.getElementById('Description').value == "") {
+                document.getElementById('descError').innerHTML = "*Please fill in the description of your order";
+                ok = false;
+            }
+            else {
+                document.getElementById('descError').innerHTML = "";
+            }
+            
+            
+            if(document.getElementById('upload').value == "") {
+                document.getElementById('uploadError').innerHTML = "*Please upload a reference image for your order";
+                ok = false;
+            }
+            else {
+                document.getElementById('uploadError').innerHTML = "";
+            }
+            
+            
+            if(ok == true) {
+                document.form1.submit();
+            }
+        }
+    </script>
   <!-- /Start your project here-->
-
-  <!-- SCRIPTS -->
-  <script type="text/javascript">
-    
-</script>
     <script type="text/javascript" src="js/deescript.js"></script>
   <!-- JQuery -->
   <script type="text/javascript" src="js/jquery-3.4.0.min.js">

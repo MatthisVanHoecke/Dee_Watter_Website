@@ -23,6 +23,8 @@
                 else {
                     $stmt->bind_result($id,$name,$email);
                     
+                    setcookie("customerid", $id, time() + (86400*30));
+                    
                     $stmt->fetch();
                     
                 }
@@ -263,8 +265,175 @@
                     </tr>
                 </table>
                 <h3 style="font-weight:bold;">Edit Order</h3>
+                <table class="tab1" style="background-color: white; table-layout: fixed">
+                    <tr>
+                        <td style="width: 5%">
+                            <b>ID</b>
+                        </td>
+                        <td>
+                            <b>Description</b>
+                        </td>
+                        <td style="width: 8%;  overflow-x: auto;">
+                            <b>File</b>
+                        </td>
+                        <td style="width: 10%; overflow-x: auto;">
+                            <b>Detailed</b>
+                        </td>
+                        <td style="width: 10%; overflow-x: auto;">
+                            <b>Extra Character</b>
+                        </td>
+                        <td style="width: 10%; overflow-x: auto;">
+                            <b>Price</b>
+                        </td>
+                        <td style="width: 15%; overflow-x: auto;">
+                            <b>Status</b>
+                        </td>
+                        <td style="width: 10%">
+                            <b>Delete</b>
+                        </td>
+                    </tr>
+                </table>
+                <div id="scrollbar">
+                    <table class="tab2" style="background-color: white; table-layout: fixed">
+            <?php
+                    if(mysqli_connect_errno()) {
+                        trigger_error("Error when connecting: ".$mysqli->error);
+                    }
+                    else {
+                        if(isset($_GET["action"]) && $_GET["action"] == "delete" && isset($_GET["orderid"])) {
+                            $sql = "
+                            DELETE FROM tblorderlines, tblorders
+                            WHERE tblorderlines.OrderID = ?
+                            AND tblorders.OrderID = ?
+                            ";
+
+                            if($stmt = $mysqli->prepare($sql)) {
+                                $stmt->bind_param('ii', $orid, $orid);
+
+                                $orid = $mysqli->real_escape_string($_GET["orderid"]);
+
+                                if(!$stmt->execute()) {
+                                    echo "het uitvoeren van de query is mislukt: ".$stmt->error." in query ".$sql;
+                                }
+                                else {
+                                    echo "het deleten is gelukt";
+                                }
+                                $stmt->close();
+                                
+                                sleep(5);
+                                if(isset($_COOKIE["customerid"])) {
+                                    header("location: EditUser.php?action=edit&customerid=".$_COOKIE["customerid"]);   
+                                }
+                                sleep(5);
+                                setcookie("customerid", "", time() - 3600);
+                            }
+                            else {
+                                echo "er zit een fout in de query";
+                            }
+                        }
+                        
+                        $id = 0;
+                        
+                        $sql = "
+                        SELECT l.OrderID, Description, File, Detailed, ExtraCharacter, PriceByOrder, Status
+                        FROM tblorderlines l, tblorders o
+                        WHERE l.OrderID = o.OrderID AND CustomerID = ?
+                        ORDER BY l.OrderID
+                        ";  
+
+                        if($stmt = $mysqli->prepare($sql)) {
+                            $stmt->bind_param('s', $cid);
+
+                            $cid = $mysqli->real_escape_string($_GET["customerid"]);
+                            if(!$stmt->execute()) {
+                                echo "het uitvoeren is mislukt: ".$stmt->error."in query ".$sql;
+                            }
+                            else {
+                                $stmt->bind_result($id,$desc,$file,$detail,$extra,$price,$status);
+
+                                $str = "";
+                                while($stmt->fetch()) {
+                                    if($status == "In Queue") {
+                                        $str = "<select name='status'><option value='".$status."'>".$status."</option><option value='In Progress'>In Progress</option></select>";
+                                    }
+                                    else {
+                                        $str = "<select name='status'><option value='In Progress'>In Progress</option><option value='In Queue'>In Queue</option></select>";
+                                    }
+                                    
+                                    $detailbool = 0;
+                                    if($detail == 1) {
+                                        $detailbool = 1;
+                                    }
+                                    else {
+                                        $detailbool = 0;
+                                    }
+                                    
+                                    $extrabool = 0;
+                                    if($extra == 1) {
+                                        $extrabool = 1;
+                                    }
+                                    else {
+                                        $extrabool = 0;
+                                    }
+
+                                    echo "<tr><td style='width: 5%'>".$id."</td><td style='width: 32%, overflow-wrap: break-word;'><div style='height: 100%; overflow-y: auto'>".$desc."</div></td><td style='width: 8%;     overflow-x: auto;'>".$file."</td><td style='width: 10%; overflow-x: auto;'><input type='checkbox' name='detail' value='detail' "?><?php if((isset($_POST['detail']) && $detailbool == 1) || isset($_POST['detail'])) { echo 'checked';}?><?php echo "></td><td style='width: 10%; overflow-x: auto;'>"?><input type='checkbox' name='extra' value='extra' <?php if((isset($_POST['extra']) && $extrabool == 1) || isset($_POST['extra'])) { echo 'checked';}?>><?php echo "</td><td style='width: 10%; overflow-x: auto;'><input type='text' style='width: 90%; overflow-x: auto;' name='price' value='"?><?php if((isset($_POST['price']) && $price != 0)) {echo $_POST['price'];} else {if(!isset($_POST['price'])) {echo $price;}}?><?php echo "'></td><td style='width: 15%; overflow-x: auto;'><select name='status'><option value='In Queue' "?><?php if($status == "In Queue" && !isset($_POST['status'])){echo $_POST['status'];}else {if(isset($_POST['status']) && $_POST['status'] == 'In Queue') {echo 'selected=\"selected\"';}} echo ">In Queue</option><option value='In Progress' "?><?php if($status == "In Progress" && !isset($_POST['status'])){echo 'selected';}else {if(isset($_POST['status']) && $_POST['status'] == 'In Progress') {echo 'selected=\"selected\"';}} echo ">In Progress</option></select></td><td style='width: 10%;'>";
+                ?>
+                                <form name="form1" method="post" action="EditUser.php?action=delete&orderid=<?php echo $id;?>">
+                                    <input type="submit" name="btndelete" id="action" value="Delete">
+                                </form>
+                <?php
+                                    echo "</td></tr>";
+                                }
+                            }
+                            $stmt->close();
+                        }
+                        else {
+                            echo "er is een fout in query: ".$mysqli->error;
+                        }
+                        if(isset($_POST["save"])) {
+                            $sql = "
+                            UPDATE tblorderlines SET Detailed = ?, ExtraCharacter = ?, PriceByOrder = ?, Status = ?
+                            WHERE OrderID = ?
+                            ";
+                            
+                            if($stmt = $mysqli->prepare($sql)) {
+                                $stmt->bind_param('iidsi', $detai, $extr, $pric, $stat, $customid);
+
+                                if(isset($_POST["detail"])) {
+                                    $detai = 1;
+                                }
+                                else {
+                                    $detai = 0;
+                                }
+                                
+                                if(isset($_POST["extra"])) {
+                                    $extr = 1;
+                                }
+                                else {
+                                    $extr = 0;
+                                }
+                                $pric = $mysqli->real_escape_string($_POST['price']);
+                                $stat = $mysqli->real_escape_string($_POST['status']);
+                                
+                                $customid = $id;
+                                
+                                if(!$stmt->execute()) {
+                                    echo "het uitvoeren is mislukt: ".$stmt->error."in query ".$sql;
+                                }
+
+
+                                $stmt->close();
+                            }
+                            else {
+                                echo "er zit een fout in de query: ".$mysqli->error;
+                            }
+                        }
+                    }
+                ?>
+                    </table>
+                </div>
                 <div class="row justify-content-center" style="width: 100%">
-                    <button type="button" name="save" id="save" class="btn btn-default" onclick="submitForm1()">Save</button>
+                    <button type="submit" name="save" id="save" class="btn btn-default">Save</button>
                 </div>
             </form>
         </div>
@@ -272,67 +441,10 @@
   <!-- /Start your project here-->
 
   <!-- SCRIPTS -->
-  <script type="text/javascript">
-    toggle();
-    window.onresize = function() {
-        toggle();
-    }
-    function toggle() {
-        if (window.innerWidth > 1020) {
-            document.getElementById('navigationbar').style.display = 'none';  
-            document.getElementById('menu').style.display = 'block'; 
-        }
-        else {
-            document.getElementById('navigationbar').style.display = 'block';
-            document.getElementById('menu').style.display = 'none'; 
-        }    
-    }
-      
-    function submitForm1() {
-        var ok = true;
-        
-        if(document.getElementById('name').value == "") {
-            document.getElementById('nameError').innerHTML = "*Please fill in the user's name!";
-            ok = false;
-        }
-        else {
-            if(document.getElementById('name').value.indexOf('\'') >= 0 || document.getElementById('name').value.indexOf('"') >= 0) {
-                document.getElementById('nameError').innerHTML = "*Please don't use quotes";
-                ok = false;
-            }
-            else {
-                document.getElementById('nameError').innerHTML = "";
-            }
-        }
-        
-        if(document.getElementById('email').value == "") {
-            document.getElementById('emailError').innerHTML = "*Please fill in the user's email!";
-            ok = false;
-        }
-        else {
-            if(document.getElementById('email').value.indexOf('@') < 1 || document.getElementById('email').value.split('@').length-1 > 1) {
-                document.getElementById('emailError').innerHTML = "*Invalid email";
-                ok = false;
-            }
-            else {
-                if(document.getElementById('email').value.indexOf('\'') >= 0 || document.getElementById('email').value.indexOf('"') >= 0) {
-                    document.getElementById('emailError').innerHTML = "*Please don't use quotes";
-                    ok = false;
-                }
-                else {
-                    document.getElementById('emailError').innerHTML = "";
-                }   
-            }
-        }
-        
-        if(ok == true) {
-            document.form1.submit();
-        }
-    }
-</script>
+    <script type="text/javascript" src="js/deescript.js"></script>
+    
   <!-- JQuery -->
-  <script type="text/javascript" src="js/jquery-3.4.0.min.js">
-  </script>
+  <script type="text/javascript" src="js/jquery-3.4.0.min.js"></script>
   <!-- Bootstrap tooltips -->
   <script type="text/javascript" src="js/popper.min.js"></script>
   <!-- Bootstrap core JavaScript -->

@@ -97,7 +97,7 @@
         }
     }
     if(isset($_GET["actie"]) && $_GET["actie"] == "signout") {
-        $_SESSION["username"] = "";
         header("Location: Home.php");
+        $_SESSION["username"] = "";
     }
 ?>
