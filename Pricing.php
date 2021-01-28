@@ -209,7 +209,7 @@
                 <div class="card-body">
                     <h1 class="card-title">Body</h1>
                     <p class="card-text">$16</p>
-                    <a href="#" class="stretched-link"></a>
+                    <a href="Article.php?article=Half-Body" class="stretched-link"></a>
                 </div>
             </div>
         </div> 
@@ -219,7 +219,7 @@
                 <div class="card-body">
                     <h1 class="card-title">Full</h1>
                     <p class="card-text">$22</p>
-                    <a href="#" class="stretched-link"></a>
+                    <a href="Article.php?article=Full-Body" class="stretched-link"></a>
                 </div>
             </div>
         </div> 

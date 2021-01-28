@@ -1,7 +1,7 @@
 <?php
     include 'code.php';
     
-    if($_SESSION["username"] == "") {
+    if($_SESSION["username"] == "" && !isset($_GET["actie"]) && $_GET["actie"] != "signout") {
         header("location: accountError.php");
     }
 
@@ -146,7 +146,7 @@
                 
                 if(isset($_POST["extra"])) {
                     $extra = $mysqli->real_escape_string($_POST["extra"]);
-                    $price += $extrac;
+                    $price += $extrac*$mysqli->real_escape_string($_POST["extranumber"]);
                 }
                 
                 if(!$stmt->execute()) {
@@ -337,7 +337,7 @@
     <div class="row justify-content-center">
         <div class="col-md-5 profile">
             <?php echo "<h1 style='text-align: center;'>".$_GET["article"]."-shot</h1>";?>
-            <form name="form1" id="form1" class="margin" method="post" action="<?php echo $_SERVER['PHP_SELF']."?article=Head";?>">
+            <form name="form1" id="form1" class="margin" method="post" action="<?php echo $_SERVER['PHP_SELF']."?article=".$_GET['article'];?>">
                 <h3 style="font-weight:bold;">Create order</h3>
                 <table style="width: 100%">
                     <tr>
@@ -382,6 +382,9 @@
                                     <input type="checkbox" name="extra" id="extra" onclick="calculate()" value="1">
                                     <label style="font-size: 15px;">Extra character</label>
                                 </li>
+                                <li>
+                                    <input type="number" name="extranumber" id="extranumber" onclick="calculate()" value="1" style="width: 50px;" max="5" min="1">
+                                </li>
                             </ul>
                         </td>
                     </tr>
@@ -399,6 +402,8 @@
     
     <script type="text/javascript">
         var total = 0;
+        
+        document.getElementById("extranumber").style.display = "none";
         
         function calculate() {
             
@@ -420,7 +425,8 @@
             }
             if(document.getElementById("extra").checked == true) {
                 if($_GET["article"] == "Head") {
-                    total += 5;
+                    document.getElementById("extranumber").style.display = "block";
+                    total += 5*parseInt(document.getElementById("extranumber").value);
                 }   
             }
             

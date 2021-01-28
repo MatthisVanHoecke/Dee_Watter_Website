@@ -1,6 +1,14 @@
 <?php
     include "code.php";
 
+    if($_SESSION["username"] == "" && !isset($_GET["actie"]) && $_GET["actie"] != "signout") {
+        header("location: accountError.php");
+    }
+
+    if(isset($_GET["action"]) && $_GET["action"] == "delete" && isset($_GET["orderid"])) {
+        header("location: EditUser.php?action=edit&customerid=".$_COOKIE['customerid']);
+    }
+
     if(isset($_GET["action"]) && $_GET["action"] == "edit" && isset($_GET["customerid"])) {
         
         if(mysqli_connect_errno()) {
@@ -24,7 +32,7 @@
                 else {
                     $stmt->bind_result($id,$name,$email);
                     
-                    setcookie("customerid", $id, time() + (86400*30));
+                    setcookie("customerid", $_GET["customerid"], time() + (86400*30));
                     
                     $stmt->fetch();
                     
@@ -302,13 +310,12 @@
                     else {
                         if(isset($_GET["action"]) && $_GET["action"] == "delete" && isset($_GET["orderid"])) {
                             $sql = "
-                            DELETE FROM tblorderlines, tblorders
-                            WHERE tblorderlines.OrderID = ?
-                            AND tblorders.OrderID = ?
+                            DELETE FROM tblorderlines
+                            WHERE OrderID = ?
                             ";
 
                             if($stmt = $mysqli->prepare($sql)) {
-                                $stmt->bind_param('ii', $orid, $orid);
+                                $stmt->bind_param('i', $orid);
 
                                 $orid = $mysqli->real_escape_string($_GET["orderid"]);
 
@@ -317,6 +324,7 @@
                                 }
                                 else {
                                     echo "het deleten is gelukt";
+                                    
                                 }
                                 $stmt->close();
                                 
@@ -324,12 +332,6 @@
                             else {
                                 echo "er zit een fout in de query";
                             }
-                            
-                            if(isset($_COOKIE["customerid"])) {
-
-                            }
-                                header("location: EditUser.php?action=edit&customerid=".$_COOKIE["customerid"]);   
-                                setcookie("customerid", "", time() - 3600);
 
                         }
                         
