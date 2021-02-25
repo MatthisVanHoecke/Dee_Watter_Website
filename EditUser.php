@@ -1,12 +1,65 @@
 <?php
     include "code.php";
 
+    $detail = 0;
+
     if($_SESSION["username"] == "" && !isset($_GET["actie"]) && $_GET["actie"] != "signout") {
         header("location: accountError.php");
     }
 
     if(isset($_GET["action"]) && $_GET["action"] == "delete" && isset($_GET["orderid"])) {
         header("location: EditUser.php?action=edit&customerid=".$_COOKIE['customerid']);
+    }
+
+    if(isset($_POST["save"])) {
+        $sql = "
+        UPDATE tblorderlines SET Detailed = ?, ExtraCharacter = ?, PriceByOrder = ?, Status = ?
+        WHERE OrderID = ?
+        ";
+
+        if($stmt = $mysqli->prepare($sql)) {
+            $stmt->bind_param('iidsi', $detai, $extr, $pric, $stat, $customid);
+
+            if(isset($_POST["detail"])) {
+                $detai = 1;
+            }
+            else {
+                $detai = 0;
+            }
+
+            if(isset($_POST["extra"])) {
+                $extr = 1;
+            }
+            else {
+                $extr = 0;
+            }
+
+            if(isset($_POST['price'])) {
+                $pric = $mysqli->real_escape_string($_POST['price']);   
+            }
+            else {
+                $pric = $price;
+            }
+
+            if(isset($_POST['status'])) {
+                $stat = $mysqli->real_escape_string($_POST['status']);   
+            }
+            else {
+                $stat = $status;
+            }
+
+            $customid = $_GET["customerid"];
+
+            if(!$stmt->execute()) {
+                echo "het uitvoeren is mislukt: ".$stmt->error."in query ".$sql;
+            }
+
+
+            $stmt->close();
+        }
+        else {
+            echo "er zit een fout in de query: ".$mysqli->error;
+        }
     }
 
     if(isset($_GET["action"]) && $_GET["action"] == "edit" && isset($_GET["customerid"])) {
@@ -91,7 +144,7 @@
   <link rel="stylesheet" href="css/deestyle.css">
 </head>
 
-<body>
+<body onload="loadValues()">
 
   <!-- Start your project here-->
     <div class="row justify-content-between header">
@@ -301,146 +354,151 @@
                         </td>
                     </tr>
                 </table>
+                <form name="form1" id="form1" method="post" action="<?php echo $_SERVER['PHP_SELF']."?action=edit&customerid=".$_COOKIE['customerid'];?>">
                 <div id="scrollbar">
-                    <table class="tab2" style="background-color: white; table-layout: fixed">
-            <?php
-                    if(mysqli_connect_errno()) {
-                        trigger_error("Error when connecting: ".$mysqli->error);
-                    }
-                    else {
-                        if(isset($_GET["action"]) && $_GET["action"] == "delete" && isset($_GET["orderid"])) {
-                            $sql = "
-                            DELETE FROM tblorderlines
-                            WHERE OrderID = ?
-                            ";
-
-                            if($stmt = $mysqli->prepare($sql)) {
-                                $stmt->bind_param('i', $orid);
-
-                                $orid = $mysqli->real_escape_string($_GET["orderid"]);
-
-                                if(!$stmt->execute()) {
-                                    echo "het uitvoeren van de query is mislukt: ".$stmt->error." in query ".$sql;
-                                }
-                                else {
-                                    echo "het deleten is gelukt";
-                                    
-                                }
-                                $stmt->close();
-                                
-                            }
-                            else {
-                                echo "er zit een fout in de query";
-                            }
-
-                        }
+                    <table class="tab2" id="orders" style="background-color: white; table-layout: fixed">
                         
-                        $id = 0;
-                        
-                        $sql = "
-                        SELECT l.OrderID, Description, File, Detailed, ExtraCharacter, PriceByOrder, Status
-                        FROM tblorderlines l, tblorders o
-                        WHERE l.OrderID = o.OrderID AND CustomerID = ?
-                        ORDER BY l.OrderID
-                        ";  
-
-                        if($stmt = $mysqli->prepare($sql)) {
-                            $stmt->bind_param('s', $cid);
-
-                            $cid = $mysqli->real_escape_string($_GET["customerid"]);
-                            if(!$stmt->execute()) {
-                                echo "het uitvoeren is mislukt: ".$stmt->error."in query ".$sql;
-                            }
-                            else {
-                                $stmt->bind_result($id,$desc,$file,$detail,$extra,$price,$status);
-
-                                while($stmt->fetch()) {
-                                    
-                                    $detailbool = 0;
-                                    if($detail == 1) {
-                                        $detailbool = 1;
-                                    }
-                                    
-                                    $extrabool = 0;
-                                    if($extra == 1) {
-                                        $extrabool = 1;
-                                    }
-
-                                    echo "<tr><td style='width: 5%'>".$id."</td><td style='width: 32%, overflow-wrap: break-word;'><div style='height: 100%; overflow-y: auto'>".$desc."</div></td><td style='width: 8%;     overflow-x: auto;'>".$file."</td><td style='width: 10%; overflow-x: auto;'><input type='checkbox' name='detail' value='detail' "?>
-                                    
-                                    <?php if((isset($_POST['detail']) && $detailbool == 1) || $detailbool == 1) { echo 'checked';}?><?php echo "></td><td style='width: 10%; overflow-x: auto;'>"?>
-                        
-                                    <input type='checkbox' name='extra' value='extra' <?php if((isset($_POST['extra']) && $extrabool == 1) || $extrabool == 1) { echo 'checked';}?>>
-                                    <?php echo "</td><td style='width: 10%; overflow-x: auto;'><input type='text' style='width: 90%; overflow-x: auto;' name='price' value='"?><?php if((isset($_POST['price']) && $price != 0)) {echo $_POST['price'];} else {if(!isset($_POST['price'])) {echo $price;}}?>
-                        
-                                    <?php echo "'></td><td style='width: 15%; overflow-x: auto;'><select name='status'><option value='In Queue' "?>
-                                    
-                                    <?php if(!isset($_POST['status']) && $status == 'In Queue'){echo 'selected=\"selected\"';}else {if(isset($_POST['status']) && $_POST['status'] == 'In Queue') {echo 'selected=\"selected\"';}} echo ">In Queue</option><option value='In Progress' "?>
-                                    
-                                    <?php if(!isset($_POST['status']) && $status == 'In Progress'){echo 'selected';}else {if(isset($_POST['status']) && $_POST['status'] == 'In Progress') {echo 'selected=\"selected\"';}} echo ">In Progress</option></select></td><td style='width: 10%;'>";
-                ?>
-                                <form name="formdelete" id="formdelete" method="post" action="<?php echo $_SERVER['PHP_SELF']."?action=delete&orderid=".$id;?>">
-                                    <input type="submit" name="btndelete" id="delete" value="Delete">
-                                </form>
-                <?php
-                                    echo "</td></tr>";
-                                }
-                            }
-                            $stmt->close();
-                        }
-                        else {
-                            echo "er is een fout in query: ".$mysqli->error;
-                        }
-                        if(isset($_POST["save"])) {
-                            $sql = "
-                            UPDATE tblorderlines SET Detailed = ?, ExtraCharacter = ?, PriceByOrder = ?, Status = ?
-                            WHERE OrderID = ?
-                            ";
-                            
-                            if($stmt = $mysqli->prepare($sql)) {
-                                $stmt->bind_param('iidsi', $detai, $extr, $pric, $stat, $customid);
-
-                                if(isset($_POST["detail"])) {
-                                    $detai = 1;
-                                }
-                                else {
-                                    $detai = 0;
-                                }
-                                
-                                if(isset($_POST["extra"])) {
-                                    $extr = 1;
-                                }
-                                else {
-                                    $extr = 0;
-                                }
-                                $pric = $mysqli->real_escape_string($_POST['price']);
-                                $stat = $mysqli->real_escape_string($_POST['status']);
-                                
-                                $customid = $id;
-                                
-                                if(!$stmt->execute()) {
-                                    echo "het uitvoeren is mislukt: ".$stmt->error."in query ".$sql;
-                                }
-
-
-                                $stmt->close();
-                            }
-                            else {
-                                echo "er zit een fout in de query: ".$mysqli->error;
-                            }
-                        }
-                    }
-                ?>
+            
                     </table>
                 </div>
-            <form name="form1" id="form1" class="margin" method="post" action="<?php echo $_SERVER['PHP_SELF']."?action=edit&customerid=".$id;?>">
                 <div class="row justify-content-center" style="width: 100%">
-                    <button type="submit" name="save" id="save" class="btn btn-default">Save</button>
+                    <button type="button" name="save" id="save" class="btn btn-default" onclick="saveValues()">Save</button>
+                    <button type="button" name="loadsave" id="loadsave" class="btn btn-default" style="display: none;">
+                        <div class="spinner-border text-light" role="status" style="display: none; width: 1.3rem; height: 1.3rem;" id="loadOrder">
+                        </div>
+                    </button>
                 </div>
             </form>
+            <label id="bruh"></label>
         </div>
     </div>
   <!-- /Start your project here-->
+    
+    <script type="text/javascript">
+        function submitFormDelete() {
+            document.getElementById("form1").action = "<?php echo $_SERVER['PHP_SELF']."?action=delete&orderid=".$id;?>";
+            
+            document.form1.submit();
+        }
+        
+        var parts = window.location.search.substr(1).split("&");
+        var $_GET = {};
+        for (var i = 0; i < parts.length; i++) {
+            var temp = parts[i].split("=");
+            $_GET[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
+        }
+        
+        var order = new Array();
+        var splitorder = new Array();
+        var id = new Array(), description = new Array(), file = new Array(), detailed = new Array(), extr = new Array(), price = new Array(), stat = new Array(), deleteid = new Array(), queue = new Array(), progress = new Array();
+        
+        function loadValues() {
+            $.get("getOrders.php?customerid=" + $_GET["customerid"], function(data) {
+                order = data.split("æ");
+                createTable();
+            });
+        }
+        
+        function createTable() {
+            var checked = new Array();
+            for(var i = 0; i < order.length-1; i++) {
+                splitorder = order[i].split("§");
+
+                id[i] = splitorder[0];
+                description[i] = splitorder[1];
+                file[i] = splitorder[2];
+                detailed[i] = splitorder[3];
+                if(splitorder[3] == "1") {
+                    checked[i] = "checked";
+                }
+                else {
+                    checked[i] = "";
+                }
+                extr[i] = splitorder[4];
+                price[i] = splitorder[5];
+                stat[i] = splitorder[6];
+                if(stat[i] == "In Queue") {
+                    queue[i] = "selected";
+                    progress[i] = "";
+                }
+                else {
+                    queue[i] = "";
+                    progress[i] = "selected";
+                }
+            }
+            var table = "";
+            for(var i = 0; i < order.length-1; i++) {
+                table += "<tr style='height: 80px'><td style='width: 5%'>" + id[i] + "</td><td style='width: 32%, overflow-wrap: break-word;'><div style='height: 100%; overflow-y: auto'>" + description[i] + "</div></td><td style='width: 8%; overflow-x: auto;'>" + file[i] + "</td><td style='width: 10%; overflow-x: auto;'><input type='checkbox' name='extra' " + checked[i] + " id='detailed" + i + "' onfocusout='updateDetailed(" + i + ")'></td><td style='width: 10%; overflow-x: auto;'><input type='number' id='extra" + i + "' min='0' max='5' value='" + extr[i] + "' style='width: 90%' onfocusout='updateExtraCharacter(" + i + ")'></td><td style='width: 10%; overflow-x: auto;'><input type='text' id='price" + i + "' value='" + price[i] + "' style='width: 90%' onfocusout='updatePrice(" + i + ")'></td><td style='width: 15%; overflow-x: auto;'><select id='status" + i + "' onfocusout='updateStatus(" + i + ")'><option " + queue[i] + ">In Queue</option><option " + progress[i] + ">In Progress</option></select></td><td style='width: 10%'><input type='button' value='Delete' onclick='deleteValues(" + i + ")' style='width: 90%'></td></tr>";
+            }
+            document.getElementById("orders").innerHTML = table;
+        }
+        
+        function deleteValues(num) {
+            order.splice(num,1);
+            document.getElementById("bruh").innerHTML = num;
+            deleteid.push(id[num]);
+            createTable();
+        }
+        
+        function saveValues() {
+            document.getElementById("bruh").innerHTML = "";
+            loaderOn();
+            
+            if(deleteid.length > 0) {
+                for(var i = 0; i < deleteid.length; i++) {
+                    $.get("deleteValues.php?id=" + deleteid[i], function(data) {
+                        loaderOff();
+                        document.getElementById("bruh").innerHTML = data;
+                    });
+                }
+            }
+            var statusnumber = new Array();
+            for(var i = 0; i < order.length-1; i++) {
+                if(stat[i] == "In Queue") {
+                    statusnumber[i] = 0;
+                }
+                else {
+                    statusnumber[i] = 1;
+                }
+                $.get("updateValues.php?string=" + id[i] + "," + detailed[i] + "," + description[i] + "," + extr[i] + "," + price[i] + "," + file[i] + "," + statusnumber[i], function(data) {
+                    loaderOff();
+                    document.getElementById("bruh").innerHTML = data;
+                });
+            }
+        }
+        
+        function updateDetailed(num) {
+            if(document.getElementById('detailed' + num).checked) {
+                detailed[num] = "1";
+            }
+            else {
+                detailed[num] = "0";
+            }
+        }
+        
+        function updateExtraCharacter(num) {
+            extr[num] = document.getElementById('extra' + num).value;
+        }
+        
+        function updatePrice(num) {
+            price[num] = document.getElementById('price' + num).value;
+        }
+        
+        function updateStatus(num) {
+            stat[i] = document.getElementById('status' + num).value;
+        }
+        
+        function loaderOn() {
+            document.getElementById("save").style.display = "none";
+            document.getElementById("loadOrder").style.display = "block";
+            document.getElementById("loadsave").style.display = "block";
+        }
+        function loaderOff() {
+            document.getElementById("save").style.display = "block";
+            document.getElementById("loadOrder").style.display = "none";
+            document.getElementById("loadsave").style.display = "none";  
+        }
+    </script>
 
   <!-- SCRIPTS -->
     <script type="text/javascript" src="js/deescript.js"></script>

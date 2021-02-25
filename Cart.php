@@ -1,167 +1,43 @@
 <?php
-    include 'code.php';
-    
+    include "code.php";
+
+    $detail = 0;
+
     if($_SESSION["username"] == "" && !isset($_GET["actie"]) && $_GET["actie"] != "signout") {
         header("location: accountError.php");
     }
 
-    $articleid = "";
-    $articleprice = 0;
-    $detail = 0;
-    $extrac = 0;
-    $customerid = 0;
-    $order = 0;
-
-    if(mysqli_connect_errno()) {
-        trigger_error("fout bij verbinding: ".$mysqli->error);
+    if(isset($_GET["action"]) && $_GET["action"] == "delete" && isset($_GET["orderid"])) {
+        header("location: EditUser.php?action=edit&customerid=".$_COOKIE['customerid']);
     }
-    else {
-        $sql = "
-        SELECT ArticleID, ArticlePrice, Detailed, ExtraCharacter
-        FROM tblarticles
-        WHERE ArticleName LIKE ?
-        ";
-        
-        if($stmt = $mysqli->prepare($sql)) {
-            $stmt->bind_param('s', $name);
-            
-            $name = $_GET["article"];
-            if(!$stmt->execute()) {
-                echo "the execution has failed: ".$stmt->error." in query ".$sql;
-            }
-            else {
-                $stmt->bind_result($articleid, $articleprice, $detail, $extrac);
 
-                $stmt->fetch();
-            }
-            $stmt->close();
-        }
-        
+    if(isset($_POST["name"]) && $_POST["name"] != "" && isset($_POST["email"]) && $_POST["email"] != "") {
         $sql = "
-        SELECT CustomerID
-        FROM tblCustomers
-        WHERE Username LIKE ?
-        ";
-        
-        if($stmt = $mysqli->prepare($sql)) {
-            $stmt->bind_param('s', $name);
-            
-            $name = $mysqli->real_escape_string($_SESSION["username"]);
-            if(!$stmt->execute()) {
-                echo "the execution has failed: ".$stmt->error." in query ".$sql;
-            }
-            else {
-                $stmt->bind_result($customerid);
+        UPDATE tblCustomers
+        SET Username = ?, Email = ?
+        WHERE CustomerID = ?"
+        ;
 
-                $stmt->fetch();
+        if($stmt = $mysqli->prepare($sql)) {
+            $stmt->bind_param('ssi', $name, $email, $id);
+
+            $name = $mysqli->real_escape_string($_POST["name"]);
+
+            $email = $mysqli->real_escape_string($_POST["email"]);
+            
+            $id = $mysqli->real_escape_string($_GET["customerid"]);
+
+            if(!$stmt->execute()) {
+                echo "failed to save";
             }
+
             $stmt->close();
         }
         else {
-            echo "failed";
-        }
-        
-    }
-
-
-    if(isset($_POST["Description"]) && $_POST["Description"] != "") {
-        
-        if(mysqli_connect_errno()) {
-            trigger_error("fout bij verbinding: ".$mysqli->error);
-        }
-        else {
-            $sql = "
-            INSERT INTO tblorders(CustomerID, Date)
-            VALUES(?,curdate())
-            ";
-            if($stmt = $mysqli->prepare($sql)) {
-
-                $stmt->bind_param('i', $customer);
-
-                $customer = $customerid;
-
-                if(!$stmt->execute()) {
-                    echo "het uitvoeren is mislukt: ".$stmt->error." in query ".$sql;
-                }
-
-                $stmt->close();
-            }
-            else {
-                echo "failed";
-            }
-
-            $sql = "
-            SELECT OrderID
-            FROM tblorders
-            WHERE CustomerID LIKE ?
-            ";
-
-            if($stmt = $mysqli->prepare($sql)) {
-                $stmt->bind_param('i', $id);
-
-                $id = $customerid;
-                if(!$stmt->execute()) {
-                    echo "the execution has failed: ".$stmt->error." in query ".$sql;
-                }
-                else {
-                    $stmt->bind_result($order);
-
-                    $stmt->fetch();
-                }
-                $stmt->close();
-            }
-            else {
-                echo "failed";
-            }
-            
-            $sql = "
-            INSERT INTO tblorderlines(OrderID, ArticleID, Description, File, Detailed, ExtraCharacter, ExtraCharacterAmount, PriceByOrder, Status)
-            VALUES(?,?,?,?,?,?,?,?,?)
-            ";
-            
-            if($stmt = $mysqli->prepare($sql)) {
-                
-                $stmt->bind_param('iissiiids', $orderid, $article, $desc, $file, $detailed, $extra, $extraa, $price, $status);
-                
-                $article = $articleid;
-                
-                $desc = $mysqli->real_escape_string($_POST["Description"]);
-                $file = $mysqli->real_escape_string($_POST["upload"]);
-                
-                $price = $articleprice;
-                
-                $detailed = 0;
-                $extra = 0;
-                $status = "In Queue";
-                $extraa = 0;
-                
-                $orderid = $order;
-                
-                if(isset($_POST["detail"])) {
-                    $detailed = $mysqli->real_escape_string($_POST["detail"]);
-                    $price += $detail;
-                }
-                
-                
-                if(isset($_POST["extra"])) {
-                    $extra = $mysqli->real_escape_string($_POST["extra"]);
-                    $extraa = $mysqli->real_escape_string($_POST["extranumber"]);
-                    $price += $extrac*$mysqli->real_escape_string($_POST["extranumber"]);
-                }
-                
-                if(!$stmt->execute()) {
-                    echo "het uitvoeren is mislukt: ".$stmt->error." in query ".$sql;
-                }
-
-                $stmt->close();
-            }
-            else {
-                echo "failed";
-            }
+            echo "er zit een fout in de query";
         }
     }
 ?>
-
 
 <html lang="en">
 
@@ -336,74 +212,57 @@
     
     <div class="row justify-content-center">
         <div class="col-md-5 profile">
-            <?php echo "<h1 style='text-align: center;'>".$_GET["article"]."-shot</h1>";?>
-            <form name="form1" id="form1" class="margin" method="post" action="<?php echo $_SERVER['PHP_SELF']."?article=".$_GET['article'];?>">
-                <h3 style="font-weight:bold;">Create order</h3>
-                <table style="width: 100%">
+                <h3 style="font-weight:bold;">Edit Cart</h3>
+                <table class="tab1" style="background-color: white; table-layout: fixed">
                     <tr>
-                        <td>
-                            <label style="font-size: 20px; font-weight: bold;">Description: </label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <textarea class="form-control" id="Description" name="Description" rows="5"></textarea>
-                        </td>
-                        <td style="width: 50%">
-                            <span id="descError" style="color: red; font-weight: bold;"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label style="font-size: 20px; font-weight: bold;">Reference:</label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="file" class="form-control-file" id="upload" name="upload">
+                        <td style="width: 5%">
+                            <b>ID</b>
                         </td>
                         <td>
-                            <span id="uploadError" style="color: red; font-weight: bold;"></span>
+                            <b>Description</b>
                         </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label style="font-size: 20px; font-weight: bold;">Attributes: </label>
+                        <td style="width: 8%;  overflow-x: auto;">
+                            <b>File</b>
                         </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <ul class="notype">
-                                <li>
-                                    <input type="checkbox" name="detail" id="detail" onchange="calculate()" value="1">
-                                    <label style="font-size: 15px;">Fully detailed</label>
-                                </li>
-                                <li>
-                                    <input type="checkbox" name="extra" id="extra" onclick="calculate()" value="1">
-                                    <label style="font-size: 15px;">Extra character</label>
-                                </li>
-                                <li>
-                                    <input type="number" name="extranumber" id="extranumber" onclick="calculate()" value="1" style="width: 50px;" max="5" min="1">
-                                </li>
-                            </ul>
+                        <td style="width: 10%; overflow-x: auto;">
+                            <b>Detailed</b>
+                        </td>
+                        <td style="width: 10%; overflow-x: auto;">
+                            <b>Extra Character</b>
+                        </td>
+                        <td style="width: 10%; overflow-x: auto;">
+                            <b>Price</b>
+                        </td>
+                        <td style="width: 15%; overflow-x: auto;">
+                            <b>Status</b>
+                        </td>
+                        <td style="width: 10%">
+                            <b>Delete</b>
                         </td>
                     </tr>
                 </table>
-                <h3 style="font-weight:bold;">Total:</h3>
-                    <label style='font-size: 20px; font-weight: bold;' id='total'></label>
+                <form name="form1" id="form1" method="post" action="<?php echo $_SERVER['PHP_SELF']."?action=edit&customerid=".$_COOKIE['customerid'];?>">
+                <div id="scrollbar">
+                    <table class="tab2" id="orders" style="background-color: white; table-layout: fixed">
+                        
+            
+                    </table>
+                </div>
                 <div class="row justify-content-center" style="width: 100%">
-                    <button type="button" name="save" id="save" class="btn btn-default" onclick="submitForm1()">Save</button>
+                    <button type="button" name="save" id="save" class="btn btn-default" onclick="saveValues()">Save</button>
+                    <button type="button" name="loadsave" id="loadsave" class="btn btn-default" style="display: none;">
+                        <div class="spinner-border text-light" role="status" style="display: none; width: 1.3rem; height: 1.3rem;" id="loadOrder">
+                        </div>
+                    </button>
                 </div>
             </form>
+            <label id="bruh"></label>
         </div>
     </div>
+  <!-- /Start your project here-->
     
-    
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
     <script type="text/javascript">
-        var total = 0;
         
-        document.getElementById("extranumber").style.display = "none";
         var parts = window.location.search.substr(1).split("&");
         var $_GET = {};
         for (var i = 0; i < parts.length; i++) {
@@ -411,66 +270,135 @@
             $_GET[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
         }
         
-        var article = new Array();
+        var order = new Array();
+        var splitorder = new Array();
+        var id = new Array(), description = new Array(), file = new Array(), detailed = new Array(), extr = new Array(), price = new Array(), stat = new Array(), deleteid = new Array(), queue = new Array(), progress = new Array();
+        
+        function createTable() {
+            var checked = new Array();
+            for(var i = 0; i < order.length-1; i++) {
+                splitorder = order[i].split("§");
+
+                id[i] = splitorder[0];
+                description[i] = splitorder[1];
+                file[i] = splitorder[2];
+                detailed[i] = splitorder[3];
+                if(splitorder[3] == "1") {
+                    checked[i] = "checked";
+                }
+                else {
+                    checked[i] = "";
+                }
+                extr[i] = splitorder[4];
+                price[i] = splitorder[5];
+                stat[i] = splitorder[6];
+                if(stat[i] == "In Queue") {
+                    queue[i] = "selected";
+                    progress[i] = "";
+                }
+                else {
+                    queue[i] = "";
+                    progress[i] = "selected";
+                }
+            }
+            
+            var table = "";
+            for(var i = 0; i < order.length-1; i++) {
+                table += "<tr style='height: 80px'><td style='width: 5%'>" + id[i] + "</td><td style='width: 32%, overflow-wrap: break-word;'><div style='height: 100%; overflow-y: auto'><textarea id='area" + i + "' style='width: 90%' rows='4' onfocusout='updateDescription(" + i + ")'>" + description[i] + "</textarea></div></td><td style='width: 8%; overflow-x: auto;'>" + file[i] + "<input type='file' id='file" + i + "' onfocusout='updateFile(" + i + ")'></td><td style='width: 10%; overflow-x: auto;'><input type='checkbox' name='extra' " + checked[i] + " id='detailed" + i + "' onfocusout='updateDetailed(" + i + ")'></td><td style='width: 10%; overflow-x: auto;'><input type='number' id='extra" + i + "' min='0' max='5' value='" + extr[i] + "' style='width: 90%' onfocusout='updateExtraCharacter(" + i + ")'></td><td style='width: 10%; overflow-x: auto;'>" + price[i] + "</td><td style='width: 15%; overflow-x: auto;'>" + stat[i] + "</td><td style='width: 10%'><input type='button' value='Delete' onclick='deleteValues(" + i + ")' style='width: 90%'></td></tr>";
+            }
+            document.getElementById("orders").innerHTML = table;
+        }
         
         function loadValues() {
-            $.get("head.php?type=" + $_GET["article"], function(data) {
-                article = data.split(",");
-                
-                total = parseFloat(article[0]);
-                document.getElementById("total").innerHTML = "$" + total;
+            $.get("getOrders.php?customerid=" + $_GET["customerid"], function(data) {
+                order = data.split("æ");
+                createTable();
             });
         }
         
-        function calculate() {
-            total = parseFloat(article[0]);
-            
-            if(document.getElementById("detail").checked == true) {
-                total += parseFloat(article[1]);
-            }
-
-            if(document.getElementById("extra").checked == true) {
-                document.getElementById("extranumber").style.display = "block";
-                total += parseFloat(article[2])*parseInt(document.getElementById("extranumber").value); 
-            }
-            else {
-                document.getElementById("extranumber").style.display = "none";
-            }
-
-            document.getElementById("total").innerHTML = "$" + total;
+        function deleteValues(num) {
+            order.splice(num,1);
+            document.getElementById("bruh").innerHTML = num;
+            deleteid.push(id[num]);
+            createTable();
         }
         
-        function submitForm1() {
-            var ok = true;
+        function saveValues() {
+            document.getElementById("bruh").innerHTML = "";
+            loaderOn();
             
-            if(document.getElementById('Description').value == "") {
-                document.getElementById('descError').innerHTML = "*Please fill in the description of your order";
-                ok = false;
+            if(deleteid.length > 0) {
+                for(var i = 0; i < deleteid.length; i++) {
+                    $.get("deleteValues.php?id=" + deleteid[i], function(data) {
+                        loaderOff();
+                        document.getElementById("bruh").innerHTML = data;
+                    });
+                }
             }
-            else {
-                document.getElementById('descError').innerHTML = "";
-            }
-            
-            
-            if(document.getElementById('upload').value == "") {
-                document.getElementById('uploadError').innerHTML = "*Please upload a reference image for your order";
-                ok = false;
-            }
-            else {
-                document.getElementById('uploadError').innerHTML = "";
-            }
-            
-            
-            if(ok == true) {
-                document.form1.submit();
+            var statusnumber = new Array();
+            for(var i = 0; i < order.length-1; i++) {
+                if(stat[i] == "In Queue") {
+                    statusnumber[i] = 0;
+                }
+                else {
+                    statusnumber[i] = 1;
+                }
+                document.getElementById("bruh").innerHTML = description[i];
+                $.get("updateValues.php?string=" + id[i] + "," + detailed[i] + "," + description[i] + "," + extr[i] + "," + price[i] + "," + file[i] + "," + statusnumber[i], function(data) {
+                    loaderOff();
+                    document.getElementById("bruh").innerHTML = data;
+                });
             }
         }
+        
+        function updateDetailed(num) {
+            if(document.getElementById('detailed' + num).checked) {
+                detailed[num] = "1";
+            }
+            else {
+                detailed[num] = "0";
+            }
+        }
+        
+        function updateExtraCharacter(num) {
+            extr[num] = document.getElementById('extra' + num).value;
+        }
+        
+        function updatePrice(num) {
+            price[num] = document.getElementById('price' + num).value;
+        }
+        
+        function updateStatus(num) {
+            stat[num] = document.getElementById('status' + num).value;
+        }
+        
+        function updateFile(num) {
+            if(document.getElementById('file' + num).value != "") {
+                file[num] = document.getElementById('file' + num).name;   
+            }
+        }
+        
+        function updateDescription(num) {
+            description[num] = document.getElementById('area' + num).value;
+        }
+        
+        function loaderOn() {
+            document.getElementById("save").style.display = "none";
+            document.getElementById("loadOrder").style.display = "block";
+            document.getElementById("loadsave").style.display = "block";
+        }
+        function loaderOff() {
+            document.getElementById("save").style.display = "block";
+            document.getElementById("loadOrder").style.display = "none";
+            document.getElementById("loadsave").style.display = "none";  
+        }
     </script>
-  <!-- /Start your project here-->
+
+  <!-- SCRIPTS -->
     <script type="text/javascript" src="js/deescript.js"></script>
+    
   <!-- JQuery -->
-  <script type="text/javascript" src="js/jquery-3.4.0.min.js">
-  </script>
+  <script type="text/javascript" src="js/jquery-3.4.0.min.js"></script>
   <!-- Bootstrap tooltips -->
   <script type="text/javascript" src="js/popper.min.js"></script>
   <!-- Bootstrap core JavaScript -->
