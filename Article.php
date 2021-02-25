@@ -70,14 +70,41 @@
             trigger_error("fout bij verbinding: ".$mysqli->error);
         }
         else {
+            
+            
             $sql = "
-            INSERT INTO tblorders(CustomerID, Date)
-            VALUES(?,curdate())
+            SELECT OrderID
+            FROM tblorders
+            ORDER BY OrderID DESC LIMIT 1
+            ";
+
+            if($stmt = $mysqli->prepare($sql)) {
+
+                if(!$stmt->execute()) {
+                    echo "the execution has failed: ".$stmt->error." in query ".$sql;
+                }
+                else {
+                    $stmt->bind_result($ordera);
+
+                    while($stmt->fetch()) {
+                        $order = $ordera;
+                    }
+                }
+                $stmt->close();
+            }
+            else {
+                echo "failed";
+            }
+            
+            $sql = "
+            INSERT INTO tblorders(OrderID, CustomerID, Date)
+            VALUES(?,?,curdate())
             ";
             if($stmt = $mysqli->prepare($sql)) {
 
-                $stmt->bind_param('i', $customer);
-
+                $stmt->bind_param('ii', $orders, $customer);
+                
+                $orders = $order+1;
                 $customer = $customerid;
 
                 if(!$stmt->execute()) {
@@ -90,29 +117,7 @@
                 echo "failed";
             }
 
-            $sql = "
-            SELECT OrderID
-            FROM tblorders
-            WHERE CustomerID LIKE ?
-            ";
 
-            if($stmt = $mysqli->prepare($sql)) {
-                $stmt->bind_param('i', $id);
-
-                $id = $customerid;
-                if(!$stmt->execute()) {
-                    echo "the execution has failed: ".$stmt->error." in query ".$sql;
-                }
-                else {
-                    $stmt->bind_result($order);
-
-                    $stmt->fetch();
-                }
-                $stmt->close();
-            }
-            else {
-                echo "failed";
-            }
             
             $sql = "
             INSERT INTO tblorderlines(OrderID, ArticleID, Description, File, Detailed, ExtraCharacter, ExtraCharacterAmount, PriceByOrder, Status)
@@ -135,7 +140,7 @@
                 $status = "In Queue";
                 $extraa = 0;
                 
-                $orderid = $order;
+                $orderid = $order+1;
                 
                 if(isset($_POST["detail"])) {
                     $detailed = $mysqli->real_escape_string($_POST["detail"]);
