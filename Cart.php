@@ -248,6 +248,7 @@
             
                     </table>
                 </div>
+                <h3><b id="totalprice"></b></h3>
                 <div class="row justify-content-center" style="width: 100%">
                     <button type="button" name="save" id="save" class="btn btn-default" onclick="saveValues()">Save</button>
                     <button type="button" name="loadsave" id="loadsave" class="btn btn-default" style="display: none;">
@@ -306,7 +307,13 @@
             for(var i = 0; i < order.length-1; i++) {
                 table += "<tr style='height: 80px'><td style='width: 5%'>" + id[i] + "</td><td style='width: 32%, overflow-wrap: break-word;'><div style='height: 100%; overflow-y: auto'><textarea id='area" + i + "' style='width: 90%' rows='4' onfocusout='updateDescription(" + i + ")'>" + description[i] + "</textarea></div></td><td style='width: 8%; overflow-x: auto;'>" + file[i] + "<input type='file' id='file" + i + "' onfocusout='updateFile(" + i + ")'></td><td style='width: 10%; overflow-x: auto;'><input type='checkbox' name='extra' " + checked[i] + " id='detailed" + i + "' onfocusout='updateDetailed(" + i + ")'></td><td style='width: 10%; overflow-x: auto;'><input type='number' id='extra" + i + "' min='0' max='5' value='" + extr[i] + "' style='width: 90%' onfocusout='updateExtraCharacter(" + i + ")'></td><td style='width: 10%; overflow-x: auto;'>" + price[i] + "</td><td style='width: 15%; overflow-x: auto;'>" + stat[i] + "</td><td style='width: 10%'><input type='button' value='Delete' onclick='deleteValues(" + i + ")' style='width: 90%'></td></tr>";
             }
+            
+            var totalprice = 0;
             document.getElementById("orders").innerHTML = table;
+            for(var i = 0; i < price.length; i++) {
+                totalprice += parseFloat(price[i]);
+            }
+            document.getElementById("totalprice").innerHTML = "Total: $" + totalprice;
         }
         
         function loadValues() {
