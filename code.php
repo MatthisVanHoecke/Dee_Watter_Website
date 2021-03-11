@@ -1,6 +1,7 @@
 <?php
+    $customid = 0;
     session_start();
-
+    
     $mysqli = new MySQLi("localhost", "root", "", "webshopphp");
     if(isset($_POST["username"]) && $_POST["username"] != "" && isset($_POST["pass"]) && $_POST["pass"] != "" && isset($_POST["email"]) && $_POST["email"] != "") {
         
@@ -57,6 +58,31 @@
             }
         }
     }
+    if(isset($_SESSION["username"]) && $_SESSION["username"] != "") {
+        
+        $sql = "SELECT CustomerID FROM tblCustomers WHERE Username = ?";
+        
+        $name = $_SESSION["username"];
+        if($stmt = $mysqli->prepare($sql)) {
+                
+            $stmt->bind_param('s', $name);
+            
+            if(!$stmt->execute()) {
+                echo "het uitvoeren van de query is mislukt: ".$stmt->error." in query ".$sql;
+            }
+            else {
+                
+                $stmt->bind_result($customid);
+                $stmt->fetch();
+                
+                $stmt->close();
+            }
+        }
+        else {
+            echo "failed";
+        }
+    }
+
     if(isset($_POST["user"]) && $_POST["user"] != "" && isset($_POST["password"]) && $_POST["password"] != "") {
         
         $sql = "SELECT Username, Password FROM tblCustomers WHERE Email = ? OR Username = ?";

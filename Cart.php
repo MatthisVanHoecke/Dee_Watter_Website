@@ -11,93 +11,6 @@
         header("location: EditUser.php?action=edit&customerid=".$_COOKIE['customerid']);
     }
 
-    if(isset($_POST["save"])) {
-        $sql = "
-        UPDATE tblorderlines SET Detailed = ?, ExtraCharacter = ?, PriceByOrder = ?, Status = ?
-        WHERE OrderID = ?
-        ";
-
-        if($stmt = $mysqli->prepare($sql)) {
-            $stmt->bind_param('iidsi', $detai, $extr, $pric, $stat, $customid);
-
-            if(isset($_POST["detail"])) {
-                $detai = 1;
-            }
-            else {
-                $detai = 0;
-            }
-
-            if(isset($_POST["extra"])) {
-                $extr = 1;
-            }
-            else {
-                $extr = 0;
-            }
-
-            if(isset($_POST['price'])) {
-                $pric = $mysqli->real_escape_string($_POST['price']);   
-            }
-            else {
-                $pric = $price;
-            }
-
-            if(isset($_POST['status'])) {
-                $stat = $mysqli->real_escape_string($_POST['status']);   
-            }
-            else {
-                $stat = $status;
-            }
-
-            $customid = $_GET["customerid"];
-
-            if(!$stmt->execute()) {
-                echo "het uitvoeren is mislukt: ".$stmt->error."in query ".$sql;
-            }
-
-
-            $stmt->close();
-        }
-        else {
-            echo "er zit een fout in de query: ".$mysqli->error;
-        }
-    }
-
-    if(isset($_GET["action"]) && $_GET["action"] == "edit" && isset($_GET["customerid"])) {
-        
-        if(mysqli_connect_errno()) {
-            trigger_error("Error when connecting: ".$mysqli->error);
-        }
-        else {
-            $sql = "
-            SELECT CustomerID, Username, Email
-            FROM tblCustomers
-            WHERE CustomerID = ?
-            ";
-
-            if($stmt = $mysqli->prepare($sql)) {
-                $stmt->bind_param('i', $customerid);
-
-                $customerid = $mysqli->real_escape_string($_GET["customerid"]);
-
-                if(!$stmt->execute()) {
-                    echo "The execution of the query has failed: ".$stmt->error." in query ".$sql;
-                }
-                else {
-                    $stmt->bind_result($id,$name,$email);
-                    
-                    setcookie("customerid", $_GET["customerid"], time() + (86400*30));
-                    
-                    $stmt->fetch();
-                    
-                }
-                $stmt->close();
-            }
-            else {
-                echo "There's an error in the query";
-            }
-        }
-    }
-    
     if(isset($_POST["name"]) && $_POST["name"] != "" && isset($_POST["email"]) && $_POST["email"] != "") {
         $sql = "
         UPDATE tblCustomers
@@ -299,33 +212,7 @@
     
     <div class="row justify-content-center">
         <div class="col-md-5 profile">
-            <?php echo "<h1 style='text-align: center;'>".$id."</h1>";?>
-                <h3 style="font-weight:bold;">Edit User</h3>
-                <table class="edittab">
-                    <tr>
-                        <td>
-                            <label style="font-size: 20px; font-weight: bold;">Name: </label>
-                        </td>
-                        <td>
-                            <input type="text" name="name" id="name" value="<?php echo $name;?>">
-                        </td>
-                        <td style="width: 50%">
-                            <span id="nameError" style="color: red; font-weight: bold;"></span>   
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label style="font-size: 20px; font-weight: bold;">Email: </label>
-                        </td>
-                        <td>
-                            <input type="text" name="email" id="email" value="<?php echo $email;?>">
-                        </td>
-                        <td style="width: 50%">
-                            <span id="emailError" style="color: red; font-weight: bold;"></span>
-                        </td>
-                    </tr>
-                </table>
-                <h3 style="font-weight:bold;">Edit Order</h3>
+                <h3 style="font-weight:bold;">Edit Cart</h3>
                 <table class="tab1" style="background-color: white; table-layout: fixed">
                     <tr>
                         <td style="width: 5%">
@@ -361,6 +248,7 @@
             
                     </table>
                 </div>
+                <h3><b id="totalprice"></b></h3>
                 <div class="row justify-content-center" style="width: 100%">
                     <button type="button" name="save" id="save" class="btn btn-default" onclick="saveValues()">Save</button>
                     <button type="button" name="loadsave" id="loadsave" class="btn btn-default" style="display: none;">
@@ -375,11 +263,6 @@
   <!-- /Start your project here-->
     
     <script type="text/javascript">
-        function submitFormDelete() {
-            document.getElementById("form1").action = "<?php echo $_SERVER['PHP_SELF']."?action=delete&orderid=".$id;?>";
-            
-            document.form1.submit();
-        }
         
         var parts = window.location.search.substr(1).split("&");
         var $_GET = {};
@@ -390,14 +273,7 @@
         
         var order = new Array();
         var splitorder = new Array();
-        var id = new Array(), description = new Array(), file = new Array(), detailed = new Array(), extr = new Array(), price = new Array(), stat = new Array(), deleteid = new Array(), queue = new Array(), progress = new Array(), done = new Array();
-        
-        function loadValues() {
-            $.get("getOrders.php?customerid=" + $_GET["customerid"], function(data) {
-                order = data.split("æ");
-                createTable();
-            });
-        }
+        var id = new Array(), description = new Array(), file = new Array(), detailed = new Array(), extr = new Array(), price = new Array(), deleteid = new Array(), queue = new Array(), progress = new Array();
         
         function createTable() {
             var checked = new Array();
@@ -416,30 +292,26 @@
                 }
                 extr[i] = splitorder[4];
                 price[i] = splitorder[5];
-                stat[i] = splitorder[6];
-                if(stat[i] == "In Queue") {
-                    queue[i] = "selected";
-                    progress[i] = "";
-                    done[i] = "";
-                }
-                else {
-                    if(stat[i] == "In Progress") {
-                        queue[i] = "";
-                        progress[i] = "selected";
-                        done[i] = "";
-                    }
-                    else {
-                        queue[i] = "";
-                        progress[i] = "";
-                        done[i] = "selected";
-                    }
-                }
             }
+            
             var table = "";
             for(var i = 0; i < order.length-1; i++) {
-                table += "<tr style='height: 80px'><td style='width: 5%'>" + id[i] + "</td><td style='width: 32%, overflow-wrap: break-word;'><div style='height: 100%; overflow-y: auto'>" + description[i] + "</div></td><td style='width: 8%; overflow-x: auto;'>" + file[i] + "</td><td style='width: 10%; overflow-x: auto;'><input type='checkbox' name='extra' " + checked[i] + " id='detailed" + i + "' onfocusout='updateDetailed(" + i + ")'></td><td style='width: 10%; overflow-x: auto;'><input type='number' id='extra" + i + "' min='0' max='5' value='" + extr[i] + "' style='width: 90%' onfocusout='updateExtraCharacter(" + i + ")'></td><td style='width: 10%; overflow-x: auto;'><input type='text' id='price" + i + "' value='" + price[i] + "' style='width: 90%' onfocusout='updatePrice(" + i + ")'></td><td style='width: 15%; overflow-x: auto;'><select id='status" + i + "' onfocusout='updateStatus(" + i + ")'><option " + queue[i] + ">In Queue</option><option " + progress[i] + ">In Progress</option><option " + done[i] + ">Done</option></select></td><td style='width: 10%'><input type='button' value='Delete' onclick='deleteValues(" + i + ")' style='width: 90%'></td></tr>";
+                table += "<tr style='height: 80px'><td style='width: 5%'>" + id[i] + "</td><td style='width: 32%, overflow-wrap: break-word;'><div style='height: 100%; overflow-y: auto'><textarea id='area" + i + "' style='width: 90%' rows='4' onfocusout='updateDescription(" + i + ")'>" + description[i] + "</textarea></div></td><td style='width: 8%; overflow-x: auto;'>" + file[i] + "<input type='file' id='file" + i + "' onfocusout='updateFile(" + i + ")'></td><td style='width: 10%; overflow-x: auto;'><input type='checkbox' name='extra' " + checked[i] + " id='detailed" + i + "' onfocusout='updateDetailed(" + i + ")'></td><td style='width: 10%; overflow-x: auto;'><input type='number' id='extra" + i + "' min='0' max='5' value='" + extr[i] + "' style='width: 90%' onfocusout='updateExtraCharacter(" + i + ")'></td><td style='width: 10%; overflow-x: auto;'>" + price[i] + "</td><td style='width: 10%'><input type='button' value='Delete' onclick='deleteValues(" + i + ")' style='width: 90%'></td></tr>";
             }
+            
+            var totalprice = 0;
             document.getElementById("orders").innerHTML = table;
+            for(var i = 0; i < price.length; i++) {
+                totalprice += parseFloat(price[i]);
+            }
+            document.getElementById("totalprice").innerHTML = "Total: $" + totalprice;
+        }
+        
+        function loadValues() {
+            $.get("getUnsavedOrders.php?customerid=" + $_GET["customerid"], function(data) {
+                order = data.split("æ");
+                createTable();
+            });
         }
         
         function deleteValues(num) {
@@ -463,18 +335,8 @@
             }
             var statusnumber = new Array();
             for(var i = 0; i < order.length-1; i++) {
-                if(stat[i] == "In Queue") {
-                    statusnumber[i] = 0;
-                }
-                else {
-                    if(stat[i] == "In Progress") {
-                        statusnumber[i] = 1;   
-                    }
-                    else {
-                        statusnumber[i] = 2;
-                    }
-                }
-                $.get("updateValues.php?string=" + id[i] + "," + detailed[i] + "," + description[i] + "," + extr[i] + "," + price[i] + "," + file[i] + "," + statusnumber[i] + ",", function(data) {
+                document.getElementById("bruh").innerHTML = description[i];
+                $.get("updateValues.php?string=" + id[i] + "," + detailed[i] + "," + description[i] + "," + extr[i] + "," + price[i] + "," + file[i] + "," + statusnumber[i], function(data) {
                     loaderOff();
                     document.getElementById("bruh").innerHTML = data;
                 });
@@ -498,9 +360,14 @@
             price[num] = document.getElementById('price' + num).value;
         }
         
-        function updateStatus(num) {
-            var dll = document.getElementById('status' + num);
-            stat[num] = dll.options[dll.selectedIndex].value;
+        function updateFile(num) {
+            if(document.getElementById('file' + num).value != "") {
+                file[num] = document.getElementById('file' + num).name;   
+            }
+        }
+        
+        function updateDescription(num) {
+            description[num] = document.getElementById('area' + num).value;
         }
         
         function loaderOn() {

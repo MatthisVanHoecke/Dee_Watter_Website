@@ -1,7 +1,7 @@
 <?php
     include 'code.php';
     
-    if($_SESSION["username"] == "") {
+    if($_SESSION["username"] == "" && !isset($_GET["actie"]) && $_GET["actie"] != "signout") {
         header("location: accountError.php");
     }
 
@@ -11,8 +11,6 @@
     $extrac = 0;
     $customerid = 0;
     $order = 0;
-    
-    $mysqli = new MySQLi("localhost", "root", "", "webshopphp");
 
     if(mysqli_connect_errno()) {
         trigger_error("fout bij verbinding: ".$mysqli->error);
@@ -63,6 +61,30 @@
             echo "failed";
         }
         
+        $sql = "
+        SELECT OrderID
+        FROM tblunsavedorders
+        ORDER BY OrderID DESC LIMIT 1
+        ";
+
+        if($stmt = $mysqli->prepare($sql)) {
+
+            if(!$stmt->execute()) {
+                echo "the execution has failed: ".$stmt->error." in query ".$sql;
+            }
+            else {
+                $stmt->bind_result($ordera);
+
+                while($stmt->fetch()) {
+                    $order = $ordera;
+                }
+            }
+            $stmt->close();
+        }
+        else {
+            echo "failed";
+        }
+        
     }
 
 
@@ -72,58 +94,17 @@
             trigger_error("fout bij verbinding: ".$mysqli->error);
         }
         else {
-            $sql = "
-            INSERT INTO tblorders(CustomerID, Date)
-            VALUES(?,curdate())
-            ";
-            if($stmt = $mysqli->prepare($sql)) {
 
-                $stmt->bind_param('i', $customer);
 
-                $customer = $customerid;
-
-                if(!$stmt->execute()) {
-                    echo "het uitvoeren is mislukt: ".$stmt->error." in query ".$sql;
-                }
-
-                $stmt->close();
-            }
-            else {
-                echo "failed";
-            }
-
-            $sql = "
-            SELECT OrderID
-            FROM tblorders
-            WHERE CustomerID LIKE ?
-            ";
-
-            if($stmt = $mysqli->prepare($sql)) {
-                $stmt->bind_param('i', $id);
-
-                $id = $customerid;
-                if(!$stmt->execute()) {
-                    echo "the execution has failed: ".$stmt->error." in query ".$sql;
-                }
-                else {
-                    $stmt->bind_result($order);
-
-                    $stmt->fetch();
-                }
-                $stmt->close();
-            }
-            else {
-                echo "failed";
-            }
             
             $sql = "
-            INSERT INTO tblorderlines(OrderID, ArticleID, Description, File, Detailed, ExtraCharacter, PriceByOrder, Status)
+            INSERT INTO tblunsavedorders(OrderID, ArticleID, Description, File, Detailed, ExtraCharacter, ExtraCharacterAmount, PriceByOrder)
             VALUES(?,?,?,?,?,?,?,?)
             ";
             
             if($stmt = $mysqli->prepare($sql)) {
                 
-                $stmt->bind_param('iissiids', $orderid, $article, $desc, $file, $detailed, $extra, $price, $status);
+                $stmt->bind_param('iissiiid', $orderid, $article, $desc, $file, $detailed, $extra, $extraa, $price);
                 
                 $article = $articleid;
                 
@@ -134,9 +115,9 @@
                 
                 $detailed = 0;
                 $extra = 0;
-                $status = "In Queue";
+                $extraa = 0;
                 
-                $orderid = $order;
+                $orderid = $order+1;
                 
                 if(isset($_POST["detail"])) {
                     $detailed = $mysqli->real_escape_string($_POST["detail"]);
@@ -146,7 +127,8 @@
                 
                 if(isset($_POST["extra"])) {
                     $extra = $mysqli->real_escape_string($_POST["extra"]);
-                    $price += $extrac;
+                    $extraa = $mysqli->real_escape_string($_POST["extranumber"]);
+                    $price += $extrac*$mysqli->real_escape_string($_POST["extranumber"]);
                 }
                 
                 if(!$stmt->execute()) {
@@ -181,7 +163,7 @@
   <link rel="stylesheet" href="css/deestyle.css">
 </head>
 
-<body>
+<body onload="loadValues()">
 
   <!-- Start your project here-->
     <div class="row justify-content-between header">
@@ -337,7 +319,7 @@
     <div class="row justify-content-center">
         <div class="col-md-5 profile">
             <?php echo "<h1 style='text-align: center;'>".$_GET["article"]."-shot</h1>";?>
-            <form name="form1" id="form1" class="margin" method="post" action="<?php echo $_SERVER['PHP_SELF']."?article=Head";?>">
+            <form name="form1" id="form1" class="margin" method="post" action="<?php echo $_SERVER['PHP_SELF']."?article=".$_GET['article'];?>">
                 <h3 style="font-weight:bold;">Create order</h3>
                 <table style="width: 100%">
                     <tr>
@@ -382,14 +364,15 @@
                                     <input type="checkbox" name="extra" id="extra" onclick="calculate()" value="1">
                                     <label style="font-size: 15px;">Extra character</label>
                                 </li>
+                                <li>
+                                    <input type="number" name="extranumber" id="extranumber" onclick="calculate()" value="1" style="width: 50px;" max="5" min="1">
+                                </li>
                             </ul>
                         </td>
                     </tr>
                 </table>
                 <h3 style="font-weight:bold;">Total:</h3>
-                <?php if($_GET['article'] == 'Head') { 
-                    echo "<label style='font-size: 20px; font-weight: bold;' id='total'>$14</label>";
-                }?>
+                    <label style='font-size: 20px; font-weight: bold;' id='total'></label>
                 <div class="row justify-content-center" style="width: 100%">
                     <button type="button" name="save" id="save" class="btn btn-default" onclick="submitForm1()">Save</button>
                 </div>
@@ -397,36 +380,46 @@
         </div>
     </div>
     
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
     <script type="text/javascript">
         var total = 0;
         
+        document.getElementById("extranumber").style.display = "none";
+        var parts = window.location.search.substr(1).split("&");
+        var $_GET = {};
+        for (var i = 0; i < parts.length; i++) {
+            var temp = parts[i].split("=");
+            $_GET[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
+        }
+        
+        var article = new Array();
+        
+        function loadValues() {
+            $.get("head.php?type=" + $_GET["article"], function(data) {
+                article = data.split(",");
+                
+                total = parseFloat(article[0]);
+                document.getElementById("total").innerHTML = "$" + total;
+            });
+        }
+        
         function calculate() {
-            
-            var parts = window.location.search.substr(1).split("&");
-            var $_GET = {};
-            for (var i = 0; i < parts.length; i++) {
-                var temp = parts[i].split("=");
-                $_GET[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
-            }
-            
-            if($_GET["article"] == "Head") {
-                total = 14;
-            }
+            total = parseFloat(article[0]);
             
             if(document.getElementById("detail").checked == true) {
-                if($_GET["article"] == "Head") {
-                    total += 4;
-                }   
+                total += parseFloat(article[1]);
             }
-            if(document.getElementById("extra").checked == true) {
-                if($_GET["article"] == "Head") {
-                    total += 5;
-                }   
-            }
-            
-            
-            document.getElementById("total").innerHTML = "$" + total;
 
+            if(document.getElementById("extra").checked == true) {
+                document.getElementById("extranumber").style.display = "block";
+                total += parseFloat(article[2])*parseInt(document.getElementById("extranumber").value); 
+            }
+            else {
+                document.getElementById("extranumber").style.display = "none";
+            }
+
+            document.getElementById("total").innerHTML = "$" + total;
         }
         
         function submitForm1() {

@@ -88,6 +88,10 @@
 
       <div class="modal-footer d-flex justify-content-center">
         <button type="button" class="btn btn-default" name="signin_button" id="signin_button" onclick="submitModalLoginForm()">Sign in</button>
+        <button type="button" name="loadsave" id="btnloadSignin" class="btn btn-default" style="display: none;">
+            <div class="spinner-border text-light" role="status" style="display: none; width: 1.3rem; height: 1.3rem;" id="loadSignin">
+            </div>
+        </button>
       </div>
         </form>
       </div>
@@ -209,7 +213,7 @@
                 <div class="card-body">
                     <h1 class="card-title">Body</h1>
                     <p class="card-text">$16</p>
-                    <a href="#" class="stretched-link"></a>
+                    <a href="Article.php?article=HalfBody" class="stretched-link"></a>
                 </div>
             </div>
         </div> 
@@ -219,7 +223,7 @@
                 <div class="card-body">
                     <h1 class="card-title">Full</h1>
                     <p class="card-text">$22</p>
-                    <a href="#" class="stretched-link"></a>
+                    <a href="Article.php?article=FullBody" class="stretched-link"></a>
                 </div>
             </div>
         </div> 

@@ -51,7 +51,7 @@
                 </div>
                 <div class="col-auto">
                     <ul class="notype">
-                        <a href="Cart.php"><li class="margin lis rounded">
+                        <a href="Cart.php?customerid=<?php echo $customid;?>"><li class="margin lis rounded">
                             <img src="img/buy.png" alt="signin" class="img-fluid buy"/>
                         </li></a>
                     </ul>
@@ -59,7 +59,6 @@
             </div>
         </div>
     </div>
-   
 
 <div class="modal fade" id="modalLoginForm" name="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
   aria-hidden="true">
@@ -73,24 +72,28 @@
       </div>
       <div class="modal-body mx-3">
        <form id="modalLogForm" name="modalLogForm" class="form-vertical" method="post" action="Home.php">
-        <div class="md-form mb-5">
-          <i class="fas fa-user prefix grey-text"></i>
-          <input type="text" id="user" class="form-control validate" name="user">
-          <label data-error="wrong" data-success="right" for="defaultForm-email">Email or Username</label>
-        </div>
+            <div class="md-form mb-5">
+              <i class="fas fa-user prefix grey-text"></i>
+              <input type="text" id="user" class="form-control validate" name="user">
+              <label data-error="wrong" data-success="right" for="defaultForm-email">Email or Username</label>
+            </div>
 
-        <div class="md-form mb-4">
-          <i class="fas fa-lock prefix grey-text"></i>
-          <input type="password" id="password" class="form-control validate" name="password">
-          <label data-error="wrong" data-success="right" for="defaultForm-pass">Password</label>
-        </div>
+            <div class="md-form mb-4">
+              <i class="fas fa-lock prefix grey-text"></i>
+              <input type="password" id="password" class="form-control validate" name="password">
+              <label data-error="wrong" data-success="right" for="defaultForm-pass">Password</label>
+            </div>
 
-        <span id="userError" style="color: red; font-weight: bold"></span>
-        <span id="passwordError" style="color: red; font-weight: bold"></span>
+            <span id="userError" style="color: red; font-weight: bold"></span>
+            <span id="passwordError" style="color: red; font-weight: bold"></span>
 
-      <div class="modal-footer d-flex justify-content-center">
-        <button type="button" class="btn btn-default" name="signin_button" id="signin_button" onclick="submitModalLoginForm()">Sign in</button>
-      </div>
+          <div class="modal-footer d-flex justify-content-center">
+            <button type="button" class="btn btn-default" name="signin_button" id="signin_button" onclick="submitModalLoginForm()">Sign in</button>
+            <button type="button" name="loadsave" id="btnloadSignin" class="btn btn-default" style="display: none;">
+                <div class="spinner-border text-light" role="status" style="display: none; width: 1.3rem; height: 1.3rem;" id="loadSignin">
+                </div>
+            </button>
+          </div>
         </form>
       </div>
     </div>
@@ -137,9 +140,12 @@
         <span id="passError" style="color: red; font-weight: bold"></span>
             
         <div class="modal-footer d-flex justify-content-center" style="margin-top: 20px;">
-        <button type="button" class="btn btn-deep-orange" name="signup_button" id="signup_button" onclick="submitModalSignupForm()">Sign up</button>
+            <button type="button" class="btn btn-deep-orange" name="signup_button" id="signup_button" onclick="submitModalSignupForm()">Sign up</button>
+            <button type="button" name="loadsave" id="btnloadSignup" class="btn btn-deep-orange" style="display: none;">
+                <div class="spinner-border text-light" role="status" style="display: none;" id="loadSignup">
+                </div>
+            </button>
         </div>
-        
       </div>
     </div>
   </div>

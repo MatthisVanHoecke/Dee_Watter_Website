@@ -4,6 +4,10 @@
 
     include 'code.php';
 
+    if($_SESSION["username"] == "" && !isset($_GET["actie"]) && $_GET["actie"] != "signout") {
+        header("location: accountError.php");
+    }
+
     if(mysqli_connect_errno()) {
         trigger_error("fout bij verbinding: ".$mysqli->error);
     }
@@ -404,7 +408,7 @@
 
   <!-- SCRIPTS -->
   <script type="text/javascript">
-    
+
 </script>
     <script type="text/javascript" src="js/deescript.js"></script>
   <!-- JQuery -->
