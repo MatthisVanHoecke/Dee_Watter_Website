@@ -1,7 +1,7 @@
-<!DOCTYPE html>
-
 <?php
-    include 'code.php';
+
+  include 'code.php';
+    
 ?>
 
 <html lang="en">
@@ -25,7 +25,7 @@
 <body>
 
   <!-- Start your project here-->
-  <div class="row justify-content-between header">
+    <div class="row justify-content-between header">
         <div class="col-auto p">
             <p>[DISCOUNT CODE]</p>
         </div>
@@ -200,45 +200,45 @@
             </nav>
             <!--/.Navbar-->
     </div>
-    
-    <div class="row justify-content-center examp" style="height: 80vh">
-        <div class="col-md-auto d-flex justify-content-center">
-            <div class="card items zoom">
-                <img src="img/head-shot.jpg" alt="head-shot" class="card-img-top rounded">
-                <div class="card-body">
-                    <h1 class="card-title">Head</h1>
-                    <p class="card-text">$14</p>
-                    <a href="Article.php?article=Head" class="stretched-link"></a>
-                </div>
+    <div class="row justify-content-center examp">
+        <div class="col-md-6 container">
+            <div class="terms">
+                <h5><b>Read these Terms and Conditions before requesting any services:</b></h5>
+                <ul>
+                    <li>I have the right to refuse service if it includes anything I'm uncomfortable with</li>
+                    <li>I won't do business with anyone younger than 13</li>
+                    <li>Payment will be done before I start working, and only through PayPal</li>
+                    <li>The artwork the client receives will not be switching ownership, so if they want to post it or use it anywhere they need to:
+                        <ul class="numbers">
+                            <li style="list-style-type: decimal;">State that the artwork is mine, and done by me</li>
+                            <li>Provide my contact information (even if it's just my tag) </li>
+                            <li>Make sure that my signature/ watermark is visible on the drawing</li>
+                        </ul>
+                    </li>
+                </ul>
             </div>
         </div>
-        <div class="col-md-auto d-flex justify-content-center">
-            <div class="card items zoom">
-                <img src="img/half-body.jpg" alt="body-shot" class="card-img-top rounded">
-                <div class="card-body">
-                    <h1 class="card-title">Body</h1>
-                    <p class="card-text">$16</p>
-                    <a href="Article.php?article=HalfBody" class="stretched-link"></a>
-                </div>
-            </div>
-        </div> 
-        <div class="col-md-auto d-flex justify-content-center">
-            <div class="card items zoom">
-                <img src="img/head-shot.jpg" alt="fullbody-shot" class="card-img-top rounded">
-                <div class="card-body">
-                    <h1 class="card-title">Full</h1>
-                    <p class="card-text">$22</p>
-                    <a href="Article.php?article=FullBody" class="stretched-link"></a>
-                </div>
-            </div>
-        </div> 
     </div>
 
   <!-- /Start your project here-->
 
   <!-- SCRIPTS -->
-
-    <script type="text/javascript" src="js/deescript.js"></script>
+  <script type="text/javascript">
+    toggle();
+    window.onresize = function() {
+        toggle();
+    }
+    function toggle() {
+        if (window.innerWidth > 1020) {
+            document.getElementById('navigationbar').style.display = 'none';  
+            document.getElementById('menu').style.display = 'block'; 
+        }
+        else {
+            document.getElementById('navigationbar').style.display = 'block';
+            document.getElementById('menu').style.display = 'none'; 
+        }    
+    }
+</script>
   <!-- JQuery -->
   <script type="text/javascript" src="js/jquery-3.4.0.min.js">
   </script>

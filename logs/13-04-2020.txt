@@ -1,0 +1,3 @@
+[17:00-19:00] flexibel de prijs aanpassen wanneer de gebruiker een aanpassing maakt aan zijn order
+
+[20:00-20:30] loader aan cart toevoegen voor gebruiksvriendelijkheid

@@ -3,9 +3,9 @@
 
     
     $sql = "
-    SELECT l.OrderID, Description, File, Detailed, ExtraCharacterAmount, PriceByOrder, Status
+    SELECT l.OrderID, Description, File, Detailed, ExtraCharacterAmount, PriceByOrder, Status, ArticleID
     FROM tblorderlines l, tblorders o
-    WHERE l.OrderID = o.OrderID AND CustomerID = ?
+    WHERE l.OrderID = o.OrderID AND CustomerID = ? AND Status != 'Done'
     ORDER BY l.OrderID
     ";  
 
@@ -17,11 +17,11 @@
             echo "het uitvoeren is mislukt: ".$stmt->error."in query ".$sql;
         }
         else {
-            $stmt->bind_result($id,$desc,$file,$detail,$extra,$price,$status);
+            $stmt->bind_result($id,$desc,$file,$detail,$extra,$price,$status, $artid);
 
             $str = "";
             while($stmt->fetch()) {
-                $str .= $id."§".$mysqli->real_escape_string($desc)."§".$mysqli->real_escape_string($file)."§".$detail."§".$extra."§".$price."§".$status."æ";
+                $str .= $id."§".$mysqli->real_escape_string($desc)."§".$mysqli->real_escape_string($file)."§".$detail."§".$extra."§".$price."§".$status."§".$artid."æ";
             }
             echo $str;
         }

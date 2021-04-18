@@ -1,0 +1,39 @@
+color of menutext: dark-pink
+
+backcolor of menutext: light pink
+
+portfolio on homepage: all of their work
+
+menu text: bold
+
+dark blue version of banner for top color
+
+Pricing
+- background of pricing cards same as menutextcolor
+- lightpink text for pricingcards
+- color below pricingtext desaturated color of pricingtitle
+- lighter version of lightblue in banner for pricingbackground
+
+
+- lighter version of lightblue in banner for pricingbackground
+- lightpink for weird yellowish part
+
+
+about page
+- at the top, image of dee in drawing
+- lighter version of lightblue in banner for pricingbackground
+lightpink for weird yellowish part
+end lightpink after text like in article.php
+
+terms of service same as about page - images
+
+Contact
+- add twitter and twitch
+
+Cart.php
+- total in box
+- top text of table white, with dark pink background
+
+max amount of extra characters: 4
+
+font for all text: Comfortaa

@@ -322,60 +322,34 @@
             <!--/.Navbar-->
     </div>
     
-    <div class="row justify-content-center">
+    <div class="row justify-content-center examp">
         <div class="col-md-7 profile">
-            <?php echo "<h1 style='text-align: center;'>".$id."</h1>";?>
-                <h3 style="font-weight:bold;">Edit User</h3>
-                <table class="edittab">
-                    <tr>
-                        <td>
-                            <label style="font-size: 20px; font-weight: bold;">Name: </label>
-                        </td>
-                        <td>
-                            <input type="text" name="name" id="name" value="<?php echo $name;?>">
-                        </td>
-                        <td style="width: 50%">
-                            <span id="nameError" style="color: red; font-weight: bold;"></span>   
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label style="font-size: 20px; font-weight: bold;">Email: </label>
-                        </td>
-                        <td>
-                            <input type="text" name="email" id="email" value="<?php echo $email;?>">
-                        </td>
-                        <td style="width: 50%">
-                            <span id="emailError" style="color: red; font-weight: bold;"></span>
-                        </td>
-                    </tr>
-                </table>
                 <h3 style="font-weight:bold;">Edit Order</h3>
                 <table class="tab1" style="table-layout: fixed">
                     <tr>
-                        <td style="width: 5%">
-                            <b>ID</b>
+                        <td style="width: 5%" id="id">
+                            ID &darr;
                         </td>
-                        <td>
-                            <b>Description</b>
+                        <td id="desc">
+                            Description
                         </td>
-                        <td style="width: 10%;  overflow-x: auto;">
-                            <b>File</b>
+                        <td style="width: 10%;  overflow-x: auto;" id="file">
+                            File
                         </td>
-                        <td style="width: 12%; overflow-x: auto;">
-                            <b>Detailed</b>
+                        <td style="width: 12%; overflow-x: auto;" id="detail">
+                            Detailed
                         </td>
-                        <td style="width: 12%; overflow-x: auto;">
-                            <b>Extra Character</b>
+                        <td style="width: 12%; overflow-x: auto;" id="extr">
+                            Extra Character
                         </td>
-                        <td style="width: 12%; overflow-x: auto;">
-                            <b>Price</b>
+                        <td style="width: 12%; overflow-x: auto;" id="price">
+                            Price
                         </td>
-                        <td style="width: 15%; overflow-x: auto;">
-                            <b>Status</b>
+                        <td style="width: 15%; overflow-x: auto;" id="stat">
+                            Status
                         </td>
-                        <td style="width: 10%">
-                            <b>Delete</b>
+                        <td style="width: 10%; overflow-x: auto;" id="date">
+                            Date
                         </td>
                     </tr>
                 </table>
@@ -414,7 +388,6 @@
   <script type="text/javascript">
 
 function submitFormDelete() {
-    document.getElementById("form1").action = "<?php echo $_SERVER['PHP_SELF']."?action=delete&orderid=".$id;?>";
     
     document.form1.submit();
 }
@@ -428,9 +401,100 @@ for (var i = 0; i < parts.length; i++) {
 
 window.onload = loadValues();
 var order = new Array();
+var filter = "";
+
+function resetArrows() {
+    if(filter != "id") { document.getElementById("id").innerHTML = "ID"; }
+    if(filter != "desc") { document.getElementById("desc").innerHTML = "Description"; }
+    if(filter != "file") { document.getElementById("file").innerHTML = "File"; }
+    if(filter != "detail") { document.getElementById("detail").innerHTML = "Detailed"; }
+    if(filter != "extr") { document.getElementById("extr").innerHTML = "Extra Character"; }
+    if(filter != "price") { document.getElementById("price").innerHTML = "Price"; }
+    if(filter != "stat") { document.getElementById("stat").innerHTML = "Status"; }
+    if(filter != "date") { document.getElementById("date").innerHTML = "Date"; }
+}
+
 function loadValues() {
-    $.get("getOrders.php?customerid=" + $_GET["customerid"], function(data) {
+    $.get("getAllOrders.php", function(data) {
         order = data.split("æ");
+        createTable();
+    });
+
+    document.getElementById("date").addEventListener("click", function() {
+        if(filter == "date") {
+            filter = "dateascend";
+            document.getElementById("date").innerHTML = "Date &darr;";
+        }
+        else {
+            filter = "date";
+            document.getElementById("date").innerHTML = "Date &uarr;";
+            resetArrows();
+        }
+        createTable();
+    });
+
+    document.getElementById("id").addEventListener("click", function() {
+        if(filter == "id") {
+            filter = "idascend";
+            document.getElementById("id").innerHTML = "ID &darr;";
+        }
+        else {
+            filter = "id";
+            document.getElementById("id").innerHTML = "ID &uarr;";
+            resetArrows();
+        }
+        createTable();
+    });
+
+    document.getElementById("detail").addEventListener("click", function() {
+        if(filter == "detail") {
+            filter = "detailascend";
+            document.getElementById("detail").innerHTML = "Detailed &darr;";
+        }
+        else {
+            filter = "detail";
+            document.getElementById("detail").innerHTML = "Detailed &uarr;";
+            resetArrows();
+        }
+        createTable();
+    });
+
+    document.getElementById("extr").addEventListener("click", function() {
+        if(filter == "extr") {
+            filter = "extrascend";
+            document.getElementById("extr").innerHTML = "Extra Character &darr;";
+        }
+        else {
+            filter = "extr";
+            document.getElementById("extr").innerHTML = "Extra Character &uarr;";
+            resetArrows();
+        }
+        createTable();
+    });
+
+    document.getElementById("price").addEventListener("click", function() {
+        if(filter == "price") {
+            filter = "priceascend";
+            document.getElementById("price").innerHTML = "Price &darr;";
+        }
+        else {
+            filter = "price";
+            document.getElementById("price").innerHTML = "Price &uarr;";
+            resetArrows();
+        }
+        createTable();
+    });
+
+    document.getElementById("stat").addEventListener("click", function() {
+        if(filter == "stat") {
+            filter = "statascend";
+            document.getElementById("stat").innerHTML = "Status &darr;";
+        }
+        else {
+            filter = "stat";
+            document.getElementById("stat").innerHTML = "Status &uarr;";
+            resetArrows();
+        }
         createTable();
     });
 }
@@ -438,63 +502,224 @@ function loadValues() {
 var splitorder = new Array();
 var count = 0;
 var id = new Array(), description = new Array(), file = new Array(), detailed = new Array(), extr = new Array(), price = new Array(), stat = new Array(), deleteid = new Array(), queue = new Array(), progress = new Array(), done = new Array(), allids = new Array(), inprocess = new Array();
-var statusnumber = new Array();
+var statusnumber = new Array(), date = new Array(), table = new Array(), checked = new Array(), alldate = new Array();
 
 function createTable() {
-    var checked = new Array();
-    for(var i = 0; i < order.length-1; i++) {
-        splitorder = order[i].split("§");
 
-        id[i] = splitorder[0];
-        description[i] = splitorder[1];
-        file[i] = splitorder[2];
-        detailed[i] = splitorder[3];
-        if(splitorder[3] == "1") {
-            checked[i] = "checked";
-        }
-        else {
-            checked[i] = "";
-        }
-        extr[i] = splitorder[4];
-        price[i] = splitorder[5];
-        stat[i] = splitorder[6];
-        switch(stat[i]) {
-            case "In Queue":
-                queue[i] = "selected";
-                progress[i] = "";
-                done[i] = "";
-                inprocess[i] = "";
-                statusnumber[i] = 0;
-                break;
-            case "In Progress":
-                queue[i] = "";
-                progress[i] = "selected";
-                done[i] = "";
-                inprocess[i] = "";
-                statusnumber[i] = 1;
-                break;
-            case "Done":
-                queue[i] = "";
-                progress[i] = "";
-                done[i] = "selected";
-                inprocess[i] = "";
-                statusnumber[i] = 2;
-                break;
-            case "In Process":
-                queue[i] = "";
-                progress[i] = "";
-                done[i] = "";
-                inprocess[i] = "selected";
-                statusnumber[i] = 3;
-                break;
+    if(splitorder.length == 0) {
+        for(var i = 0; i < order.length-1; i++) {
+            splitorder = order[i].split("§");
+
+            id[i] = splitorder[0];
+            description[i] = splitorder[1];
+            file[i] = splitorder[2];
+            detailed[i] = splitorder[3];
+            if(splitorder[3] == "1") {
+                checked[i] = "yes";
+            }
+            else {
+                checked[i] = "no";
+            }
+            extr[i] = splitorder[4];
+            price[i] = splitorder[5];
+            stat[i] = splitorder[6];
+
+            date[i] = splitorder[8];
+
+                    
+            setStat(i);
+            alldate[i] = {id: id[i], description: description[i], file: file[i], checked: checked[i], detailed: detailed[i], extr: extr[i], price: price[i], date: date[i], inprocess: inprocess[i], progress: progress[i], done: done[i], queue: queue[i], stat: stat[i]};
         }
     }
-    var table = "";
+
+    var endtable = "";
+
+    switch(filter) {
+        case "date":
+            sortByDate(true);
+            break;
+        case "id":
+            sortByID(true);
+            break;
+        case "detail":
+            sortByDetailed(true);
+            break;
+        case "extr":
+            sortByExtraChar(true);
+            break;
+        case "price":
+            sortByPrice(true);
+            break;
+        case "stat":
+            sortByStatus(true);
+            break;
+        case "dateascend":
+            sortByDate(false);
+            break;
+        case "idascend":
+            sortByID(false);
+            break;
+        case "detailascend":
+            sortByDetailed(false);
+            break;
+        case "extrascend":
+            sortByExtraChar(false);
+            break;
+        case "priceascend":
+            sortByPrice(false);
+            break;
+        case "statascend":
+            sortByStatus(false);
+            break;
+        default:
+            break;
+    }
     for(var i = 0; i < order.length-1; i++) {
-        table += "<tr style='height: 80px'><td style='width: 5%'>" + id[i] + "</td><td style='width: 32%, overflow-wrap: break-word;'><div style='height: 100%; overflow-y: auto'>" + description[i] + "</div></td><td style='width: 10%; overflow-x: auto;'>" + file[i] + "</td><td style='width: 12%; overflow-x: auto;'><input type='checkbox' name='extra' " + checked[i] + " id='detailed" + i + "' onfocusout='updateDetailed(" + i + ")'></td><td style='width: 12%; overflow-x: auto;'><input type='number' id='extra" + i + "' min='0' max='5' value='" + extr[i] + "' style='width: 90%' onfocusout='updateExtraCharacter(" + i + ")'></td><td style='width: 12%; overflow-x: auto;'><input type='text' id='price" + i + "' value='" + price[i] + "' style='width: 90%' onfocusout='updatePrice(" + i + ")'></td><td style='width: 15%; overflow-x: auto;'><select id='status" + i + "' onfocusout='updateStatus(" + i + ")'><option " + inprocess[i] + ">In Process</option><option " + queue[i] + ">In Queue</option><option " + progress[i] + ">In Progress</option><option " + done[i] + ">Done</option></select></td><td style='width: 10%'><input type='button' value='Delete' onclick='deleteValues(" + i + ")' style='width: 90%'></td></tr>";
+        
+        table[i] = "<tr style='height: 80px'><td style='width: 5%'>" + alldate[i].id + "</td><td style='width: 32%, overflow-wrap: break-word;'><div style='height: 100%; overflow-y: auto'>" + alldate[i].description + "</div></td><td style='width: 10%; overflow-x: auto;'>" + alldate[i].file + "</td><td style='width: 12%; overflow-x: auto;'><label name='detailed' id='detailed" + i + "'>"+ alldate[i].checked +"</label></td><td style='width: 12%; overflow-x: auto;'><label id='extra" + i + "' style='width: 90%'>" + alldate[i].extr + "</label></td><td style='width: 12%; overflow-x: auto;'><label id='price" + i + "' style='width: 90%'>"+ alldate[i].price +"</label></td><td style='width: 15%; overflow-x: auto;'><select id='status" + i + "' onfocusout='updateStatus(" + i + ")'><option " + alldate[i].inprocess + ">In Process</option><option " + alldate[i].queue + ">In Queue</option><option " + alldate[i].progress + ">In Progress</option><option " + alldate[i].done + ">Done</option></select></td><td style='width: 10%; overflow-x: auto;'>" + alldate[i].date + "</td></tr>";
+        
+        
+        endtable += table[i];
     }
-    document.getElementById("orders").innerHTML = table;
+    document.getElementById("orders").innerHTML = endtable;
 }
+
+function setStat(i) {
+    switch(stat[i]) {
+        case "In Queue":
+            queue[i] = "selected";
+            progress[i] = "";
+            done[i] = "";
+            inprocess[i] = "";
+            statusnumber[i] = 0;
+            if(typeof alldate[i] !== "undefined") {
+                alldate[i].queue = "selected";
+                alldate[i].progress = "";
+                alldate[i].done = "";
+                alldate[i].inprocess = "";
+            }
+            break;
+        case "In Progress":
+            queue[i] = "";
+            progress[i] = "selected";
+            done[i] = "";
+            inprocess[i] = "";
+            statusnumber[i] = 1;
+            if(typeof alldate[i] !== "undefined") {
+                alldate[i].queue = "";
+                alldate[i].progress = "selected";
+                alldate[i].done = "";
+                alldate[i].inprocess = "";
+            }
+            break;
+        case "Done":
+            queue[i] = "";
+            progress[i] = "";
+            done[i] = "selected";
+            inprocess[i] = "";
+            statusnumber[i] = 2;
+            if(typeof alldate[i] !== "undefined") {
+                alldate[i].queue = "";
+                alldate[i].progress = "";
+                alldate[i].done = "selected";
+                alldate[i].inprocess = "";
+            }
+            break;
+        case "In Process":
+            queue[i] = "";
+            progress[i] = "";
+            done[i] = "";
+            inprocess[i] = "selected";
+            statusnumber[i] = 3;
+            if(typeof alldate[i] !== "undefined") {
+                alldate[i].queue = "";
+                alldate[i].progress = "";
+                alldate[i].done = "";
+                alldate[i].inprocess = "selected";
+            }
+            break;
+    }
+}
+
+function sortByDate(ascending) {
+    if(ascending) {
+        alldate.sort(function(a,b) {
+            return new Date(b.date) - new Date(a.date);
+        });
+    }
+    else {
+        alldate.sort(function(a,b) {
+            return new Date(a.date) - new Date(b.date);
+        });
+    }
+}
+
+function sortByID(ascending) {
+    if(ascending) {
+        alldate.sort(function(a,b) {
+            return b.id - a.id;
+        });
+    }
+    else {
+        alldate.sort(function(a,b) {
+            return a.id - b.id;
+        });
+    }
+}
+
+function sortByDetailed(ascending) {
+    if(ascending) {
+        alldate.sort(function(a,b) {
+            return b.checked.localeCompare(a.checked);
+        });
+    }
+    else {
+        alldate.sort(function(a,b) {
+            return a.checked.localeCompare(b.checked);
+        });
+    }
+}
+
+function sortByExtraChar(ascending) {
+    if(ascending) {
+        alldate.sort(function(a,b) {
+            return b.extr - a.extr;
+        });
+    }
+    else {
+        alldate.sort(function(a,b) {
+            return a.extr - b.extr;
+        });
+    }
+}
+
+function sortByPrice(ascending) {
+    if(ascending) {
+        alldate.sort(function(a,b) {
+            return b.price - a.price;
+        });
+    }
+    else {
+        alldate.sort(function(a,b) {
+            return a.price - b.price;
+        });
+    }
+}
+
+function sortByStatus(ascending) {
+    if(ascending) {
+        alldate.sort(function(a,b) {
+            return b.stat.localeCompare(a.stat);
+        });
+    }
+    else {
+        alldate.sort(function(a,b) {
+            return a.stat.localeCompare(b.stat);
+        });
+    }
+}
+
+
 
 function deleteValues(num) {
     order.splice(num,1);
@@ -525,8 +750,8 @@ function saveValues() {
     }
     else {
         for(var i = 0; i < count; i++) {
-            var index = id.indexOf(allids[i]);
-            switch(stat[index]) {
+            var index = alldate.findIndex(x => x.id === allids[i]);
+            switch(alldate[index].stat) {
                 case "In Queue":
                     statusnumber[index] = 0;
                     break;
@@ -544,8 +769,8 @@ function saveValues() {
                     break;
             }
 
-            endstring = id[index] + "," + detailed[index] + "," + description[index] + "," + extr[index] + "," + price[index] + "," + file[index] + "," + statusnumber[index];
-            
+            endstring = alldate[index].id + "," + alldate[index].detailed + "," + alldate[index].description + "," + alldate[index].extr + "," + alldate[index].price + "," + alldate[index].file + "," + statusnumber[index];
+
             $.get("updateValues.php?string=" + endstring, function(data) {
                 if(data != "Success") {
                     ok = false;
@@ -595,8 +820,10 @@ function updatePrice(num) {
 
 function updateStatus(num) {
     stat[num] = document.getElementById('status' + num).value;
-    if(!allids.includes(id[num])) {
-        allids[count] = id[num];
+    alldate[num].stat = stat[num];
+    setStat(num);
+    if(!allids.includes(alldate[num].id)) {
+        allids[count] = alldate[num].id;
         count++;
     }
 }

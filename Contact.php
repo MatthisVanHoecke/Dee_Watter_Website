@@ -1,7 +1,7 @@
-<!DOCTYPE html>
-
 <?php
-    include 'code.php';
+
+  include 'code.php';
+    
 ?>
 
 <html lang="en">
@@ -25,7 +25,7 @@
 <body>
 
   <!-- Start your project here-->
-  <div class="row justify-content-between header">
+    <div class="row justify-content-between header">
         <div class="col-auto p">
             <p>[DISCOUNT CODE]</p>
         </div>
@@ -200,45 +200,35 @@
             </nav>
             <!--/.Navbar-->
     </div>
-    
-    <div class="row justify-content-center examp" style="height: 80vh">
-        <div class="col-md-auto d-flex justify-content-center">
-            <div class="card items zoom">
-                <img src="img/head-shot.jpg" alt="head-shot" class="card-img-top rounded">
-                <div class="card-body">
-                    <h1 class="card-title">Head</h1>
-                    <p class="card-text">$14</p>
-                    <a href="Article.php?article=Head" class="stretched-link"></a>
-                </div>
+    <div class="row justify-content-center examp">
+        <div class="col-md-6 container">
+            <div class="terms">
+                <h5><b>Do NOT spam/harass me through this information, doing so will cause an instant block.</b></h5>
+                <b>E-mail: </b>dessiewatter@gmail.com<br>
+                <b>Instagram: </b><a href="https://www.instagram.com/deewatter/">https://www.instagram.com/deewatter/</a>
             </div>
         </div>
-        <div class="col-md-auto d-flex justify-content-center">
-            <div class="card items zoom">
-                <img src="img/half-body.jpg" alt="body-shot" class="card-img-top rounded">
-                <div class="card-body">
-                    <h1 class="card-title">Body</h1>
-                    <p class="card-text">$16</p>
-                    <a href="Article.php?article=HalfBody" class="stretched-link"></a>
-                </div>
-            </div>
-        </div> 
-        <div class="col-md-auto d-flex justify-content-center">
-            <div class="card items zoom">
-                <img src="img/head-shot.jpg" alt="fullbody-shot" class="card-img-top rounded">
-                <div class="card-body">
-                    <h1 class="card-title">Full</h1>
-                    <p class="card-text">$22</p>
-                    <a href="Article.php?article=FullBody" class="stretched-link"></a>
-                </div>
-            </div>
-        </div> 
     </div>
 
   <!-- /Start your project here-->
 
   <!-- SCRIPTS -->
-
-    <script type="text/javascript" src="js/deescript.js"></script>
+  <script type="text/javascript">
+    toggle();
+    window.onresize = function() {
+        toggle();
+    }
+    function toggle() {
+        if (window.innerWidth > 1020) {
+            document.getElementById('navigationbar').style.display = 'none';  
+            document.getElementById('menu').style.display = 'block'; 
+        }
+        else {
+            document.getElementById('navigationbar').style.display = 'block';
+            document.getElementById('menu').style.display = 'none'; 
+        }    
+    }
+</script>
   <!-- JQuery -->
   <script type="text/javascript" src="js/jquery-3.4.0.min.js">
   </script>

@@ -1,0 +1,5 @@
+[17:00-18:30] Probleem met insert oplossen => insert van status
+
+[18:30-19:30] Cart aanpassen => status verandert naar Type (Head, HalfBody, FullBody)
+
+[19:30-20:00] Cart aanpassen => prijzen veranderen wanneer gebruiker op detailed klikt
