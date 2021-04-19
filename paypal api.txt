@@ -1,0 +1,1 @@
+https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/

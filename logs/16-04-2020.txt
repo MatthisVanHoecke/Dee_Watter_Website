@@ -1,0 +1,5 @@
+[15:00-17:00] opmaak aanpassen
+
+[19:00-20:30] nieuwe pagina: Orders.php => bevat alle orders ipv alleen die van 1 persoon
+
+[20:30-21:00] code aanpassen in Orders.php => meer records tonen

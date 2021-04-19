@@ -54,7 +54,6 @@
                 echo "het uitvoeren is mislukt: ".$stmt->error."in query ".$sql;
             }
 
-
             $stmt->close();
         }
         else {
@@ -144,12 +143,12 @@
   <link rel="stylesheet" href="css/deestyle.css">
 </head>
 
-<body onload="loadValues()">
+<body>
 
   <!-- Start your project here-->
-    <div class="row justify-content-between header">
+  <div class="row justify-content-between header">
         <div class="col-auto p">
-            <p>[POTENTIAL DISCOUNT CODE]</p>
+            <p>[DISCOUNT CODE]</p>
         </div>
         <div class="col-auto">
             <div class="row justify-content-between">
@@ -161,7 +160,7 @@
                                     <form method="post" name="signoutform" action="<?php echo $_SERVER[\'PHP_SELF\']; ?> ">
                                         <a href="?actie=signout" type="submit"><li class="lis rounded"><b><img src="img/signout.png" alt="logout" class="img-fluid sign"/>SIGN OUT</b></li></a>
                                     </form
-                                </ul>';
+                            </ul>';
                         }
                         else {
                             echo '<ul class="notype">
@@ -173,7 +172,7 @@
                 </div>
                 <div class="col-auto">
                     <ul class="notype">
-                        <a href="#"><li class="margin lis rounded">
+                        <a href="Cart.php?customerid=<?php echo $customid;?>"><li class="margin lis rounded">
                             <img src="img/buy.png" alt="signin" class="img-fluid buy"/>
                         </li></a>
                     </ul>
@@ -181,7 +180,8 @@
             </div>
         </div>
     </div>
-<div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+
+<div class="modal fade" id="modalLoginForm" name="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
   aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -192,21 +192,30 @@
         </button>
       </div>
       <div class="modal-body mx-3">
-        <div class="md-form mb-5">
-          <i class="fas fa-envelope prefix grey-text"></i>
-          <input type="email" id="defaultForm-email" class="form-control validate">
-          <label data-error="wrong" data-success="right" for="defaultForm-email">Your email</label>
-        </div>
+       <form id="modalLogForm" name="modalLogForm" class="form-vertical" method="post" action="Home.php">
+            <div class="md-form mb-5">
+              <i class="fas fa-user prefix grey-text"></i>
+              <input type="text" id="user" class="form-control validate" name="user">
+              <label data-error="wrong" data-success="right" for="defaultForm-email">Email or Username</label>
+            </div>
 
-        <div class="md-form mb-4">
-          <i class="fas fa-lock prefix grey-text"></i>
-          <input type="password" id="defaultForm-pass" class="form-control validate">
-          <label data-error="wrong" data-success="right" for="defaultForm-pass">Your password</label>
-        </div>
+            <div class="md-form mb-4">
+              <i class="fas fa-lock prefix grey-text"></i>
+              <input type="password" id="password" class="form-control validate" name="password">
+              <label data-error="wrong" data-success="right" for="defaultForm-pass">Password</label>
+            </div>
 
-      </div>
-      <div class="modal-footer d-flex justify-content-center">
-        <button class="btn btn-default">Login</button>
+            <span id="userError" style="color: red; font-weight: bold"></span>
+            <span id="passwordError" style="color: red; font-weight: bold"></span>
+
+          <div class="modal-footer d-flex justify-content-center">
+            <button type="button" class="btn btn-default" name="signin_button" id="signin_button" onclick="submitModalLoginForm()">Sign in</button>
+            <button type="button" name="loadsave" id="btnloadSignin" class="btn btn-default" style="display: none;">
+                <div class="spinner-border text-light" role="status" style="display: none; width: 1.3rem; height: 1.3rem;" id="loadSignin">
+                </div>
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -221,33 +230,49 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body mx-3">
+      <div class="modal-body">
+        <form id="modalSignupForm" name="modalSignupForm" class="form-vertical" method="post" action="Home.php">
         <div class="md-form mb-5">
           <i class="fas fa-user prefix grey-text"></i>
-          <input type="text" id="orangeForm-name" class="form-control validate">
-          <label data-error="wrong" data-success="right" for="orangeForm-name">Your name</label>
+          <input type="text" name="username" id="username" class="form-control validate">
+          <label data-error="wrong" data-success="right" for="orangeForm-pass">Username</label>
         </div>
         <div class="md-form mb-5">
           <i class="fas fa-envelope prefix grey-text"></i>
-          <input type="email" id="orangeForm-email" class="form-control validate">
-          <label data-error="wrong" data-success="right" for="orangeForm-email">Your email</label>
+          <input type="email" name="email" id="email" class="form-control validate">
+          <label data-error="wrong" data-success="right" for="orangeForm-email">Email</label>
         </div>
 
         <div class="md-form mb-4">
           <i class="fas fa-lock prefix grey-text"></i>
-          <input type="password" id="orangeForm-pass" class="form-control validate">
-          <label data-error="wrong" data-success="right" for="orangeForm-pass">Your password</label>
+          <input type="password" name="pass" id="pass" class="form-control validate">
+          <label data-error="wrong" data-success="right" for="orangeForm-pass">Password</label>
         </div>
-
-      </div>
-      <div class="modal-footer d-flex justify-content-center">
-        <button class="btn btn-deep-orange">Sign up</button>
+          
+        <div class="md-form mb-4">
+          <i class="fas fa-lock prefix grey-text"></i>
+          <input type="password" name="passconfirm" id="passconfirm" class="form-control validate">
+          <label data-error="wrong" data-success="right" for="orangeForm-pass">Confirm Password</label>
+        </div>
+        
+        <span id="usernameError" style="color: red; font-weight: bold"></span>
+        <span id="emailError" style="color: red; font-weight: bold"></span>
+        <span id="passError" style="color: red; font-weight: bold"></span>
+            
+        <div class="modal-footer d-flex justify-content-center" style="margin-top: 20px;">
+            <button type="button" class="btn btn-deep-orange" name="signup_button" id="signup_button" onclick="submitModalSignupForm()">Sign up</button>
+            <button type="button" name="loadsave" id="btnloadSignup" class="btn btn-deep-orange" style="display: none;">
+                <div class="spinner-border text-light" role="status" style="display: none; width: 1.3rem; height: 1.3rem;" id="loadSignup">
+                </div>
+            </button>
+        </div>
+        </form>
       </div>
     </div>
   </div>
 </div>
     <div class="row justify-content-center title">
-        <h1>Dee Watter</h1>
+      <img src="img/banner1.png" class="img-fluid banner" alt="Responsive image">
     </div>
     <div class="row justify-content-center menurow">
         <div class="col-auto" id="menu">
@@ -298,7 +323,7 @@
     </div>
     
     <div class="row justify-content-center">
-        <div class="col-md-5 profile">
+        <div class="col-md-7 profile">
             <?php echo "<h1 style='text-align: center;'>".$id."</h1>";?>
                 <h3 style="font-weight:bold;">Edit User</h3>
                 <table class="edittab">
@@ -326,7 +351,7 @@
                     </tr>
                 </table>
                 <h3 style="font-weight:bold;">Edit Order</h3>
-                <table class="tab1" style="background-color: white; table-layout: fixed">
+                <table class="tab1" style="table-layout: fixed">
                     <tr>
                         <td style="width: 5%">
                             <b>ID</b>
@@ -334,16 +359,16 @@
                         <td>
                             <b>Description</b>
                         </td>
-                        <td style="width: 8%;  overflow-x: auto;">
+                        <td style="width: 10%;  overflow-x: auto;">
                             <b>File</b>
                         </td>
-                        <td style="width: 10%; overflow-x: auto;">
+                        <td style="width: 12%; overflow-x: auto;">
                             <b>Detailed</b>
                         </td>
-                        <td style="width: 10%; overflow-x: auto;">
+                        <td style="width: 12%; overflow-x: auto;">
                             <b>Extra Character</b>
                         </td>
-                        <td style="width: 10%; overflow-x: auto;">
+                        <td style="width: 12%; overflow-x: auto;">
                             <b>Price</b>
                         </td>
                         <td style="width: 15%; overflow-x: auto;">
@@ -356,12 +381,12 @@
                 </table>
                 <form name="form1" id="form1" method="post" action="<?php echo $_SERVER['PHP_SELF']."?action=edit&customerid=".$_COOKIE['customerid'];?>">
                 <div id="scrollbar">
-                    <table class="tab2" id="orders" style="background-color: white; table-layout: fixed">
+                    <table class="tab2" id="orders" style="background-color: white; table-layout: fixed;">
                         
             
                     </table>
                 </div>
-                <div class="row justify-content-center" style="width: 100%">
+                <div class="d-flex justify-content-center" style="width: 100%">
                     <button type="button" name="save" id="save" class="btn btn-default" onclick="saveValues()">Save</button>
                     <button type="button" name="loadsave" id="loadsave" class="btn btn-default" style="display: none;">
                         <div class="spinner-border text-light" role="status" style="display: none; width: 1.3rem; height: 1.3rem;" id="loadOrder">
@@ -373,147 +398,6 @@
         </div>
     </div>
   <!-- /Start your project here-->
-    
-    <script type="text/javascript">
-        function submitFormDelete() {
-            document.getElementById("form1").action = "<?php echo $_SERVER['PHP_SELF']."?action=delete&orderid=".$id;?>";
-            
-            document.form1.submit();
-        }
-        
-        var parts = window.location.search.substr(1).split("&");
-        var $_GET = {};
-        for (var i = 0; i < parts.length; i++) {
-            var temp = parts[i].split("=");
-            $_GET[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
-        }
-        
-        var order = new Array();
-        var splitorder = new Array();
-        var id = new Array(), description = new Array(), file = new Array(), detailed = new Array(), extr = new Array(), price = new Array(), stat = new Array(), deleteid = new Array(), queue = new Array(), progress = new Array(), done = new Array();
-        
-        function loadValues() {
-            $.get("getOrders.php?customerid=" + $_GET["customerid"], function(data) {
-                order = data.split("æ");
-                createTable();
-            });
-        }
-        
-        function createTable() {
-            var checked = new Array();
-            for(var i = 0; i < order.length-1; i++) {
-                splitorder = order[i].split("§");
-
-                id[i] = splitorder[0];
-                description[i] = splitorder[1];
-                file[i] = splitorder[2];
-                detailed[i] = splitorder[3];
-                if(splitorder[3] == "1") {
-                    checked[i] = "checked";
-                }
-                else {
-                    checked[i] = "";
-                }
-                extr[i] = splitorder[4];
-                price[i] = splitorder[5];
-                stat[i] = splitorder[6];
-                if(stat[i] == "In Queue") {
-                    queue[i] = "selected";
-                    progress[i] = "";
-                    done[i] = "";
-                }
-                else {
-                    if(stat[i] == "In Progress") {
-                        queue[i] = "";
-                        progress[i] = "selected";
-                        done[i] = "";
-                    }
-                    else {
-                        queue[i] = "";
-                        progress[i] = "";
-                        done[i] = "selected";
-                    }
-                }
-            }
-            var table = "";
-            for(var i = 0; i < order.length-1; i++) {
-                table += "<tr style='height: 80px'><td style='width: 5%'>" + id[i] + "</td><td style='width: 32%, overflow-wrap: break-word;'><div style='height: 100%; overflow-y: auto'>" + description[i] + "</div></td><td style='width: 8%; overflow-x: auto;'>" + file[i] + "</td><td style='width: 10%; overflow-x: auto;'><input type='checkbox' name='extra' " + checked[i] + " id='detailed" + i + "' onfocusout='updateDetailed(" + i + ")'></td><td style='width: 10%; overflow-x: auto;'><input type='number' id='extra" + i + "' min='0' max='5' value='" + extr[i] + "' style='width: 90%' onfocusout='updateExtraCharacter(" + i + ")'></td><td style='width: 10%; overflow-x: auto;'><input type='text' id='price" + i + "' value='" + price[i] + "' style='width: 90%' onfocusout='updatePrice(" + i + ")'></td><td style='width: 15%; overflow-x: auto;'><select id='status" + i + "' onfocusout='updateStatus(" + i + ")'><option " + queue[i] + ">In Queue</option><option " + progress[i] + ">In Progress</option><option " + done[i] + ">Done</option></select></td><td style='width: 10%'><input type='button' value='Delete' onclick='deleteValues(" + i + ")' style='width: 90%'></td></tr>";
-            }
-            document.getElementById("orders").innerHTML = table;
-        }
-        
-        function deleteValues(num) {
-            order.splice(num,1);
-            document.getElementById("bruh").innerHTML = num;
-            deleteid.push(id[num]);
-            createTable();
-        }
-        
-        function saveValues() {
-            document.getElementById("bruh").innerHTML = "";
-            loaderOn();
-            
-            if(deleteid.length > 0) {
-                for(var i = 0; i < deleteid.length; i++) {
-                    $.get("deleteValues.php?id=" + deleteid[i], function(data) {
-                        loaderOff();
-                        document.getElementById("bruh").innerHTML = data;
-                    });
-                }
-            }
-            var statusnumber = new Array();
-            for(var i = 0; i < order.length-1; i++) {
-                if(stat[i] == "In Queue") {
-                    statusnumber[i] = 0;
-                }
-                else {
-                    if(stat[i] == "In Progress") {
-                        statusnumber[i] = 1;   
-                    }
-                    else {
-                        statusnumber[i] = 2;
-                    }
-                }
-                $.get("updateValues.php?string=" + id[i] + "," + detailed[i] + "," + description[i] + "," + extr[i] + "," + price[i] + "," + file[i] + "," + statusnumber[i] + ",", function(data) {
-                    loaderOff();
-                    document.getElementById("bruh").innerHTML = data;
-                });
-            }
-        }
-        
-        function updateDetailed(num) {
-            if(document.getElementById('detailed' + num).checked) {
-                detailed[num] = "1";
-            }
-            else {
-                detailed[num] = "0";
-            }
-        }
-        
-        function updateExtraCharacter(num) {
-            extr[num] = document.getElementById('extra' + num).value;
-        }
-        
-        function updatePrice(num) {
-            price[num] = document.getElementById('price' + num).value;
-        }
-        
-        function updateStatus(num) {
-            var dll = document.getElementById('status' + num);
-            stat[num] = dll.options[dll.selectedIndex].value;
-        }
-        
-        function loaderOn() {
-            document.getElementById("save").style.display = "none";
-            document.getElementById("loadOrder").style.display = "block";
-            document.getElementById("loadsave").style.display = "block";
-        }
-        function loaderOff() {
-            document.getElementById("save").style.display = "block";
-            document.getElementById("loadOrder").style.display = "none";
-            document.getElementById("loadsave").style.display = "none";  
-        }
-    </script>
 
   <!-- SCRIPTS -->
     <script type="text/javascript" src="js/deescript.js"></script>
@@ -526,6 +410,208 @@
   <script type="text/javascript" src="js/bootstrap.min.js"></script>
   <!-- MDB core JavaScript -->
   <script type="text/javascript" src="js/mdb.min.js"></script>
+
+  <script type="text/javascript">
+
+function submitFormDelete() {
+    document.getElementById("form1").action = "<?php echo $_SERVER['PHP_SELF']."?action=delete&orderid=".$id;?>";
+    
+    document.form1.submit();
+}
+
+var parts = window.location.search.substr(1).split("&");
+var $_GET = {};
+for (var i = 0; i < parts.length; i++) {
+    var temp = parts[i].split("=");
+    $_GET[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
+}
+
+window.onload = loadValues();
+var order = new Array();
+function loadValues() {
+    $.get("getOrders.php?customerid=" + $_GET["customerid"], function(data) {
+        order = data.split("æ");
+        createTable();
+    });
+}
+
+var splitorder = new Array();
+var count = 0;
+var id = new Array(), description = new Array(), file = new Array(), detailed = new Array(), extr = new Array(), price = new Array(), stat = new Array(), deleteid = new Array(), queue = new Array(), progress = new Array(), done = new Array(), allids = new Array(), inprocess = new Array();
+var statusnumber = new Array();
+
+function createTable() {
+    var checked = new Array();
+    for(var i = 0; i < order.length-1; i++) {
+        splitorder = order[i].split("§");
+
+        id[i] = splitorder[0];
+        description[i] = splitorder[1];
+        file[i] = splitorder[2];
+        detailed[i] = splitorder[3];
+        if(splitorder[3] == "1") {
+            checked[i] = "checked";
+        }
+        else {
+            checked[i] = "";
+        }
+        extr[i] = splitorder[4];
+        price[i] = splitorder[5];
+        stat[i] = splitorder[6];
+        switch(stat[i]) {
+            case "In Queue":
+                queue[i] = "selected";
+                progress[i] = "";
+                done[i] = "";
+                inprocess[i] = "";
+                statusnumber[i] = 0;
+                break;
+            case "In Progress":
+                queue[i] = "";
+                progress[i] = "selected";
+                done[i] = "";
+                inprocess[i] = "";
+                statusnumber[i] = 1;
+                break;
+            case "Done":
+                queue[i] = "";
+                progress[i] = "";
+                done[i] = "selected";
+                inprocess[i] = "";
+                statusnumber[i] = 2;
+                break;
+            case "In Process":
+                queue[i] = "";
+                progress[i] = "";
+                done[i] = "";
+                inprocess[i] = "selected";
+                statusnumber[i] = 3;
+                break;
+        }
+    }
+    var table = "";
+    for(var i = 0; i < order.length-1; i++) {
+        table += "<tr style='height: 80px'><td style='width: 5%'>" + id[i] + "</td><td style='width: 32%, overflow-wrap: break-word;'><div style='height: 100%; overflow-y: auto'>" + description[i] + "</div></td><td style='width: 10%; overflow-x: auto;'>" + file[i] + "</td><td style='width: 12%; overflow-x: auto;'><input type='checkbox' name='extra' " + checked[i] + " id='detailed" + i + "' onfocusout='updateDetailed(" + i + ")'></td><td style='width: 12%; overflow-x: auto;'><input type='number' id='extra" + i + "' min='0' max='5' value='" + extr[i] + "' style='width: 90%' onfocusout='updateExtraCharacter(" + i + ")'></td><td style='width: 12%; overflow-x: auto;'><input type='text' id='price" + i + "' value='" + price[i] + "' style='width: 90%' onfocusout='updatePrice(" + i + ")'></td><td style='width: 15%; overflow-x: auto;'><select id='status" + i + "' onfocusout='updateStatus(" + i + ")'><option " + inprocess[i] + ">In Process</option><option " + queue[i] + ">In Queue</option><option " + progress[i] + ">In Progress</option><option " + done[i] + ">Done</option></select></td><td style='width: 10%'><input type='button' value='Delete' onclick='deleteValues(" + i + ")' style='width: 90%'></td></tr>";
+    }
+    document.getElementById("orders").innerHTML = table;
+}
+
+function deleteValues(num) {
+    order.splice(num,1);
+    document.getElementById("bruh").innerHTML = num;
+    deleteid.push(id[num]);
+    createTable();
+}
+
+var data = "";
+var ok = true;
+
+function saveValues() {
+    document.getElementById("bruh").innerHTML = "";
+    loaderOn();
+    
+    if(deleteid.length > 0) {
+        for(var i = 0; i < deleteid.length; i++) {
+            $.get("deleteValues.php?id=" + deleteid[i], function(data) {
+                loaderOff();
+                document.getElementById("bruh").innerHTML = data;
+            });
+        }
+    }
+    var endstring;
+
+    if(count == 0) {
+        loaderOff();
+    }
+    else {
+        for(var i = 0; i < count; i++) {
+            var index = id.indexOf(allids[i]);
+            switch(stat[index]) {
+                case "In Queue":
+                    statusnumber[index] = 0;
+                    break;
+                case "In Progress":
+                    statusnumber[index] = 1;
+                    break;
+                case "Done":
+                    statusnumber[index] = 2;
+                    break;
+                case "In Process":
+                    statusnumber[index] = 3;
+                    break;
+                default:
+                    statusnumber[index] = 0;
+                    break;
+            }
+
+            endstring = id[index] + "," + detailed[index] + "," + description[index] + "," + extr[index] + "," + price[index] + "," + file[index] + "," + statusnumber[index];
+            
+            $.get("updateValues.php?string=" + endstring, function(data) {
+                if(data != "Success") {
+                    ok = false;
+                }
+            });
+        }
+    }
+}
+
+$(document).ajaxStop(function () {
+    loaderOff();
+    if(ok = true && count != 0) {
+        document.getElementById("bruh").innerHTML = "Changes saved!";
+        allids = [];
+        count = 0;
+    }
+});
+
+function updateDetailed(num) {
+    if(document.getElementById('detailed' + num).checked) {
+        detailed[num] = "1";
+    }
+    else {
+        detailed[num] = "0";
+    }
+    if(!allids.includes(id[num])) {
+        allids[count] = id[num];
+        count++;
+    }
+}
+
+function updateExtraCharacter(num) {
+    extr[num] = document.getElementById('extra' + num).value;
+    if(!allids.includes(id[num])) {
+        allids[count] = id[num];
+        count++;
+    }
+}
+
+function updatePrice(num) {
+    price[num] = document.getElementById('price' + num).value;
+    if(!allids.includes(id[num])) {
+        allids[count] = id[num];
+        count++;
+    }
+}
+
+function updateStatus(num) {
+    stat[num] = document.getElementById('status' + num).value;
+    if(!allids.includes(id[num])) {
+        allids[count] = id[num];
+        count++;
+    }
+}
+
+function loaderOn() {
+    document.getElementById("save").style.display = "none";
+    document.getElementById("loadOrder").style.display = "block";
+    document.getElementById("loadsave").style.display = "block";
+}
+function loaderOff() {
+    document.getElementById("save").style.display = "block";
+    document.getElementById("loadOrder").style.display = "none";
+    document.getElementById("loadsave").style.display = "none";  
+}
+</script>
 </body>
 
 </html>

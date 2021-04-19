@@ -17,16 +17,19 @@
         $extr = $arr[3];
         $pric = $arr[4];
         $extra = 0;
-        if($arr[6] == "0") {
-            $stat = "In Queue";
-        }
-        else {
-            if($arr[6] == "1") {
-                $stat = "In Progress";   
-            }
-            if($arr[6] == "2") {
+        switch($arr[6]) {
+            case "0":
+                $stat = "In Queue";
+                break;
+            case "1":
+                $stat = "In Progress";
+                break;
+            case "2":
                 $stat = "Done";
-            }
+                break;
+            case "3":
+                $stat = "In Process";
+                break;
         }
         if($arr[3] == "0") {
             $extra = 0;

@@ -99,7 +99,6 @@
     </div>
   </div>
 </div>
-<form id="modalSignupForm" name="modalSignupForm" class="form-vertical" method="post" action="Home.php">
 <div class="modal fade" id="modalRegisterForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
   aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -111,7 +110,7 @@
         </button>
       </div>
       <div class="modal-body">
-
+        <form id="modalSignupForm" name="modalSignupForm" class="form-vertical" method="post" action="Home.php">
         <div class="md-form mb-5">
           <i class="fas fa-user prefix grey-text"></i>
           <input type="text" name="username" id="username" class="form-control validate">
@@ -142,17 +141,17 @@
         <div class="modal-footer d-flex justify-content-center" style="margin-top: 20px;">
             <button type="button" class="btn btn-deep-orange" name="signup_button" id="signup_button" onclick="submitModalSignupForm()">Sign up</button>
             <button type="button" name="loadsave" id="btnloadSignup" class="btn btn-deep-orange" style="display: none;">
-                <div class="spinner-border text-light" role="status" style="display: none;" id="loadSignup">
+                <div class="spinner-border text-light" role="status" style="display: none; width: 1.3rem; height: 1.3rem;" id="loadSignup">
                 </div>
             </button>
         </div>
+        </form>
       </div>
     </div>
   </div>
 </div>
-</form>
     <div class="row justify-content-center title">
-        <h1>Dee Watter</h1>
+      <img src="img/banner1.png" class="img-fluid banner" alt="Responsive image">
     </div>
     <div class="row justify-content-center menurow">
         <div class="col-auto" id="menu">
@@ -201,11 +200,8 @@
             </nav>
             <!--/.Navbar-->
     </div>
-    <div class="row justify-content-center banner">
-        <h1>[BANNER]</h1>
-    </div>
     <div class="row examp">
-        <h1>[Examples or products]</h1>
+        
     </div>
 
   <!-- /Start your project here-->

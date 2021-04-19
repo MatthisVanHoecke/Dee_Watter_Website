@@ -146,9 +146,9 @@
 <body>
 
   <!-- Start your project here-->
-    <div class="row justify-content-between header">
+  <div class="row justify-content-between header">
         <div class="col-auto p">
-            <p>[POTENTIAL DISCOUNT CODE]</p>
+            <p>[DISCOUNT CODE]</p>
         </div>
         <div class="col-auto">
             <div class="row justify-content-between">
@@ -172,7 +172,7 @@
                 </div>
                 <div class="col-auto">
                     <ul class="notype">
-                        <a href="#"><li class="margin lis rounded">
+                        <a href="Cart.php?customerid=<?php echo $customid;?>"><li class="margin lis rounded">
                             <img src="img/buy.png" alt="signin" class="img-fluid buy"/>
                         </li></a>
                     </ul>
@@ -180,7 +180,8 @@
             </div>
         </div>
     </div>
-<div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+
+<div class="modal fade" id="modalLoginForm" name="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
   aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -191,21 +192,30 @@
         </button>
       </div>
       <div class="modal-body mx-3">
-        <div class="md-form mb-5">
-          <i class="fas fa-envelope prefix grey-text"></i>
-          <input type="email" id="defaultForm-email" class="form-control validate">
-          <label data-error="wrong" data-success="right" for="defaultForm-email">Your email</label>
-        </div>
+       <form id="modalLogForm" name="modalLogForm" class="form-vertical" method="post" action="Home.php">
+            <div class="md-form mb-5">
+              <i class="fas fa-user prefix grey-text"></i>
+              <input type="text" id="user" class="form-control validate" name="user">
+              <label data-error="wrong" data-success="right" for="defaultForm-email">Email or Username</label>
+            </div>
 
-        <div class="md-form mb-4">
-          <i class="fas fa-lock prefix grey-text"></i>
-          <input type="password" id="defaultForm-pass" class="form-control validate">
-          <label data-error="wrong" data-success="right" for="defaultForm-pass">Your password</label>
-        </div>
+            <div class="md-form mb-4">
+              <i class="fas fa-lock prefix grey-text"></i>
+              <input type="password" id="password" class="form-control validate" name="password">
+              <label data-error="wrong" data-success="right" for="defaultForm-pass">Password</label>
+            </div>
 
-      </div>
-      <div class="modal-footer d-flex justify-content-center">
-        <button class="btn btn-default">Login</button>
+            <span id="userError" style="color: red; font-weight: bold"></span>
+            <span id="passwordError" style="color: red; font-weight: bold"></span>
+
+          <div class="modal-footer d-flex justify-content-center">
+            <button type="button" class="btn btn-default" name="signin_button" id="signin_button" onclick="submitModalLoginForm()">Sign in</button>
+            <button type="button" name="loadsave" id="btnloadSignin" class="btn btn-default" style="display: none;">
+                <div class="spinner-border text-light" role="status" style="display: none; width: 1.3rem; height: 1.3rem;" id="loadSignin">
+                </div>
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -220,33 +230,49 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body mx-3">
+      <div class="modal-body">
+        <form id="modalSignupForm" name="modalSignupForm" class="form-vertical" method="post" action="Home.php">
         <div class="md-form mb-5">
           <i class="fas fa-user prefix grey-text"></i>
-          <input type="text" id="orangeForm-name" class="form-control validate">
-          <label data-error="wrong" data-success="right" for="orangeForm-name">Your name</label>
+          <input type="text" name="username" id="username" class="form-control validate">
+          <label data-error="wrong" data-success="right" for="orangeForm-pass">Username</label>
         </div>
         <div class="md-form mb-5">
           <i class="fas fa-envelope prefix grey-text"></i>
-          <input type="email" id="orangeForm-email" class="form-control validate">
-          <label data-error="wrong" data-success="right" for="orangeForm-email">Your email</label>
+          <input type="email" name="email" id="email" class="form-control validate">
+          <label data-error="wrong" data-success="right" for="orangeForm-email">Email</label>
         </div>
 
         <div class="md-form mb-4">
           <i class="fas fa-lock prefix grey-text"></i>
-          <input type="password" id="orangeForm-pass" class="form-control validate">
-          <label data-error="wrong" data-success="right" for="orangeForm-pass">Your password</label>
+          <input type="password" name="pass" id="pass" class="form-control validate">
+          <label data-error="wrong" data-success="right" for="orangeForm-pass">Password</label>
         </div>
-
-      </div>
-      <div class="modal-footer d-flex justify-content-center">
-        <button class="btn btn-deep-orange">Sign up</button>
+          
+        <div class="md-form mb-4">
+          <i class="fas fa-lock prefix grey-text"></i>
+          <input type="password" name="passconfirm" id="passconfirm" class="form-control validate">
+          <label data-error="wrong" data-success="right" for="orangeForm-pass">Confirm Password</label>
+        </div>
+        
+        <span id="usernameError" style="color: red; font-weight: bold"></span>
+        <span id="emailError" style="color: red; font-weight: bold"></span>
+        <span id="passError" style="color: red; font-weight: bold"></span>
+            
+        <div class="modal-footer d-flex justify-content-center" style="margin-top: 20px;">
+            <button type="button" class="btn btn-deep-orange" name="signup_button" id="signup_button" onclick="submitModalSignupForm()">Sign up</button>
+            <button type="button" name="loadsave" id="btnloadSignup" class="btn btn-deep-orange" style="display: none;">
+                <div class="spinner-border text-light" role="status" style="display: none; width: 1.3rem; height: 1.3rem;" id="loadSignup">
+                </div>
+            </button>
+        </div>
+        </form>
       </div>
     </div>
   </div>
 </div>
     <div class="row justify-content-center title">
-        <h1>Dee Watter</h1>
+      <img src="img/banner1.png" class="img-fluid banner" alt="Responsive image">
     </div>
     <div class="row justify-content-center menurow">
         <div class="col-auto" id="menu">
@@ -320,7 +346,13 @@
         <div class="col-md-5 profile">
             <h1 style="text-align: center">Admin</h1>
             
-            <form name="frmcustomer" method="post" action="<?php echo $_SERVER['PHP_SELF']?>">
+            <form name="frmcustomer" method="post" action="Orders.php">
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn btn-default" name="getorders">Get Orders</button>
+                </div>
+            </form>
+
+            <form name="frmcustomer" method="post" style="margin-top: 20px;" action="<?php echo $_SERVER['PHP_SELF']?>">
                 <label>Username or email:</label>
                 <input type="text" name="customer">
                 <button type="submit" class="btn btn-default" name="search">search</button>
@@ -341,7 +373,7 @@
                     </td>
                 </tr>
                 </table>
-                <div id="scrollbar">
+                <div id="scrollbar" style="margin-bottom: 15px;">
                 <table class="tab" style="background-color: white;">
             <?php
                 if(mysqli_connect_errno()) {

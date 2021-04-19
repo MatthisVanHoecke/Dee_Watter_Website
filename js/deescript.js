@@ -53,11 +53,11 @@ function submitModalLoginForm() {
         document.getElementById('signin_button').style.display = "none";
         document.getElementById('btnloadSignin').style.display = "block";
         document.getElementById('loadSignin').style.display = "block";
-        $.get("name.php?username=" + document.getElementById('user').value + "&&email=" + document.getElementById('user').value + "&&pass=" + document.getElementById('password').value, function(data) {
+        $.get("name.php?username=" + document.getElementById('user').value + "&&pass=" + document.getElementById('password').value, function(data) {
             var arr = data.split(",");
             var ok2 = true;
             
-            if(arr[0] != document.getElementById('user').value) {
+            if(arr[0] != document.getElementById('user').value && arr[1] != document.getElementById('user').value) {
                 document.getElementById('userError').innerHTML = "*This username or email doesn't exist";
                 document.getElementById('signin_button').style.display = "block";
                 document.getElementById('btnloadSignin').style.display = "none";
