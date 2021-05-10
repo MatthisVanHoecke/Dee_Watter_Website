@@ -39,7 +39,7 @@
         
         $sql = "
         SELECT CustomerID
-        FROM tblCustomers
+        FROM tblcustomers
         WHERE Username LIKE ?
         ";
         
@@ -191,9 +191,18 @@
   <!-- Start your project here-->
   <?php include "standard.php"; ?>
     
-    <div class="row justify-content-center examp">
+  <div class="row justify-content-center">
         <div class="col-md-5 profile">
             <?php echo "<h1 style='text-align: center;'>".$_GET["article"]."-shot</h1>";?>
+            <div>
+                <form name="frmupload" id="frmupload" class="margin" method="post" action="upload.php" enctype="multipart/form-data">
+                    <label style="font-size: 20px; font-weight: bold;">Reference:</label>
+                    <input type="file" class="form-control-file" id="upload" name="my_file">
+                    <span id="uploadError" style="color: red; font-weight: bold;"></span>
+                    <input type="submit" name="submit" value="Upload"/>
+                </form>
+
+            </div>
             <form name="form1" id="form1" class="margin" method="post" action="<?php echo $_SERVER['PHP_SELF']."?article=".$_GET['article'];?>">
                 <h3 style="font-weight:bold;">Create order</h3>
                 <table style="width: 100%">
@@ -208,19 +217,6 @@
                         </td>
                         <td style="width: 50%">
                             <span id="descError" style="color: red; font-weight: bold;"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label style="font-size: 20px; font-weight: bold;">Reference:</label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="file" class="form-control-file" id="upload" name="upload">
-                        </td>
-                        <td>
-                            <span id="uploadError" style="color: red; font-weight: bold;"></span>
                         </td>
                     </tr>
                     <tr>
@@ -240,7 +236,7 @@
                                     <label style="font-size: 15px;">Extra character</label>
                                 </li>
                                 <li>
-                                    <input type="number" name="extranumber" id="extranumber" onclick="calculate()" value="1" style="width: 50px;" max="4" min="1">
+                                    <input type="number" name="extranumber" id="extranumber" onclick="calculate()" value="1" style="width: 50px;" max="5" min="1">
                                 </li>
                             </ul>
                         </td>

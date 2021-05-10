@@ -39,7 +39,7 @@
         
         $sql = "
         SELECT CustomerID
-        FROM tblCustomers
+        FROM tblcustomers
         WHERE Username LIKE ?
         ";
         

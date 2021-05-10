@@ -13,7 +13,7 @@
 
     if(isset($_POST["name"]) && $_POST["name"] != "" && isset($_POST["email"]) && $_POST["email"] != "") {
         $sql = "
-        UPDATE tblCustomers
+        UPDATE tblcustomers
         SET Username = ?, Email = ?
         WHERE CustomerID = ?"
         ;
@@ -174,8 +174,9 @@
       
       
         function createTable() {
+            tabcount = 0;
             var checked = new Array();
-            for(var i = 0; i < temporder.length-1; i++) {
+            for(var i = 0; i < temporder.length; i++) {
                 splitorder = temporder[i].split("§");
 
                 id[i] = splitorder[0];
@@ -235,8 +236,8 @@
             }
             
             var table = "";
-            for(var i = 0; i < temporder.length-1; i++) {
-                table += "<tr style='height: 80px' id='row" + tabcount + "'><td style='width: 5%'><input type='checkbox' id='selectedrow"+ tabcount +"'></td><td style='width: 5%'>" + id[tabcount] + "</td><td style='overflow-wrap: break-word;'><div style='height: 100%; overflow-y: auto'><textarea id='area" + tabcount + "' style='width: 90%' rows='4' onfocusout='updateDescription(" + tabcount + ")'>" + description[tabcount] + "</textarea></div></td><td style='width: 15%; overflow-x: auto;'>" + file[tabcount] + "<input type='file' id='file" + tabcount + "' onfocusout='updateFile(" + tabcount + ")'></td><td style='width: 12%; overflow-x: auto;'><input type='checkbox' name='detailed' " + checked[tabcount] + " id='detailed" + tabcount + "' onclick='updateDetailed(" + i + ")'></td><td style='width: 12%; overflow-x: auto;'><input type='number' id='extra" + tabcount + "' min='0' max='4' value='" + extr[tabcount] + "' style='width: 60%' onchange='updateExtraCharacter(" + tabcount + ")'></td><td style='width: 7%; overflow-x: auto;' id = 'price" + tabcount + "' >" + price[tabcount] + "</td><td style='width: 15%; overflow-x: auto;'>" + artid[tabcount] + "</td><td style='width: 10%'><input type='button' value='Delete' onclick='deleteValues(" + tabcount + ")' style='width: 90%'></td></tr>";
+            for(var i = 0; i < temporder.length; i++) {
+                table += "<tr style='height: 80px' id='row" + tabcount + "'><td style='width: 5%'><input type='checkbox' id='selectedrow"+ tabcount +"'></td><td style='width: 5%'>" + id[tabcount] + "</td><td style='overflow-wrap: break-word;'><div style='height: 80px; overflow-y: auto'><textarea id='area" + tabcount + "' style='width: 90%; margin-top: 5px;' rows='4' onfocusout='updateDescription(" + tabcount + ")'>" + description[tabcount] + "</textarea></div></td><td style='width: 15%; overflow-x: auto;'>" + file[tabcount] + "<input type='file' id='file" + tabcount + "' onfocusout='updateFile(" + tabcount + ")'></td><td style='width: 12%; overflow-x: auto;'><input type='checkbox' name='detailed' " + checked[tabcount] + " id='detailed" + tabcount + "' onclick='updateDetailed(" + i + ")'></td><td style='width: 12%; overflow-x: auto;'><input type='number' id='extra" + tabcount + "' min='0' max='4' value='" + extr[tabcount] + "' style='width: 60%' onchange='updateExtraCharacter(" + tabcount + ")'></td><td style='width: 7%; overflow-x: auto;' id = 'price" + tabcount + "' >" + price[tabcount] + "</td><td style='width: 15%; overflow-x: auto;'>" + artid[tabcount] + "</td><td style='width: 10%'><input type='button' value='Delete' onclick='deleteValues(" + tabcount + ")' style='width: 90%'></td></tr>";
                 tabcount++;
             }
             document.getElementById("orders").innerHTML = table;
@@ -260,6 +261,7 @@
                             rows = tabid;
                         }
                     });
+
                     document.getElementById("row" + i).addEventListener("click", function() {
                         if(document.getElementById("selectedrow" + tabid).checked) {
                             document.getElementById("selectedrow" + tabid).checked = false;
@@ -276,6 +278,7 @@
                         }
                         
                     });
+                    
                 })();
             }
 
@@ -307,7 +310,7 @@
         }
         
         function deleteValues(num) {
-            order.splice(num,1);
+            temporder.splice(num,1);
             deleteid.push(id[num]);
             if(!allids.includes(id[num])) {
                 allids[count] = id[num];

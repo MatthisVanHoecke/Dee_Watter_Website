@@ -5,7 +5,7 @@
     $mysqli = new MySQLi("localhost", "root", "", "webshopphp");
     if(isset($_POST["username"]) && $_POST["username"] != "" && isset($_POST["pass"]) && $_POST["pass"] != "" && isset($_POST["email"]) && $_POST["email"] != "") {
         
-        $sql = "SELECT * FROM tblCustomers WHERE Email = ? OR Username = ?";
+        $sql = "SELECT * FROM tblcustomers WHERE Email = ? OR Username = ?";
         
         $count = 0;
         if($stmt = $mysqli->prepare($sql)) {
@@ -35,7 +35,7 @@
             }
             else {
                 $sql = "
-                INSERT INTO tblCustomers(Username, Email, Password)
+                INSERT INTO tblcustomers(Username, Email, Password)
                 VALUES(?,?,?)
                 ";
 
@@ -60,7 +60,7 @@
     }
     if(isset($_SESSION["username"]) && $_SESSION["username"] != "") {
         
-        $sql = "SELECT CustomerID FROM tblCustomers WHERE Username = ?";
+        $sql = "SELECT CustomerID FROM tblcustomers WHERE Username = ?";
         
         $name = $_SESSION["username"];
         if($stmt = $mysqli->prepare($sql)) {
@@ -85,7 +85,7 @@
 
     if(isset($_POST["user"]) && $_POST["user"] != "" && isset($_POST["password"]) && $_POST["password"] != "") {
         
-        $sql = "SELECT Username, Password FROM tblCustomers WHERE Email = ? OR Username = ?";
+        $sql = "SELECT Username, Password FROM tblcustomers WHERE Email = ? OR Username = ?";
         
         $count = 0;
         $name = "";

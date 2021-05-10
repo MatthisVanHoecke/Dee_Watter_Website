@@ -70,7 +70,7 @@
         else {
             $sql = "
             SELECT CustomerID, Username, Email
-            FROM tblCustomers
+            FROM tblcustomers
             WHERE CustomerID = ?
             ";
 
@@ -100,7 +100,7 @@
     
     if(isset($_POST["name"]) && $_POST["name"] != "" && isset($_POST["email"]) && $_POST["email"] != "") {
         $sql = "
-        UPDATE tblCustomers
+        UPDATE tblcustomers
         SET Username = ?, Email = ?
         WHERE CustomerID = ?"
         ;

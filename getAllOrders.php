@@ -3,9 +3,9 @@
 
     
     $sql = "
-    SELECT l.OrderID, Description, File, Detailed, ExtraCharacterAmount, PriceByOrder, Status, ArticleID, Date, CustomerID
+    SELECT l.OrderID, Description, File, Detailed, ExtraCharacterAmount, PriceByOrder, Status, ArticleID, Date, Username
     FROM tblorderlines l, tblorders o, tblcustomers c
-    WHERE Status != 'Done' AND Status != 'In Process' AND l.OrderID = o.OrderID
+    WHERE Status != 'Done' AND Status != 'In Process' AND l.OrderID = o.OrderID AND o.CustomerID = c.CustomerID
     ORDER BY l.OrderID
     ";  
 
@@ -23,4 +23,7 @@
             echo $str;
         }
         $stmt->close();
+    }
+    else {
+        echo $mysqli->error;
     }

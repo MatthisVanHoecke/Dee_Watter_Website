@@ -13,7 +13,7 @@
     }
     else {
         
-        $sql = "SELECT Isadmin FROM tblCustomers WHERE Username = ?";
+        $sql = "SELECT Isadmin FROM tblcustomers WHERE Username = ?";
 
         if($stmt = $mysqli->prepare($sql)) {
             
@@ -49,7 +49,7 @@
         }
         else {
             
-            $sql = "SELECT Username FROM tblCustomers WHERE Username = ?";
+            $sql = "SELECT Username FROM tblcustomers WHERE Username = ?";
             
             $count = 0;
             if($stmt = $mysqli->prepare($sql)) {
@@ -70,7 +70,7 @@
             }
             if($count == 0) {
                 $sql = "
-                UPDATE tblCustomers
+                UPDATE tblcustomers
                 SET Username = ?
                 WHERE Username = ?"
                 ;
@@ -100,7 +100,7 @@
         }
         else {
             $sql = "
-            UPDATE tblCustomers
+            UPDATE tblcustomers
             SET Password = ?
             WHERE Username = ?"
             ;
@@ -356,7 +356,7 @@
                         if(strpos($_POST["customer"], '@') !== false) {
                             $sql = "
                             SELECT CustomerID, Username, Email
-                            FROM tblCustomers
+                            FROM tblcustomers
                             WHERE Email LIKE ?
                             ORDER BY CustomerID
                             ";  
@@ -364,7 +364,7 @@
                         else {
                             $sql = "
                             SELECT CustomerID, Username, Email
-                            FROM tblCustomers
+                            FROM tblcustomers
                             WHERE Username LIKE ?
                             ORDER BY CustomerID
                             ";  
