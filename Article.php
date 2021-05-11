@@ -131,7 +131,6 @@
                 $article = $articleid;
                 
                 $desc = $mysqli->real_escape_string($_POST["Description"]);
-                $file = $mysqli->real_escape_string($_POST["upload"]);
                 
                 $price = $articleprice;
                 
@@ -141,6 +140,8 @@
                 $extraa = 0;
                 
                 $orderid = $order+1;
+
+                $file = $orderid;
                 
                 if(isset($_POST["detail"])) {
                     $detailed = $mysqli->real_escape_string($_POST["detail"]);
@@ -156,6 +157,28 @@
                 
                 if(!$stmt->execute()) {
                     echo "het uitvoeren is mislukt: ".$stmt->error." in query ".$sql;
+                }
+                else {
+                    if (($_FILES['my_file']['name']!="")){
+                        // Where the file is going to be stored
+                         $target_dir = getcwd()."\\References\\";
+                         $file = $_FILES['my_file']['name'];
+                         $path = pathinfo($file);
+                         $filename = $orderid;
+                         $ext = $path['extension'];
+                         $temp_name = $_FILES['my_file']['tmp_name'];
+                         $path_filename_ext = $target_dir.$filename.".".$ext;
+                        
+                        // Check if file already exists
+                        if (file_exists($path_filename_ext)) {
+                         echo "Sorry, file already exists.";
+                         }else{
+                         move_uploaded_file($temp_name,$path_filename_ext);
+                         echo "<script type='text/javascript'>setTimeout(() => {
+                            alert('Order saved!')
+                        }, 100);</script>";
+                         }
+                        }
                 }
 
                 $stmt->close();
@@ -194,16 +217,7 @@
   <div class="row justify-content-center">
         <div class="col-md-5 profile">
             <?php echo "<h1 style='text-align: center;'>".$_GET["article"]."-shot</h1>";?>
-            <div>
-                <form name="frmupload" id="frmupload" class="margin" method="post" action="upload.php" enctype="multipart/form-data">
-                    <label style="font-size: 20px; font-weight: bold;">Reference:</label>
-                    <input type="file" class="form-control-file" id="upload" name="my_file">
-                    <span id="uploadError" style="color: red; font-weight: bold;"></span>
-                    <input type="submit" name="submit" value="Upload"/>
-                </form>
-
-            </div>
-            <form name="form1" id="form1" class="margin" method="post" action="<?php echo $_SERVER['PHP_SELF']."?article=".$_GET['article'];?>">
+            <form name="form1" id="form1" class="margin" method="post" action="<?php echo $_SERVER['PHP_SELF']."?article=".$_GET['article'];?>" enctype="multipart/form-data">
                 <h3 style="font-weight:bold;">Create order</h3>
                 <table style="width: 100%">
                     <tr>
@@ -241,13 +255,19 @@
                             </ul>
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            <label style="font-size: 20px; font-weight: bold;">Reference:</label>
+                            <input type="file" class="form-control-file" id="upload" name="my_file">
+                            <span id="uploadError" style="color: red; font-weight: bold;"></span>
+                        </td>
+                    </tr>
                 </table>
-                <h3 style="font-weight:bold;">Total:</h3>
-                    <label style='font-size: 20px; font-weight: bold;' id='total'></label>
-                <div class="row justify-content-center" style="width: 100%">
-                    <button type="button" name="save" id="save" class="btn btn-default" onclick="submitForm1()">Save</button>
-                </div>
             </form>
+            <label style="font-weight:bold; font-size: 20px;" class="margin">Total: </label><input type="text" style='font-weight: bold; width: 20%' id='total'>
+            <div class="row justify-content-center" style="width: 100%">
+                <button type="button" name="save" id="save" class="btn btn-default" onclick="submitForm1()">Save</button>
+            </div>
         </div>
     </div>
     
@@ -271,7 +291,7 @@
                 article = data.split(",");
                 
                 total = parseFloat(article[0]);
-                document.getElementById("total").innerHTML = "$" + total;
+                document.getElementById("total").value = "$" + total;
             });
         }
         
@@ -290,7 +310,7 @@
                 document.getElementById("extranumber").style.display = "none";
             }
 
-            document.getElementById("total").innerHTML = "$" + total;
+            document.getElementById("total").value = "$" + total;
         }
         
         function submitForm1() {
@@ -312,6 +332,7 @@
             else {
                 document.getElementById('uploadError').innerHTML = "";
             }
+
             
             
             if(ok == true) {

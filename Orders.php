@@ -195,11 +195,31 @@
                         <div class="spinner-border text-light" role="status" style="display: none; width: 1.3rem; height: 1.3rem;" id="loadOrder">
                         </div>
                     </button>
+                    
                 </div>
             </form>
             <label id="bruh"></label>
         </div>
     </div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+            </div>
+        </div>
+        </div>
   <!-- /Start your project here-->
 
   <!-- SCRIPTS -->
@@ -248,6 +268,8 @@ function loadValues() {
         order = data.split("æ");
         createTable();
     });
+
+    document.getElementById("exampleModal").style.display = "block";
 
     document.getElementById("date").addEventListener("click", function() {
         if(filter == "date") {
@@ -407,7 +429,7 @@ function createTable() {
     }
     for(var i = 0; i < order.length-1; i++) {
         
-        table[i] = "<tr style='height: 80px'><td style='width: 5%'>" + alldate[i].id + "</td><td style='width: 10%'></td><td style='overflow-wrap: break-word;'><div style='height: 100%; overflow-y: auto'>" + alldate[i].description + "</div></td><td style='width: 10%; overflow-x: auto;'>" + alldate[i].file + "</td><td style='width: 12%; overflow-x: auto;'><label name='detailed' id='detailed" + i + "'>"+ alldate[i].checked +"</label></td><td style='width: 12%; overflow-x: auto;'><label id='extra" + i + "' style='width: 90%'>" + alldate[i].extr + "</label></td><td style='width: 12%; overflow-x: auto;'><label id='price" + i + "' style='width: 90%'>"+ alldate[i].price +"</label></td><td style='width: 10%; overflow-x: auto;'><select id='status" + i + "' onfocusout='updateStatus(" + i + ")'><option " + alldate[i].inprocess + ">In Process</option><option " + alldate[i].queue + ">In Queue</option><option " + alldate[i].progress + ">In Progress</option><option " + alldate[i].done + ">Done</option></select></td><td style='width: 10%; overflow-x: auto;'>" + alldate[i].date + "</td></tr>";
+        table[i] = "<tr style='height: 80px'><td style='width: 5%'>" + alldate[i].id + "</td><td style='width: 10%'></td><td style='overflow-wrap: break-word;'><div style='height: 100%; overflow-y: auto'>" + alldate[i].description + "</div></td><td style='width: 10%; overflow-x: auto;'><img src='References/" + alldate[i].file + ".jpg' alt='" + alldate[i].file + "' class='img-thumbnail' /></td><td style='width: 12%; overflow-x: auto;'><label name='detailed' id='detailed" + i + "'>"+ alldate[i].checked +"</label></td><td style='width: 12%; overflow-x: auto;'><label id='extra" + i + "' style='width: 90%'>" + alldate[i].extr + "</label></td><td style='width: 12%; overflow-x: auto;'><label id='price" + i + "' style='width: 90%'>"+ alldate[i].price +"</label></td><td style='width: 10%; overflow-x: auto;'><select id='status" + i + "' onfocusout='updateStatus(" + i + ")'><option " + alldate[i].inprocess + ">In Process</option><option " + alldate[i].queue + ">In Queue</option><option " + alldate[i].progress + ">In Progress</option><option " + alldate[i].done + ">Done</option></select></td><td style='width: 10%; overflow-x: auto;'>" + alldate[i].date + "</td></tr>";
         
         
         endtable += table[i];
