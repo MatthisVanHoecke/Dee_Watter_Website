@@ -1,129 +1,3 @@
-<?php
-    include "code.php";
-
-    $detail = 0;
-
-    if($_SESSION["username"] == "" && !isset($_GET["actie"]) && $_GET["actie"] != "signout") {
-        header("location: accountError.php");
-    }
-
-    if(isset($_GET["action"]) && $_GET["action"] == "delete" && isset($_GET["orderid"])) {
-        header("location: EditUser.php?action=edit&customerid=".$_COOKIE['customerid']);
-    }
-
-    if(isset($_POST["save"])) {
-        $sql = "
-        UPDATE tblorderlines SET Detailed = ?, ExtraCharacter = ?, PriceByOrder = ?, Status = ?
-        WHERE OrderID = ?
-        ";
-
-        if($stmt = $mysqli->prepare($sql)) {
-            $stmt->bind_param('iidsi', $detai, $extr, $pric, $stat, $customid);
-
-            if(isset($_POST["detail"])) {
-                $detai = 1;
-            }
-            else {
-                $detai = 0;
-            }
-
-            if(isset($_POST["extra"])) {
-                $extr = 1;
-            }
-            else {
-                $extr = 0;
-            }
-
-            if(isset($_POST['price'])) {
-                $pric = $mysqli->real_escape_string($_POST['price']);   
-            }
-            else {
-                $pric = $price;
-            }
-
-            if(isset($_POST['status'])) {
-                $stat = $mysqli->real_escape_string($_POST['status']);   
-            }
-            else {
-                $stat = $status;
-            }
-
-            $customid = $_GET["customerid"];
-
-            if(!$stmt->execute()) {
-                echo "het uitvoeren is mislukt: ".$stmt->error."in query ".$sql;
-            }
-
-            $stmt->close();
-        }
-        else {
-            echo "er zit een fout in de query: ".$mysqli->error;
-        }
-    }
-
-    if(isset($_GET["action"]) && $_GET["action"] == "edit" && isset($_GET["customerid"])) {
-        
-        if(mysqli_connect_errno()) {
-            trigger_error("Error when connecting: ".$mysqli->error);
-        }
-        else {
-            $sql = "
-            SELECT CustomerID, Username, Email
-            FROM tblcustomers
-            WHERE CustomerID = ?
-            ";
-
-            if($stmt = $mysqli->prepare($sql)) {
-                $stmt->bind_param('i', $customerid);
-
-                $customerid = $mysqli->real_escape_string($_GET["customerid"]);
-
-                if(!$stmt->execute()) {
-                    echo "The execution of the query has failed: ".$stmt->error." in query ".$sql;
-                }
-                else {
-                    $stmt->bind_result($id,$name,$email);
-                    
-                    setcookie("customerid", $_GET["customerid"], time() + (86400*30));
-                    
-                    $stmt->fetch();
-                    
-                }
-                $stmt->close();
-            }
-            else {
-                echo "There's an error in the query";
-            }
-        }
-    }
-    
-    if(isset($_POST["name"]) && $_POST["name"] != "" && isset($_POST["email"]) && $_POST["email"] != "") {
-        $sql = "
-        UPDATE tblcustomers
-        SET Username = ?, Email = ?
-        WHERE CustomerID = ?"
-        ;
-
-        if($stmt = $mysqli->prepare($sql)) {
-            $stmt->bind_param('ssi', $name, $email, $id);
-
-            $name = $mysqli->real_escape_string($_POST["name"]);
-
-            $email = $mysqli->real_escape_string($_POST["email"]);
-            
-            $id = $mysqli->real_escape_string($_GET["customerid"]);
-
-            if(!$stmt->execute()) {
-                echo "failed to save";
-            }
-
-            $stmt->close();
-        }
-        else {
-            echo "er zit een fout in de query";
-        }
-    }
-?>
 
 <html lang="en">
 
@@ -146,7 +20,6 @@
 <body>
 
   <!-- Start your project here-->
-  <?php include "standard.php"; ?>
   <div class="modal fade" id="modalEmail" tabindex="-1" role="dialog" aria-labelledby="modalEmail" aria-hidden="true">
   <div class="modal-dialog modal-sm" role="document">
     <div class="modal-content">
@@ -165,48 +38,9 @@
     </div>
   </div>
 </div>
-    <div class="row justify-content-center examp" style="height: 100%">
-        <div class="col-md-9 profile" style="height: 80%">
+    <div class="row justify-content-center examp">
+        <div class="col-md-9 profile">
                 <h3 style="font-weight:bold;">Edit Order</h3>
-                <label>Search user: <input type='text' id="searchUser" onkeydown="searchUser();"></label><br>
-                <div class="custom-control custom-switch">
-                    <input type="checkbox" class="custom-control-input" id="customSwitch1">
-                    <label class="custom-control-label" for="customSwitch1">Toggle filter</label>
-                </div>
-                <div id="filter" style="display: none;">
-                    <div class="row filteritems">
-                        <div class="col">
-                            <input type="checkbox" id="detailFilter" onchange="detailFilter();">
-                            <label for="detailFilter">Detailed</label>
-                        </div>
-                    </div>
-                    <div class="row filteritems">
-                        <div class="col">
-                            <label>Extra Characters: <input type="number" style='width: 50px;' id="extraCharMin" min="0" max="4" value="0" onchange="extraCharacterRange()"> to <input type="number" style='width: 50px;' id="extraCharMax" min="0" max="4" value="4" onchange="extraCharacterRange()"></label>
-                        </div>
-                    </div>
-                    <div class="row filteritems">
-                        <div class="col">
-                            <label>Price Range: <input type="number" style='width: 50px;' id="priceMin" min="0" value="0" onchange="priceRange()"> to <input type="number" style='width: 50px;' id="priceMax" value="100" onfocusout="priceRange()"></label>
-                        </div>
-                    </div>
-                    <div class="row filteritems">
-                        <div class="col">
-                            <label>Status: 
-                                <select id='statusFilter' onchange="statusFilter()">
-                                    <option value='uhoh'></option>
-                                    <option value='In Queue'>In Queue</option>
-                                    <option value='In Progress'>In Progress</option>
-                                </select>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="row filteritems">
-                        <div class="col">
-                            <label>Date Range: <input type="date" id='dateMin' > to <input type="date" id='dateMax' onchange="dateRange()" ></label>
-                        </div>
-                    </div>
-                </div>
                     <table class="tab1" style="table-layout: fixed">
                         <tr>
                             <td style="width: 5%" id="id">
@@ -239,7 +73,7 @@
                         </tr>
                     </table>
                 <form name="form1" id="form1" method="post" action="<?php echo $_SERVER['PHP_SELF']."?action=edit&customerid=".$_COOKIE['customerid'];?>">
-                <div id="scrollbar" style="height: 500px">
+                <div id="scrollbar">
                     <table class="tab2" id="orders" style="background-color: white; table-layout: fixed;">
                         
             
@@ -289,8 +123,7 @@ for (var i = 0; i < parts.length; i++) {
 }
 
 window.onload = loadValues();
-var order = new Array(), temporder = new Array();
-var range = new Array();
+var order = new Array();
 var filter = "";
 
 function resetArrows() {
@@ -307,19 +140,7 @@ function resetArrows() {
 function loadValues() {
     $.get("getAllOrders.php", function(data) {
         order = data.split("æ");
-        temporder = order.slice();
         createTable();
-    });
-
-    document.getElementById("customSwitch1").addEventListener("click", function() {
-        if(document.getElementById("customSwitch1").checked) {
-            document.getElementById("filter").style.display = "block";
-        }
-        else {
-            document.getElementById("filter").style.display = "none";
-            order = temporder.slice();
-            searchUser();
-        }
     });
 
     document.getElementById("date").addEventListener("click", function() {
@@ -405,7 +226,6 @@ var splitorder = new Array();
 var count = 0;
 var id = new Array(), description = new Array(), file = new Array(), detailed = new Array(), extr = new Array(), price = new Array(), stat = new Array(), deleteid = new Array(), queue = new Array(), progress = new Array(), done = new Array(), allids = new Array(), inprocess = new Array();
 var statusnumber = new Array(), date = new Array(), table = new Array(), checked = new Array(), alldate = new Array(), customer = new Array(), email = new Array();
-var temparr = new Array();
 
 function createTable() {
 
@@ -437,8 +257,6 @@ function createTable() {
             setStat(i);
             alldate[i] = {id: id[i], description: description[i], file: file[i], checked: checked[i], detailed: detailed[i], extr: extr[i], price: price[i], date: date[i], inprocess: inprocess[i], progress: progress[i], done: done[i], queue: queue[i], stat: stat[i], user: customer[i], email: email[i]};
         }
-
-        
     }
 
     var endtable = "";
@@ -485,7 +303,7 @@ function createTable() {
     }
     for(var i = 0; i < order.length-1; i++) {
         
-        table[i] = "<tr style='height: 100px' id='row" + i + "'><td style='width: 5%'>" + alldate[i].id + "</td><td style='width: 12%'><a style='color: #3366BB' onclick='showModal(" + i + ")' data-toggle='tooltip' data-placement='top' title='" + alldate[i].email + "'>" + alldate[i].user + "</a></td><td style='overflow-wrap: break-word;'><div style='height: 100%; overflow-y: auto;'>" + alldate[i].description + "</div></td><td style='width: 10%'><img src='References/" + alldate[i].file + ".jpg' alt='" + alldate[i].file + "' class='img-thumbnail' /></td><td style='width: 8%; overflow-x: auto;'><label name='detailed' id='detailed" + i + "'>"+ alldate[i].checked +"</label></td><td style='width: 12%; overflow-x: auto;'><label id='extra" + i + "' style='width: 90%'>" + alldate[i].extr + "</label></td><td style='width: 12%; overflow-x: auto;'><label id='price" + i + "' style='width: 90%'>"+ alldate[i].price +"</label></td><td style='width: 10%; overflow-x: auto;'><select id='status" + i + "' onfocusout='updateStatus(" + i + ")'><option " + alldate[i].queue + ">In Queue</option><option " + alldate[i].progress + ">In Progress</option><option " + alldate[i].done + ">Done</option></select></td><td style='width: 10%; overflow-x: auto;'>" + alldate[i].date + "</td></tr>";
+        table[i] = "<tr style='height: 80px'><td style='width: 5%'>" + alldate[i].id + "</td><td style='width: 12%'><a style='color: #3366BB' onclick='showModal(" + i + ")' data-toggle='tooltip' data-placement='top' title='" + alldate[i].email + "'>" + alldate[i].user + "</a></td><td style='overflow-wrap: break-word;'><div style='height: 100%; overflow-y: auto'>" + alldate[i].description + "</div></td><td style='width: 10%'><img src='References/" + alldate[i].file + ".jpg' alt='" + alldate[i].file + "' class='img-thumbnail' /></td><td style='width: 8%; overflow-x: auto;'><label name='detailed' id='detailed" + i + "'>"+ alldate[i].checked +"</label></td><td style='width: 12%; overflow-x: auto;'><label id='extra" + i + "' style='width: 90%'>" + alldate[i].extr + "</label></td><td style='width: 12%; overflow-x: auto;'><label id='price" + i + "' style='width: 90%'>"+ alldate[i].price +"</label></td><td style='width: 10%; overflow-x: auto;'><select id='status" + i + "' onfocusout='updateStatus(" + i + ")'><option " + alldate[i].inprocess + ">In Process</option><option " + alldate[i].queue + ">In Queue</option><option " + alldate[i].progress + ">In Progress</option><option " + alldate[i].done + ">Done</option></select></td><td style='width: 10%; overflow-x: auto;'>" + alldate[i].date + "</td></tr>";
         
         
         endtable += table[i];
@@ -703,8 +521,6 @@ $(document).ajaxStop(function () {
         allids = [];
         count = 0;
     }
-    document.getElementsByClassName("examp")[0].style.height = "auto";
-    createTable();
 });
 
 function updateDetailed(num) {
@@ -743,175 +559,6 @@ function updateStatus(num) {
     if(!allids.includes(alldate[num].id)) {
         allids[count] = alldate[num].id;
         count++;
-    }
-}
-
-function searchUser() {
-    for(var i = order.length-2; i >= 0; i--) {
-        document.getElementById("row" + i).style.display = "table-row";
-    }
-    setTimeout(() => {
-        if(document.getElementById("searchUser").value != "" && document.getElementById("searchUser").value != null) {
-            for(var i = order.length-2; i >= 0; i--) {
-                if(!alldate[i].user.toLowerCase().startsWith(document.getElementById("searchUser").value.toLowerCase())) {
-                    document.getElementById("row" + i).style.display = "none";
-                }
-            }
-        }
-        else {
-            for(var i = order.length-2; i >= 0; i--) {
-                document.getElementById("row" + i).style.display = "table-row";
-            }
-            checkFilters("search");
-        }
-    }, 1);
-}
-
-function detailFilter() {
-    setTimeout(() => {
-        if(document.getElementById("detailFilter").checked && document.getElementById("customSwitch1").checked) {
-            for(var i = order.length-2; i >= 0; i--) {
-                if(alldate[i].detailed == "0") {
-                    document.getElementById("row" + i).style.display = "none";
-                }
-            }
-        }
-        else {
-            for(var i = order.length-2; i >= 0; i--) {
-                document.getElementById("row" + i).style.display = "table-row";
-            }
-            checkFilters("detail");
-        }
-    }, 1);
-}
-
-function extraCharacterRange() {
-    for(var i = order.length-2; i >= 0; i--) {
-        document.getElementById("row" + i).style.display = "table-row";
-    }
-    setTimeout(() => {
-        if(document.getElementById("customSwitch1").checked) {
-            for(var i = order.length-2; i >= 0; i--) {
-                if(alldate[i].extr < document.getElementById("extraCharMin").value || alldate[i].extr > document.getElementById("extraCharMax").value) {
-                    document.getElementById("row" + i).style.display = "none";
-                }   
-            }
-        }
-        else {
-            for(var i = order.length-2; i >= 0; i--) {
-                document.getElementById("row" + i).style.display = "table-row";
-            }
-            checkFilters("extra");
-        }
-    }, 1);
-
-}
-
-function priceRange() {
-    for(var i = order.length-2; i >= 0; i--) {
-        document.getElementById("row" + i).style.display = "table-row";
-    }
-    setTimeout(() => {
-        if(document.getElementById("customSwitch1").checked) {
-            for(var i = order.length-2; i >= 0; i--) {
-                if(alldate[i].price < parseInt(document.getElementById("priceMin").value) || alldate[i].price > parseInt(document.getElementById("priceMax").value)) {
-                    document.getElementById("row" + i).style.display = "none";
-                }   
-            }
-        }
-        else {
-            for(var i = order.length-2; i >= 0; i--) {
-                document.getElementById("row" + i).style.display = "table-row";
-            }
-            checkFilters("extra");
-        }
-    }, 1);
-}
-
-function dateRange() {
-    for(var i = order.length-2; i >= 0; i--) {
-        document.getElementById("row" + i).style.display = "table-row";
-    }
-    setTimeout(() => {
-        if(document.getElementById("customSwitch1").checked) {
-            for(var i = order.length-2; i >= 0; i--) {
-                if(new Date(alldate[i].date) < new Date(document.getElementById("dateMin").value) || new Date(alldate[i].date) > new Date(document.getElementById("dateMax").value)) {
-                    document.getElementById("row" + i).style.display = "none";
-                }   
-            }
-        }
-        else {
-            for(var i = order.length-2; i >= 0; i--) {
-                document.getElementById("row" + i).style.display = "table-row";
-            }
-            checkFilters("extra");
-        }
-    }, 1);
-}
-
-function statusFilter() {
-
-    setTimeout(() => {
-        if(document.getElementById("statusFilter").value != "" && document.getElementById("customSwitch1").checked) {
-            if(document.getElementById("statusFilter").options[document.getElementById("statusFilter").selectedIndex].value == "In Queue") {
-                for(var i = order.length-2; i >= 0; i--) {
-                    if(alldate[i].queue != "selected") {
-                        document.getElementById("row" + i).style.display = "none";
-                    }
-                }
-            }
-            if(document.getElementById("statusFilter").options[document.getElementById("statusFilter").selectedIndex].value == "In Progress") {
-                for(var i = order.length-2; i >= 0; i--) {
-                    if(alldate[i].progress != "selected") {
-                        document.getElementById("row" + i).style.display = "none";
-                    }
-                }
-            }
-            if(document.getElementById("statusFilter").options[document.getElementById("statusFilter").selectedIndex].value == "uhoh") {
-                for(var i = order.length-2; i >= 0; i--) {
-                    document.getElementById("row" + i).style.display = "table-row";
-                }
-            }
-        }
-        else {
-            for(var i = order.length-2; i >= 0; i--) {
-                document.getElementById("row" + i).style.display = "table-row";
-            }
-            checkFilters('status');
-        }
-    }, 1);
-}
-
-function checkFilters(filt) {
-
-    switch(filt) {
-        case "search":
-            if(document.getElementById("detailFilter").checked) {
-                detailFilter();
-                statusFilter();
-            }
-            break;
-        case "detail":
-            if(document.getElementById("searchUser").value != "") {
-                searchUser();
-                statusFilter();
-            }
-            break;
-        case "extra":
-            detailFilter();
-            searchUser();
-            statusFilter();
-            break;
-        case "status":
-            detailFilter();
-            searchUser();
-            break;
-        case "":
-            detailFilter();
-            searchUser();
-            statusFilter();
-            extraCharacterRange();
-            break;
     }
 }
 

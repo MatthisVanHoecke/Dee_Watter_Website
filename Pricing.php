@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-
 <?php
     include 'code.php';
 ?>
@@ -22,12 +20,12 @@
   <link rel="stylesheet" href="css/deestyle.css">
 </head>
 
-<body>
+<body style="height: 100%">
 
   <!-- Start your project here-->
   <?php include "standard.php"; ?>
     
-    <div class="row justify-content-center examp" style="height: 80vh">
+    <div class="row justify-content-center examp" style="min-height: 100%; height: auto">
         <div class="col-md-auto d-flex justify-content-center">
             <div class="card items zoom">
                 <img src="img/head-shot.jpg" alt="head-shot" class="card-img-top rounded">
@@ -50,7 +48,7 @@
         </div> 
         <div class="col-md-auto d-flex justify-content-center">
             <div class="card items zoom">
-                <img src="img/head-shot.jpg" alt="fullbody-shot" class="card-img-top rounded">
+                <img src="img/Fullbody.jpg" alt="fullbody-shot" class="card-img-top rounded">
                 <div class="card-body">
                     <h1 class="card-title">Full</h1>
                     <p class="card-text">$22</p>

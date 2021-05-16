@@ -1,5 +1,4 @@
 <?php
-
   include 'code.php';
     
 ?>
@@ -25,8 +24,8 @@
 <body>
 
   <?php include "standard.php";?>
-    <div class="row justify-content-center examp">
-        <div class="col-md-6 container">
+    <div class="row justify-content-center examp" style="height: 100%">
+        <div class="col-md-6 profile" style="background-color: white; padding-bottom: 20%">
             <div class="terms">
                 <h5><b>Do NOT spam/harass me through this information, doing so will cause an instant block.</b></h5>
                 <b>E-mail: </b>dessiewatter@gmail.com<br>

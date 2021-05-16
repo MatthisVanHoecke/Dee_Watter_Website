@@ -1,5 +1,4 @@
 <?php
-
   include 'code.php';
     
 ?>
@@ -27,8 +26,8 @@
   <!-- Start your project here-->
     <?php include "standard.php"; ?>
     
-    <div class="row justify-content-center examp">
-        <div class="col-md-6 container">
+    <div class="row justify-content-center examp" style="height: 100%">
+        <div class="col-md-6 profile" style="background-color: white; padding-bottom: 20%;">
             <div class="terms">
                 <h5><b>Read these Terms and Conditions before requesting any services:</b></h5>
                 <ul>

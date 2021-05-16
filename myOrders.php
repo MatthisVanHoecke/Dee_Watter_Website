@@ -77,12 +77,11 @@
     </div>
     </div>
     
-    <div class="row justify-content-center examp" style="height: 100%">
-        <div class="col-md-7 profile" style="height: 80%">
-                <h3 style="font-weight:bold;">Edit Cart</h3>
+    <div class="row justify-content-center examp">
+        <div class="col-md-7 profile">
+                <h3 style="font-weight:bold;">Previous/Ongoing Orders</h3>
                 <table class="tab1" style="table-layout: fixed">
                     <tr>
-                        <td style="width: 5%"></td>
                         <td style="width: 5%">
                             <b>ID</b>
                         </td>
@@ -104,8 +103,8 @@
                         <td style="width: 15%; overflow-x: auto;">
                             <b>Type</b>
                         </td>
-                        <td style="width: 10%">
-                            <b>Delete</b>
+                        <td style="width: 12%; overflow-x: auto;">
+                            <b>Status</b>
                         </td>
                     </tr>
                 </table>
@@ -177,11 +176,11 @@
                 articlefull = articletypes[2].split(",");
             });
 
-            $.get("getOrders.php?customerid=" + $_GET["customerid"], function(data) {
+            $.get("getMyOrders.php?customerid=" + $_GET["customerid"], function(data) {
                 loaderOff();
                 order = data.split("æ");
-                for(var i = 0; i < order.length; i++) {
-                    if(order[i].includes("Process")) {
+                for(var i = 0; i < order.length-1; i++) {
+                    if(!order[i].includes("Process")) {
                         temporder[ordercount] = order[i];
                         ordercount++;
                     }
@@ -202,10 +201,10 @@
                 file[i] = splitorder[2];
                 detailed[i] = splitorder[3];
                 if(splitorder[3] == "1") {
-                    checked[i] = "checked";
+                    checked[i] = "yes";
                 }
                 else {
-                    checked[i] = "";
+                    checked[i] = "no";
                 }
                 extr[i] = splitorder[4];
                 price[i] = splitorder[5];
@@ -255,76 +254,18 @@
             
             var table = "";
             for(var i = 0; i < temporder.length; i++) {
-                table += "<tr id='row" + tabcount + "' style='height: 100px;'><td style='width: 5%'><input type='checkbox' id='selectedrow"+ tabcount +"'></td><td style='width: 5%'>" + id[tabcount] + "</td><td style='overflow-wrap: break-word;'><div style='height: 100%; overflow-y: auto'><textarea id='area" + tabcount + "' style='height: 90%; width: 90%; margin-top: 5px;' rows='4' onfocusout='updateDescription(" + tabcount + ")'>" + description[tabcount] + "</textarea></div></td><td style='width: 15%; overflow-x: auto;'><img src='References/" + id[tabcount] + ".jpg' alt='" + id[tabcount] + "' class='img-thumbnail' name='f" + id[tabcount] + "'><input type='file' id='file" + tabcount + "' onchange='updateFile(" + tabcount + ")'></td><td style='width: 12%; overflow-x: auto;'><input type='checkbox' name='detailed' " + checked[tabcount] + " id='detailed" + tabcount + "' onclick='updateDetailed(" + i + ")'></td><td style='width: 12%; overflow-x: auto;'><input type='number' id='extra" + tabcount + "' min='0' max='4' value='" + extr[tabcount] + "' style='width: 60%' onchange='updateExtraCharacter(" + tabcount + ")'></td><td style='width: 7%; overflow-x: auto;' id = 'price" + tabcount + "' >" + price[tabcount] + "</td><td style='width: 15%; overflow-x: auto;'>" + artid[tabcount] + "</td><td style='width: 10%'><input type='button' value='Delete' onclick='deleteValues(" + tabcount + ")' style='width: 90%'></td></tr>";
+                table += "<tr id='row" + tabcount + "' style='height: 100px;'><td style='width: 5%'>" + id[tabcount] + "</td><td style='overflow-wrap: break-word;'><div style='height: 100%; overflow-y: auto'>" + description[tabcount] + "</div></td><td style='width: 15%; overflow-x: auto;'><img src='References/" + id[tabcount] + ".jpg' alt='" + id[tabcount] + "' class='img-thumbnail' name='f" + id[tabcount] + "'></td><td style='width: 12%; overflow-x: auto;'>"+ checked[tabcount] +"</td><td style='width: 12%; overflow-x: auto;'>" + extr[tabcount] + "</td><td style='width: 7%; overflow-x: auto;' id = 'price" + tabcount + "' >" + price[tabcount] + "</td><td style='width: 15%; overflow-x: auto;'>" + artid[tabcount] + "</td><td style='width: 12%'>" + stat[tabcount] + "</td></tr>";
                 tabcount++;
             }
             document.getElementById("orders").innerHTML = table;
 
-            for(var i = 0; i < tabcount; i++) {
-                (function() {
-                    var tabid = i;
-                    
-                    document.getElementById("selectedrow" + i).addEventListener("click", function() {
-                        if(document.getElementById("selectedrow" + tabid).checked) {
-                            document.getElementById("selectedrow" + tabid).checked = false;
-                            document.getElementById("row" + tabid).style.backgroundColor = backcolor[i];
-                        }
-                        else {
-                            document.getElementById("selectedrow" + rows).checked = false;
-                            document.getElementById("row" + rows).style.backgroundColor = backcolor[i];
-
-                            document.getElementById("selectedrow" + tabid).checked = true;
-                            backcolor[i] = document.getElementById("row" + tabid).style.backgroundColor;
-                            document.getElementById("row" + tabid).style.backgroundColor = "#fdff82";
-                            rows = tabid;
-                        }
-                    });
-
-                    document.getElementById("row" + i).addEventListener("click", function() {
-                        if(document.getElementById("selectedrow" + tabid).checked) {
-                            document.getElementById("selectedrow" + tabid).checked = false;
-                            document.getElementById("row" + tabid).style.backgroundColor = backcolor[i];
-                        }
-                        else {
-                            document.getElementById("selectedrow" + rows).checked = false;
-                            document.getElementById("row" + rows).style.backgroundColor = backcolor[i];
-
-                            document.getElementById("selectedrow" + tabid).checked = true;
-                            backcolor[i] = document.getElementById("row" + tabid).style.backgroundColor;
-                            document.getElementById("row" + tabid).style.backgroundColor = "#fdff82";
-                            rows = tabid;
-                        }
-                        
-                    });
-                    
-                })();
-            }
-
             var totalprice = 0;
             for(var i = 0; i < price.length; i++) {
-                if(stat[i] == "In Process") {
+                if(stat[i] != "In Process") {
                     totalprice += parseFloat(price[i]);
                 }
             }
             document.getElementById("totalprice").value = "$" + totalprice;
-
-            for(var icounter = 0; icounter < tabcount; icounter++) {
-                (function() {
-                    var num = icounter;
-
-                    document.getElementById("detailed" + num).addEventListener("click", function() {
-                        setTimeout(function(number) {
-                            onPriceChange(number);
-                        }, 1, num);
-                    });
-
-                    document.getElementById("extra" + num).addEventListener("change", function() {
-                        setTimeout(function(number) {
-                            onPriceChange(number);
-                        }, 1, num);
-                    });
-                })();
-            }
         }
         
         function deleteValues(num) {
@@ -440,7 +381,6 @@
                 allids = [];
                 count = 0;
             }
-            document.getElementsByClassName("examp")[0].style.height = "auto";
         });
         
         function updateFile(num) {
@@ -472,19 +412,6 @@
         
         function updateDescription(num) {
             description[num] = document.getElementById('area' + num).value;
-            if(!allids.includes(id[num])) {
-                allids[count] = id[num];
-                count++;
-            }
-        }
-
-        function updateDetailed(num) {
-            if(document.getElementById('detailed' + num).checked) {
-                detailed[num] = "1";
-            }
-            else {
-                detailed[num] = "0";
-            }
             if(!allids.includes(id[num])) {
                 allids[count] = id[num];
                 count++;

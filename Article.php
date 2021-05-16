@@ -165,7 +165,7 @@
                          $file = $_FILES['my_file']['name'];
                          $path = pathinfo($file);
                          $filename = $orderid;
-                         $ext = $path['extension'];
+                         $ext = "jpg";
                          $temp_name = $_FILES['my_file']['tmp_name'];
                          $path_filename_ext = $target_dir.$filename.".".$ext;
                         
@@ -178,7 +178,7 @@
                             alert('Order saved!')
                         }, 100);</script>";
                          }
-                        }
+                    }
                 }
 
                 $stmt->close();
@@ -209,7 +209,7 @@
   <link rel="stylesheet" href="css/deestyle.css">
 </head>
 
-<body onload="loadValues()">
+<body>
 
   <!-- Start your project here-->
   <?php include "standard.php"; ?>
@@ -283,13 +283,22 @@
             var temp = parts[i].split("=");
             $_GET[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
         }
+
+        window.onload = loadValues();
+
+        $(document).ajaxStop(function () {
+            $("#extra").removeAttr("disabled");
+            $("#detail").removeAttr("disabled");
+        });
         
         var article = new Array();
         
         function loadValues() {
+            $("#extra").attr("disabled", true);
+            $("#detail").attr("disabled", true);
             $.get("head.php?type=" + $_GET["article"], function(data) {
                 article = data.split(",");
-                
+
                 total = parseFloat(article[0]);
                 document.getElementById("total").value = "$" + total;
             });
@@ -330,7 +339,13 @@
                 ok = false;
             }
             else {
-                document.getElementById('uploadError').innerHTML = "";
+                if(!document.getElementById('upload').value.toLowerCase().endsWith(".png") && !document.getElementById('upload').value.toLowerCase().endsWith(".jpeg") && !document.getElementById('upload').value.toLowerCase().endsWith(".jpg")) {
+                    document.getElementById('uploadError').innerHTML = "*Please upload an image in PNG or JPG format";
+                    ok = false;
+                }
+                else {
+                    document.getElementById('uploadError').innerHTML = "";
+                }
             }
 
             

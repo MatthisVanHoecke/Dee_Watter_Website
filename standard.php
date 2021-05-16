@@ -1,6 +1,5 @@
 <div class="row justify-content-between header">
-        <div class="col-auto p">
-            <p>[DISCOUNT CODE]</p>
+        <div class="col-auto">
         </div>
         <div class="col-auto">
             <div class="row justify-content-between">
@@ -32,7 +31,6 @@
             </div>
         </div>
     </div>
-
 <div class="modal fade" id="modalLoginForm" name="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
   aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -44,7 +42,7 @@
         </button>
       </div>
       <div class="modal-body mx-3">
-       <form id="modalLogForm" name="modalLogForm" class="form-vertical" method="post" action="Home.php">
+       <form id="modalLogForm" name="modalLogForm" class="form-vertical" method="post" action="Index.php">
             <div class="md-form mb-5">
               <i class="fas fa-user prefix grey-text"></i>
               <input type="text" id="user" class="form-control validate" name="user">
@@ -83,7 +81,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form id="modalSignupForm" name="modalSignupForm" class="form-vertical" method="post" action="Home.php">
+        <form id="modalSignupForm" name="modalSignupForm" class="form-vertical" method="post" action="Index.php">
         <div class="md-form mb-5">
           <i class="fas fa-user prefix grey-text"></i>
           <input type="text" name="username" id="username" class="form-control validate">
@@ -129,7 +127,7 @@
     <div class="row justify-content-center menurow">
         <div class="col-auto" id="menu">
             <ul class="notype">
-                <a href="Home.php"><li class="menu">HOME</li></a>
+                <a href="Index.php"><li class="menu">HOME</li></a>
                 <a href="Pricing.php"><li class="menu">PRICING</li></a>
                 <a href="About.php"><li class="menu">ABOUT ME</li></a>
                 <a href="Terms.php"><li class="menu">TERMS OF SERVICE</li></a>
@@ -149,7 +147,7 @@
 
                     <!-- Links -->
                     <ul class="navbar-nav notype">
-                        <a class="nav-link" href="Home.php"><li class="nav-item menu">
+                        <a class="nav-link" href="Index.php"><li class="nav-item menu">
                             HOME
                         </li></a>
                         <a class="nav-link" href="Pricing.php"><li class="nav-item menu">

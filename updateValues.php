@@ -1,5 +1,5 @@
 <?php
-    include 'code.php';
+    include "code.php";
 
     $sql = "
     UPDATE tblorderlines SET Detailed = ?, Description = ?, ExtraCharacterAmount = ?, PriceByOrder = ?, Status = ?, File = ?, ExtraCharacter = ?
@@ -37,13 +37,30 @@
         else {
             $extra = 1;
         }
-        $file = $arr[5];
+        $file = $customid;
         
         if(!$stmt->execute()) {
             echo "Fail: ".$stmt->error."in query ".$sql;
         }
         else {
-            echo "Success";
+            if(isset($_FILES['file']['name'])){
+
+                /* Getting file name */
+                $filename = $_FILES['file']['name'];
+             
+                /* Location */
+                $location = "References/".$customid.".jpg";
+             
+                /* Valid extensions */
+                $valid_extensions = array("jpg","jpeg","png");
+             
+                $response = 0;
+                /* Upload file */
+                if(move_uploaded_file($_FILES['file']['tmp_name'],$location)){
+                    $response = $location;
+                }
+             }
+             echo "Success";
         }
         $stmt->close();
     }

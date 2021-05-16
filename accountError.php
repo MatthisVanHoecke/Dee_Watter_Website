@@ -1,3 +1,3 @@
 <?php
-    echo "Please log in first!";
+    header("location: Index.php?accountError=true");
 ?>

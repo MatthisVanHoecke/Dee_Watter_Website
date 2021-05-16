@@ -1,5 +1,4 @@
 <?php 
-
     include 'code.php';
 
     $user = $_GET["username"];

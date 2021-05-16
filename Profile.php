@@ -1,7 +1,4 @@
-<!DOCTYPE html>
-
 <?php
-
     include 'code.php';
 
     if($_SESSION["username"] == "" && !isset($_GET["actie"]) && $_GET["actie"] != "signout") {
@@ -165,6 +162,16 @@
                         <td><button type="submit" class="btn btn-default" name="change_pass">change password</button></td>
                     </tr>
                 </table>
+            </form>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-5 profile">
+            <h1 style="text-align: center">My Orders</h1>
+            <form name="frmmyorders" method="post" action="myOrders.php?customerid=<?php echo $customid;?>">
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn btn-default" name="view_orders">Get Orders</button>
+                </div>
             </form>
         </div>
     </div>

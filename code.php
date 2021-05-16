@@ -1,7 +1,7 @@
 <?php
-    $customid = -1;
     session_start();
-    
+    $customid = -1;
+
     $mysqli = new MySQLi("localhost", "root", "", "webshopphp");
     if(isset($_POST["username"]) && $_POST["username"] != "" && isset($_POST["pass"]) && $_POST["pass"] != "" && isset($_POST["email"]) && $_POST["email"] != "") {
         
@@ -122,7 +122,7 @@
         }
     }
     if(isset($_GET["actie"]) && $_GET["actie"] == "signout") {
-        header("Location: Home.php");
+        header("Location: Index.php");
         $_SESSION["username"] = "";
     }
 ?>

@@ -1,5 +1,4 @@
 <?php
-
   include 'code.php';
     
 ?>
@@ -26,8 +25,8 @@
 
   <!-- Start your project here-->
     <?php include "standard.php"; ?>
-    <div class="row examp">
-        <h1>[Examples or products]</h1>
+    <div class="row examp" style="height: 100%">
+    
     </div>
 
   <!-- /Start your project here-->

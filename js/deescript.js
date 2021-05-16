@@ -13,12 +13,24 @@ window.onresize = function() {
     toggle();
 }
 
+window.onload = function() {
+    var parts = window.location.search.substr(1).split("&");
+    var $_GET = {};
+    for (var i = 0; i < parts.length; i++) {
+        var temp = parts[i].split("=");
+        $_GET[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
+    }
+
+    if($_GET["accountError"] != null && $_GET["accountError"] != "") {
+        $('#modalLogError').modal('show');
+    }
+}
+
 var n = ".*[0-9].*";
 var l = ".*[A-Z].*";
 
 function submitModalLoginForm() {
     var ok = true;
-    var usr = document.getElementById('user').value;
 
     if(document.getElementById('user').value == "") {
         document.getElementById('userError').innerHTML = "*Please fill in your username<br>";
@@ -157,6 +169,8 @@ function submitModalSignupForm() {
             if(ok2 == true) {
                 document.modalSignupForm.submit();
             }
+
+            
         });
     }
 
