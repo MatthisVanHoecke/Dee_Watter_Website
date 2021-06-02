@@ -5,6 +5,10 @@
         header("location: accountError.php");
     }
 
+    if(isset($_POST["Description"]) && $_POST["Description"] != "") {
+        header("location: Index.php?uploaded=true");
+    }
+
     $articleid = "";
     $articleprice = 0;
     $detail = 0;
@@ -161,7 +165,7 @@
                 else {
                     if (($_FILES['my_file']['name']!="")){
                         // Where the file is going to be stored
-                         $target_dir = getcwd()."\\References\\";
+                         $target_dir = getcwd()."/References/";
                          $file = $_FILES['my_file']['name'];
                          $path = pathinfo($file);
                          $filename = $orderid;
@@ -173,10 +177,7 @@
                         if (file_exists($path_filename_ext)) {
                          echo "Sorry, file already exists.";
                          }else{
-                         move_uploaded_file($temp_name,$path_filename_ext);
-                         echo "<script type='text/javascript'>setTimeout(() => {
-                            alert('Order saved!')
-                        }, 100);</script>";
+                         move_uploaded_file($temp_name,"$target_dir/$filename".".".$ext);
                          }
                     }
                 }
@@ -197,7 +198,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Material Design Bootstrap</title>
+  <title>Dee Watter's Webshop</title>
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
   <!-- Bootstrap core CSS -->

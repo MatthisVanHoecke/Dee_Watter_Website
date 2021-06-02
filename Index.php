@@ -8,7 +8,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Material Design Bootstrap</title>
+  <title>Dee Watter's Webshop</title>
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
   <!-- Bootstrap core CSS -->
@@ -97,10 +97,7 @@
   <!-- /Start your project here-->
 
   <!-- SCRIPTS -->
-  
-    
-<script type="text/javascript" src="js/deescript.js"></script>
-  <!-- JQuery -->
+      <!-- JQuery -->
   <script type="text/javascript" src="js/jquery-3.4.0.min.js">
   </script>
   <!-- Bootstrap tooltips -->
@@ -109,8 +106,11 @@
   <script type="text/javascript" src="js/bootstrap.min.js"></script>
   <!-- MDB core JavaScript -->
   <script type="text/javascript" src="js/mdb.min.js"></script>
-  <script>
+<script type="text/javascript" src="js/deescript.js"></script>
+<script>
     window.onload = function() {
+      load();
+
       for(var i = 0; i < document.getElementsByClassName("clickable").length; i++) {
         document.getElementsByClassName("clickable")[i].addEventListener("click", function() {
           document.getElementById("modalimg").src = this.src;

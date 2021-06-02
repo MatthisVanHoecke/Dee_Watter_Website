@@ -131,7 +131,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Material Design Bootstrap</title>
+  <title>Dee Watter's Webshop</title>
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
   <!-- Bootstrap core CSS -->
@@ -203,7 +203,7 @@
                     </div>
                     <div class="row filteritems">
                         <div class="col">
-                            <label>Date Range: <input type="date" id='dateMin' > to <input type="date" id='dateMax' onchange="dateRange()" ></label>
+                            <label>Date Range: <input type="date" id='dateMin' onchange="dateRange()"> to <input type="date" id='dateMax' onchange="dateRange()" ></label>
                         </div>
                     </div>
                 </div>
@@ -212,7 +212,7 @@
                             <td style="width: 5%" id="id">
                                 ID &darr;
                             </td>
-                            <td style="width: 12%" id="username">
+                            <td style="width: 12%" id="sortusername">
                                 User
                             </td>
                             <td id="desc">
@@ -257,7 +257,7 @@
                     </button>
                 </div>
             </form>
-            <label id="bruh"></label>
+            <label id="issues"></label>
         </div>
     </div>
   <!-- /Start your project here-->
@@ -302,6 +302,7 @@ function resetArrows() {
     if(filter != "price") { document.getElementById("price").innerHTML = "Price"; }
     if(filter != "stat") { document.getElementById("stat").innerHTML = "Status"; }
     if(filter != "date") { document.getElementById("date").innerHTML = "Date"; }
+    if(filter != "sortusername") { document.getElementById("sortusername").innerHTML = "User"; }
 }
 
 function loadValues() {
@@ -356,6 +357,19 @@ function loadValues() {
         else {
             filter = "detail";
             document.getElementById("detail").innerHTML = "Detailed &uarr;";
+            resetArrows();
+        }
+        createTable();
+    });
+
+    document.getElementById("sortusername").addEventListener("click", function() {
+        if(filter == "sortusername") {
+            filter = "sortusernameascend";
+            document.getElementById("sortusername").innerHTML = "User &darr;";
+        }
+        else {
+            filter = "sortusername";
+            document.getElementById("sortusername").innerHTML = "User &uarr;";
             resetArrows();
         }
         createTable();
@@ -462,6 +476,9 @@ function createTable() {
         case "stat":
             sortByStatus(true);
             break;
+        case "sortusername":
+            sortByUser(true);
+            break;
         case "dateascend":
             sortByDate(false);
             break;
@@ -480,12 +497,15 @@ function createTable() {
         case "statascend":
             sortByStatus(false);
             break;
+        case "sortusernameascend":
+            sortByUser(false);
+            break;
         default:
             break;
     }
     for(var i = 0; i < order.length-1; i++) {
         
-        table[i] = "<tr style='height: 100px' id='row" + i + "'><td style='width: 5%'>" + alldate[i].id + "</td><td style='width: 12%'><a style='color: #3366BB' onclick='showModal(" + i + ")' data-toggle='tooltip' data-placement='top' title='" + alldate[i].email + "'>" + alldate[i].user + "</a></td><td style='overflow-wrap: break-word;'><div style='height: 100%; overflow-y: auto;'>" + alldate[i].description + "</div></td><td style='width: 10%'><img src='References/" + alldate[i].file + ".jpg' alt='" + alldate[i].file + "' class='img-thumbnail' /></td><td style='width: 8%; overflow-x: auto;'><label name='detailed' id='detailed" + i + "'>"+ alldate[i].checked +"</label></td><td style='width: 12%; overflow-x: auto;'><label id='extra" + i + "' style='width: 90%'>" + alldate[i].extr + "</label></td><td style='width: 12%; overflow-x: auto;'><label id='price" + i + "' style='width: 90%'>"+ alldate[i].price +"</label></td><td style='width: 10%; overflow-x: auto;'><select id='status" + i + "' onfocusout='updateStatus(" + i + ")'><option " + alldate[i].queue + ">In Queue</option><option " + alldate[i].progress + ">In Progress</option><option " + alldate[i].done + ">Done</option></select></td><td style='width: 10%; overflow-x: auto;'>" + alldate[i].date + "</td></tr>";
+        table[i] = "<tr style='height: 100px' id='row" + i + "'><td style='width: 5%'>" + alldate[i].id + "</td><td style='width: 12%'><a style='color: #3366BB' onclick='showModal(" + i + ")' data-toggle='tooltip' data-placement='top' title='" + alldate[i].email + "'>" + alldate[i].user + "</a></td><td style='overflow-wrap: break-word;'><div>" + alldate[i].description + "</div></td><td style='width: 10%'><img src='References/" + alldate[i].file + ".jpg' alt='" + alldate[i].file + "' class='img-thumbnail' /></td><td style='width: 8%; overflow-x: auto;'><label name='detailed' id='detailed" + i + "'>"+ alldate[i].checked +"</label></td><td style='width: 12%; overflow-x: auto;'><label id='extra" + i + "' style='width: 90%'>" + alldate[i].extr + "</label></td><td style='width: 12%; overflow-x: auto;'><label id='price" + i + "' style='width: 90%'>"+ alldate[i].price +"</label></td><td style='width: 10%; overflow-x: auto;'><select id='status" + i + "' onfocusout='updateStatus(" + i + ")'><option " + alldate[i].queue + ">In Queue</option><option " + alldate[i].progress + ">In Progress</option><option " + alldate[i].done + ">Done</option></select></td><td style='width: 10%; overflow-x: auto;'>" + alldate[i].date + "</td></tr>";
         
         
         endtable += table[i];
@@ -635,30 +655,27 @@ function sortByStatus(ascending) {
     }
 }
 
-
-
-function deleteValues(num) {
-    order.splice(num,1);
-    document.getElementById("bruh").innerHTML = num;
-    deleteid.push(id[num]);
-    createTable();
+function sortByUser(ascending) {
+    if(ascending) {
+        alldate.sort(function(a,b) {
+            return b.user.localeCompare(a.user);
+        });
+    }
+    else {
+        alldate.sort(function(a,b) {
+            return a.user.localeCompare(b.user);
+        });
+    }
 }
+
 
 var data = "";
 var ok = true;
 
 function saveValues() {
-    document.getElementById("bruh").innerHTML = "";
+    document.getElementById("issues").innerHTML = "";
     loaderOn();
-    
-    if(deleteid.length > 0) {
-        for(var i = 0; i < deleteid.length; i++) {
-            $.get("deleteValues.php?id=" + deleteid[i], function(data) {
-                loaderOff();
-                document.getElementById("bruh").innerHTML = data;
-            });
-        }
-    }
+
     var endstring;
 
     if(count == 0) {
@@ -699,42 +716,13 @@ function saveValues() {
 $(document).ajaxStop(function () {
     loaderOff();
     if(ok = true && count != 0) {
-        document.getElementById("bruh").innerHTML = "Changes saved!";
+        notify("Changes Saved!");
         allids = [];
         count = 0;
     }
     document.getElementsByClassName("examp")[0].style.height = "auto";
     createTable();
 });
-
-function updateDetailed(num) {
-    if(document.getElementById('detailed' + num).checked) {
-        detailed[num] = "1";
-    }
-    else {
-        detailed[num] = "0";
-    }
-    if(!allids.includes(id[num])) {
-        allids[count] = id[num];
-        count++;
-    }
-}
-
-function updateExtraCharacter(num) {
-    extr[num] = document.getElementById('extra' + num).value;
-    if(!allids.includes(id[num])) {
-        allids[count] = id[num];
-        count++;
-    }
-}
-
-function updatePrice(num) {
-    price[num] = document.getElementById('price' + num).value;
-    if(!allids.includes(id[num])) {
-        allids[count] = id[num];
-        count++;
-    }
-}
 
 function updateStatus(num) {
     stat[num] = document.getElementById('status' + num).value;

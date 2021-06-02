@@ -74,7 +74,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Material Design Bootstrap</title>
+  <title>Dee Watter's Webshop</title>
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
   <!-- Bootstrap core CSS -->
@@ -91,7 +91,7 @@
   <!-- Start your project here-->
   <?php include "standard.php"; ?>
     
-  <div class="row justify-content-center examp">
+  <div class="row justify-content-center examp" style="height: 100%">
         <div class="col-md-8 profile" style="height: auto">
             <?php echo "<h1 style='text-align: center;'>".$artname."-shot</h1>";?>
             <div class="row justify-content-between" style="height: auto">
@@ -146,17 +146,21 @@
         window.onload = loadValues();
         
         var article = new Array();
+        var price = "";
         
         function loadValues() {
 
-            paypal.Buttons({
+            $.get("getPrice.php?orderid=" + $_GET["orderid"], function(data) {
+                price = data;
+
+                paypal.Buttons({
                 createOrder: function(data, actions) {
                     // Set up the transaction
                     return actions.order.create({
                         purchase_units: [{
                             amount: {
                                 currency_code: 'USD',
-                                value: '0.01'
+                                value: price
                             }
                         }]
                     });
@@ -165,17 +169,24 @@
                     return actions.order.capture().then(function(details) {
                         $.get("updateStatus.php?orderid=" + $_GET["orderid"], function(data) {
                             if(data == "Success") {
-                                alert("Order successfully queued!");
-                                document.form1.submit();
+                                notify("Order successfully queued!");
+                                document.getElementById("close-notify").addEventListener("click", function() {
+                                    document.form1.submit();
+                                });
                             }
                             else {
                                 alert(data);
                             }
                         });
-                        alert('Transaction Completed by ' + details.payer.name.given_name);
+                        notify('Transaction Completed by ' + details.payer.name.given_name);
                     });
                 }
-            }).render('#paypal-button-container');
+                }).render('#paypal-button-container');
+            });
+
+            $('#modalNotify').on('hidden', function() {
+                document.form1.submit();
+            });
         }
     </script>
   <!-- /Start your project here-->

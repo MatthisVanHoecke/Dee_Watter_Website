@@ -41,7 +41,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Material Design Bootstrap</title>
+  <title>Dee Watter's Webshop</title>
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
   <!-- Bootstrap core CSS -->
@@ -133,7 +133,7 @@
             <form name="form2" id="form2" method="post" action="" style="display: none">
 
             </form>
-            <label id="bruh"></label>
+            <label id="issues"></label>
         </div>
     </div>
   <!-- /Start your project here-->
@@ -358,7 +358,7 @@
         var count = 0;
 
         function saveValues() {
-            document.getElementById("bruh").innerHTML = "";
+            document.getElementById("issues").innerHTML = "";
             loaderOn();
             
             if(deleteid.length > 0) {
@@ -407,7 +407,7 @@
                         success: function(response){
                             if(response != "Success"){
                                 ok = false;
-                                document.getElementById("bruh").innerHTML = response;
+                                document.getElementById("issues").innerHTML = response;
                                 alert(response);
                             }
                         }
@@ -436,7 +436,7 @@
         $(document).ajaxStop(function () {
             loaderOff();
             if(ok = true && count != 0) {
-                document.getElementById("bruh").innerHTML = "Changes saved!";
+                notify("Changes Saved!");
                 allids = [];
                 count = 0;
             }
@@ -452,7 +452,7 @@
                 // Check file selected or not
                 if(files.length > 0 ){
                     if(!document.getElementById('file' + num).value.toLowerCase().endsWith(".png") && !document.getElementById('file' + num).value.toLowerCase().endsWith(".jpeg") && !document.getElementById('file' + num).value.toLowerCase().endsWith(".jpg")) {
-                        alert("Please upload an image in PNG or JPG format");
+                        notify("Please upload an image in PNG or JPG format");
                         document.getElementById('file' + num).value = "";
                     }
                     else {
@@ -465,7 +465,7 @@
                     }
                 }
                 else{
-                    alert("Please select a file.");
+                    notify("Please select a file.");
                 }
             }
         }

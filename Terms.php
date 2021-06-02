@@ -9,7 +9,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Material Design Bootstrap</title>
+  <titleDee Watter's Webshop</title>
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
   <!-- Bootstrap core CSS -->
@@ -49,22 +49,7 @@
   <!-- /Start your project here-->
 
   <!-- SCRIPTS -->
-  <script type="text/javascript">
-    toggle();
-    window.onresize = function() {
-        toggle();
-    }
-    function toggle() {
-        if (window.innerWidth > 1020) {
-            document.getElementById('navigationbar').style.display = 'none';  
-            document.getElementById('menu').style.display = 'block'; 
-        }
-        else {
-            document.getElementById('navigationbar').style.display = 'block';
-            document.getElementById('menu').style.display = 'none'; 
-        }    
-    }
-</script>
+  <script type="text/javascript" src="js/deescript.js"></script>
   <!-- JQuery -->
   <script type="text/javascript" src="js/jquery-3.4.0.min.js">
   </script>
@@ -74,6 +59,9 @@
   <script type="text/javascript" src="js/bootstrap.min.js"></script>
   <!-- MDB core JavaScript -->
   <script type="text/javascript" src="js/mdb.min.js"></script>
+  <script type="text/javascript">
+    window.onload = load();
+</script>
 </body>
 
 </html>

@@ -13,7 +13,7 @@ window.onresize = function() {
     toggle();
 }
 
-window.onload = function() {
+function load() {
     var parts = window.location.search.substr(1).split("&");
     var $_GET = {};
     for (var i = 0; i < parts.length; i++) {
@@ -24,7 +24,32 @@ window.onload = function() {
     if($_GET["accountError"] != null && $_GET["accountError"] != "") {
         $('#modalLogError').modal('show');
     }
+
+    if($_GET["uploaded"] != null && $_GET["uploaded"] != "") {
+        notify('Order saved!');
+    }
+
+    document.addEventListener("keyup", function(event) {
+        if($("#modalSignupForm").is(':visible')) {
+            if(event.key.toLowerCase() == "enter") {
+                document.getElementById("signup_button").focus();
+                submitModalSignupForm();
+            }
+        }
+        if($("#modalLoginForm").is(':visible')) {
+            if(event.key.toLowerCase() == "enter") {
+                document.getElementById("signin_button").focus();
+                submitModalLoginForm();
+            }
+        }
+    });
 }
+
+function notify(text) {
+    document.getElementById("NotifyText").innerHTML = text;
+    $('#modalNotify').modal('show');
+}
+
 
 var n = ".*[0-9].*";
 var l = ".*[A-Z].*";

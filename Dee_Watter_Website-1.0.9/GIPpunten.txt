@@ -1,4 +1,0 @@
--verwijder records niet uit database, voeg een nieuwe waarden toe: Afgewerkt
--verzend bestelling niet in 'article' maar in 'Cart'
-
--bekijk paypal api

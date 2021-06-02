@@ -41,4 +41,8 @@
     else {
         echo "Failed";
     }
+
+    $orid = $mysqli->real_escape_string($_GET["id"]);
+
+    unlink('References/'.$orid.".jpg");
 ?>

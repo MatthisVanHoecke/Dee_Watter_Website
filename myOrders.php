@@ -41,7 +41,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Material Design Bootstrap</title>
+  <title>Dee Watter's Webshop</title>
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
   <!-- Bootstrap core CSS -->
@@ -120,19 +120,11 @@
                 </div>
                 </div>
                 <label id="lbltotal">Total: <input type="text" id="totalprice" readonly></label>
-                <div class="d-flex justify-content-center" style="width: 100%">
-                    <button type="button" name="save" id="save" class="btn btn-default" onclick="saveValues()">Save</button>
-                    <button type="button" name="loadsave" id="loadsave" class="btn btn-default" style="display: none;">
-                        <div class="spinner-border text-light" role="status" style="display: none; width: 1.3rem; height: 1.3rem;" id="loadOrder">
-                        </div>
-                    </button>
-                    <button type="button" name="checkout" id="checkout" class="btn btn-default" onclick="checkOut()">Checkout</button>
-                </div>
             </form>
             <form name="form2" id="form2" method="post" action="" style="display: none">
 
             </form>
-            <label id="bruh"></label>
+            <label id="issues"></label>
         </div>
     </div>
   <!-- /Start your project here-->
@@ -254,7 +246,7 @@
             
             var table = "";
             for(var i = 0; i < temporder.length; i++) {
-                table += "<tr id='row" + tabcount + "' style='height: 100px;'><td style='width: 5%'>" + id[tabcount] + "</td><td style='overflow-wrap: break-word;'><div style='height: 100%; overflow-y: auto'>" + description[tabcount] + "</div></td><td style='width: 15%; overflow-x: auto;'><img src='References/" + id[tabcount] + ".jpg' alt='" + id[tabcount] + "' class='img-thumbnail' name='f" + id[tabcount] + "'></td><td style='width: 12%; overflow-x: auto;'>"+ checked[tabcount] +"</td><td style='width: 12%; overflow-x: auto;'>" + extr[tabcount] + "</td><td style='width: 7%; overflow-x: auto;' id = 'price" + tabcount + "' >" + price[tabcount] + "</td><td style='width: 15%; overflow-x: auto;'>" + artid[tabcount] + "</td><td style='width: 12%'>" + stat[tabcount] + "</td></tr>";
+                table += "<tr id='row" + tabcount + "' style='height: 100px;'><td style='width: 5%'>" + id[tabcount] + "</td><td style='overflow-wrap: break-word;'><div>" + description[tabcount] + "</div></td><td style='width: 15%; overflow-x: auto;'><img src='References/" + id[tabcount] + ".jpg' alt='" + id[tabcount] + "' class='img-thumbnail' name='f" + id[tabcount] + "'></td><td style='width: 12%; overflow-x: auto;'>"+ checked[tabcount] +"</td><td style='width: 12%; overflow-x: auto;'>" + extr[tabcount] + "</td><td style='width: 7%; overflow-x: auto;' id = 'price" + tabcount + "' >" + price[tabcount] + "</td><td style='width: 15%; overflow-x: auto;'>" + artid[tabcount] + "</td><td style='width: 12%'>" + stat[tabcount] + "</td></tr>";
                 tabcount++;
             }
             document.getElementById("orders").innerHTML = table;
@@ -299,8 +291,7 @@
         var count = 0;
 
         function saveValues() {
-            document.getElementById("bruh").innerHTML = "";
-            loaderOn();
+            document.getElementById("issues").innerHTML = "";
             
             if(deleteid.length > 0) {
                 for(var i = 0; i < deleteid.length; i++) {
@@ -348,7 +339,7 @@
                         success: function(response){
                             if(response != "Success"){
                                 ok = false;
-                                document.getElementById("bruh").innerHTML = response;
+                                document.getElementById("issues").innerHTML = response;
                                 alert(response);
                             }
                         }
@@ -377,102 +368,16 @@
         $(document).ajaxStop(function () {
             loaderOff();
             if(ok = true && count != 0) {
-                document.getElementById("bruh").innerHTML = "Changes saved!";
+                notify("Changes Saved!");
                 allids = [];
                 count = 0;
             }
         });
         
-        function updateFile(num) {
-            if(document.getElementById('file' + num).value != "") {
-
-                var fd = new FormData();
-                var files = $('#file' + num)[0].files;
-                
-                // Check file selected or not
-                if(files.length > 0 ){
-                    if(!document.getElementById('file' + num).value.toLowerCase().endsWith(".png") && !document.getElementById('file' + num).value.toLowerCase().endsWith(".jpeg") && !document.getElementById('file' + num).value.toLowerCase().endsWith(".jpg")) {
-                        alert("Please upload an image in PNG or JPG format");
-                        document.getElementById('file' + num).value = "";
-                    }
-                    else {
-                        fd.append('file',files[0]);
-                        file[num] = fd;  
-                        if(!allids.includes(id[num])) {
-                            allids[count] = id[num];
-                            count++;
-                        } 
-                    }
-                }
-                else{
-                    alert("Please select a file.");
-                }
-            }
-        }
-        
-        function updateDescription(num) {
-            description[num] = document.getElementById('area' + num).value;
-            if(!allids.includes(id[num])) {
-                allids[count] = id[num];
-                count++;
-            }
-        }
-
-        function onPriceChange(num) {
-            switch(artid[num]) {
-                case "Head":
-                    price[num] = parseFloat(articlehead[0]);
-                    if(detailed[num] == "1") {
-                        price[num] += parseFloat(articlehead[1]);
-                    }
-                    price[num] += parseInt(extr[num])*parseFloat(articlehead[2]);
-                    break;
-                case "HalfBody":
-                    price[num] = parseFloat(articlehalf[0]);
-                    if(detailed[num] == "1") {
-                        price[num] += parseFloat(articlehalf[1]);
-                    }
-                    price[num] += parseInt(extr[num])*parseFloat(articlehalf[2]);
-                    break;
-                case "FullBody":
-                    price[num] = parseFloat(articlefull[0]);
-                    if(detailed[num] == "1") {
-                        price[num] += parseFloat(articlefull[1]);
-                    }
-                    price[num] += parseInt(extr[num])*parseFloat(articlefull[2]);
-                    break;
-            }
-            document.getElementById("price" + num).innerHTML = parseFloat(price[num]);
-
-            var totalprice = 0;
-            for(var i = 0; i < price.length; i++) {
-                if(stat[i] == "In Process") {
-                    totalprice += parseFloat(price[i]);
-                }
-            }
-            document.getElementById("totalprice").value = "$" + totalprice;
-        }
-
-        function updateExtraCharacter(num) {
-            extr[num] = document.getElementById('extra' + num).value;
-            if(!allids.includes(id[num])) {
-                allids[count] = id[num];
-                count++;
-            }
-        }
-        
-        function loaderOn() {
-            document.getElementById("save").style.display = "none";
-            document.getElementById("loadOrder").style.display = "block";
-            document.getElementById("loadsave").style.display = "block";
-        }
         function loaderOff() {
-            document.getElementById("save").style.display = "block";
-            document.getElementById("loadOrder").style.display = "none";
             document.getElementsByClassName("loadPage")[0].style.display = "none";
             document.getElementById("spin").style.height = "0px";
             document.getElementsByClassName("tab2")[0].style.height = "40%";
-            document.getElementById("loadsave").style.display = "none"; 
         }
     </script>
 </body>

@@ -131,7 +131,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Material Design Bootstrap</title>
+  <title>Dee Watter's Webshop</title>
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
   <!-- Bootstrap core CSS -->
@@ -220,7 +220,7 @@
                     </button>
                 </div>
             </form>
-            <label id="bruh"></label>
+            <label id="issues"></label>
         </div>
     </div>
   <!-- /Start your project here-->
@@ -324,7 +324,6 @@ function createTable() {
 
 function deleteValues(num) {
     order.splice(num,1);
-    document.getElementById("bruh").innerHTML = num;
     deleteid.push(id[num]);
     createTable();
 }
@@ -333,14 +332,14 @@ var data = "";
 var ok = true;
 
 function saveValues() {
-    document.getElementById("bruh").innerHTML = "";
+    document.getElementById("issues").innerHTML = "";
     loaderOn();
     
     if(deleteid.length > 0) {
         for(var i = 0; i < deleteid.length; i++) {
             $.get("deleteValues.php?id=" + deleteid[i], function(data) {
                 loaderOff();
-                document.getElementById("bruh").innerHTML = data;
+                notify(data);
             });
         }
     }
@@ -384,7 +383,7 @@ function saveValues() {
 $(document).ajaxStop(function () {
     loaderOff();
     if(ok = true && count != 0) {
-        document.getElementById("bruh").innerHTML = "Changes saved!";
+        notify("Changes Saved!");
         allids = [];
         count = 0;
     }

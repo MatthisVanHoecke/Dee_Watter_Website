@@ -31,6 +31,24 @@
             </div>
         </div>
     </div>
+<div class="modal fade" id="modalNotify" tabindex="-1" role="dialog" aria-labelledby="modalNotify" aria-hidden="true">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-bell-fill" viewBox="0 0 16 16">
+            <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/>
+        </svg>
+        <h5 class="modal-title" id="exampleModalLongTitle">Notification</h5>
+        <button type="button" class="close" data-dismiss="modal" id="close-notify" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <label id="NotifyText"></label>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="modal fade" id="modalLoginForm" name="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
   aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -46,13 +64,13 @@
             <div class="md-form mb-5">
               <i class="fas fa-user prefix grey-text"></i>
               <input type="text" id="user" class="form-control validate" name="user">
-              <label data-error="wrong" data-success="right" for="defaultForm-email">Email or Username</label>
+              <label data-error="wrong" data-success="right" for="user">Email or Username</label>
             </div>
 
             <div class="md-form mb-4">
               <i class="fas fa-lock prefix grey-text"></i>
               <input type="password" id="password" class="form-control validate" name="password">
-              <label data-error="wrong" data-success="right" for="defaultForm-pass">Password</label>
+              <label data-error="wrong" data-success="right" for="password">Password</label>
             </div>
 
             <span id="userError" style="color: red; font-weight: bold"></span>
@@ -85,24 +103,24 @@
         <div class="md-form mb-5">
           <i class="fas fa-user prefix grey-text"></i>
           <input type="text" name="username" id="username" class="form-control validate">
-          <label data-error="wrong" data-success="right" for="orangeForm-pass">Username</label>
+          <label data-error="wrong" data-success="right" for="username">Username</label>
         </div>
         <div class="md-form mb-5">
           <i class="fas fa-envelope prefix grey-text"></i>
           <input type="email" name="email" id="email" class="form-control validate">
-          <label data-error="wrong" data-success="right" for="orangeForm-email">Email</label>
+          <label data-error="wrong" data-success="right" for="email">Email</label>
         </div>
 
         <div class="md-form mb-4">
           <i class="fas fa-lock prefix grey-text"></i>
           <input type="password" name="pass" id="pass" class="form-control validate">
-          <label data-error="wrong" data-success="right" for="orangeForm-pass">Password</label>
+          <label data-error="wrong" data-success="right" for="pass">Password</label>
         </div>
           
         <div class="md-form mb-4">
           <i class="fas fa-lock prefix grey-text"></i>
           <input type="password" name="passconfirm" id="passconfirm" class="form-control validate">
-          <label data-error="wrong" data-success="right" for="orangeForm-pass">Confirm Password</label>
+          <label data-error="wrong" data-success="right" for="passconfirm">Confirm Password</label>
         </div>
         
         <span id="usernameError" style="color: red; font-weight: bold"></span>
